@@ -1,0 +1,15 @@
+.cajero-gradient {
+  /* Un verde esmeralda profesional que transmite confianza */
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  border: none;
+}
+
+.cajero-gradient:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Ajuste para que los iconos de Google se vean limpios en verde */
+.material-symbols-outlined {
+  vertical-align: middle;
+}

@@ -1,16 +1,27 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login';
+import { LayoutComponent } from './components/layouts/layout-admin/layout';
+import { LayoutCajeroComponent } from './components/layouts/layout-cajero/layout-cajero';
 import { DashboardComponent } from './components/dashboard/dashboard';
-import { LayoutComponent } from './components/layout/layout';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+
   {
-    path: '',
+    path: 'admin',
     component: LayoutComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent },
-    ],
+      { path: 'dashboard', component: DashboardComponent }
+    ]
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+
+  {
+    path: 'cajero',
+    component: LayoutCajeroComponent,
+    children: [
+      { path: 'dashboard', component: DashboardComponent }
+    ]
+  },
+
+  { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
