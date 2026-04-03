@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 })
 export class LoginComponent {
   private router = inject(Router);
-  private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
   loginData = {
     username: '',
@@ -23,19 +23,24 @@ export class LoginComponent {
   onLogin() {
     console.log('Datos capturados:', this.loginData);
 
+    // VALIDACIÓN
     if (!this.loginData.username || !this.loginData.password) {
       Swal.fire({
         title: 'Campos incompletos',
-        text: 'Por favor, llena todos los espacios para continuar',
+        text: 'Por favor, llena todos los espacios',
         icon: 'warning',
-        confirmButtonColor: '#1d4ed8'
+        confirmButtonColor: '#1d4ed8',
       });
       return;
     }
 
-    this.http.post('/api/login', this.loginData).subscribe({
+    // LLAMADA AL BACKEND
+    this.authService.login(this.loginData).subscribe({
       next: (response: any) => {
         console.log('Respuesta backend:', response);
+
+        // 💾 GUARDAR SESIÓN
+        localStorage.setItem('user', JSON.stringify(response));
 
         Swal.fire({
           title: '¡Bienvenido!',
@@ -45,21 +50,25 @@ export class LoginComponent {
           timer: 1500,
           timerProgressBar: true,
         }).then(() => {
-          // En login.ts, dentro del .then() de la alerta de éxito:
+          console.log('ROL RECIBIDO:', response.rol);
 
-          console.log("ROL RECIBIDO:", response.rol);
+          // MAPA DE RUTAS POR ROL
+          const roleRoutes: any = {
+            ADMIN: '/admin/dashboard',
+            CAJERO: '/cajero/dashboard',
+          };
 
-// PRUEBA MANUAL:
-// Si te logueas como 'cajero1', vamos a FORZAR el verde
-// para confirmar que el LayoutCajeroComponent funciona bien.
+          const route = roleRoutes[response.rol];
 
-          if (this.loginData.username === 'cajero1') {
-            this.router.navigate(['/cajero/dashboard']);
+          if (route) {
+            this.router.navigate([route]);
           } else {
-            this.router.navigate(['/admin/dashboard']);
+            console.warn('Rol no configurado:', response.rol);
+            this.router.navigate(['/login']);
           }
         });
       },
+
       error: (error) => {
         console.log('Error:', error);
 
@@ -67,7 +76,7 @@ export class LoginComponent {
           title: 'Acceso denegado',
           text: 'Usuario o contraseña incorrectos',
           icon: 'error',
-          confirmButtonColor: '#1d4ed8'
+          confirmButtonColor: '#1d4ed8',
         });
       },
     });
