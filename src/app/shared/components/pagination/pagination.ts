@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pagination.css',
 })
 export class Pagination {
-  // Entradas: lo que el padre le envía
   totalItems = input.required<number>();
   itemsPerPage = input.required<number>();
   currentPage = input.required<number>();
@@ -18,7 +17,6 @@ export class Pagination {
   pagesArray = input.required<(number | string)[]>();
   totalPages = input.required<number>();
 
-  // Salidas: lo que el hijo le avisa al padre
   onPageChange = output<number>();
   onNext = output<void>();
   onPrev = output<void>();

@@ -13,12 +13,11 @@ import Swal from 'sweetalert2';
 })
 export class LayoutCajeroComponent implements OnInit {
   private router = inject(Router);
-  private platformId = inject(PLATFORM_ID); // Inyectamos el ID de la plataforma
+  private platformId = inject(PLATFORM_ID);
 
   username: string = 'Cajero';
 
   ngOnInit() {
-    // Solo ejecutamos esto si estamos en el NAVEGADOR (Browser)
     if (isPlatformBrowser(this.platformId)) {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -38,14 +37,14 @@ export class LayoutCajeroComponent implements OnInit {
       text: "Se finalizará tu sesión actual",
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#10b981', // El verde de tu nuevo diseño
+      confirmButtonColor: '#10b981',
       cancelButtonColor: '#64748b',
       confirmButtonText: 'Sí, salir',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem('user'); // Limpiamos los datos
-        this.router.navigate(['/login']); // Regresamos al login
+        localStorage.removeItem('user');
+        this.router.navigate(['/login']);
       }
     });
   }

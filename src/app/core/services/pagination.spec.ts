@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-
-import { Pagination } from './pagination';
+import { Pagination } from '../../shared/components/pagination/pagination';
 
 describe('Pagination', () => {
   let service: Pagination;
