@@ -1,0 +1,82 @@
+@reference "../../../../styles.css";
+
+/* --- layout y cabecera --- */
+.page-container { @apply max-w-7xl mx-auto p-4 space-y-8; }
+.breadcrumb { @apply flex items-center gap-2 text-slate-400 uppercase tracking-widest text-[10px] font-bold mb-1; }
+.page-header { @apply flex flex-col md:flex-row md:items-end justify-between gap-6; }
+.title-main { @apply text-4xl font-black tracking-tight text-slate-900; }
+.subtitle { @apply text-slate-500 font-medium max-w-lg mt-1; }
+
+.header-actions { @apply flex gap-3; }
+.btn-export { @apply flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-all; }
+.btn-register { @apply flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all active:scale-95; }
+
+/* ---  --- */
+.stats-grid { @apply grid grid-cols-1 md:grid-cols-4 gap-6; }
+.stat-card { @apply bg-white p-6 rounded-2xl border border-slate-100 shadow-sm; }
+.stat-label { @apply text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2; }
+.stat-value-container { @apply flex items-baseline gap-2; }
+.stat-value {@apply text-3xl font-black; font-variant-numeric: tabular-nums;}
+.stat-badge-up { @apply text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full; }
+.progress-bar { @apply w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden; }
+.progress-fill { @apply bg-emerald-500 h-full rounded-full transition-all duration-1000; }
+.stat-footer { @apply text-[10px] text-slate-400 mt-4 font-medium; }
+.stat-action-red { @apply text-xs text-red-600 font-bold mt-4 flex items-center gap-1 hover:underline; }
+
+/* --- filtros --- */
+.filter-bar { @apply bg-slate-100/50 p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center; }
+.search-box { @apply flex-grow w-full relative; }
+.search-box span { @apply absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm; }
+.search-box input { @apply w-full bg-white border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-emerald-500/20 shadow-sm; }
+.filter-actions { @apply flex items-center gap-3 w-full md:w-auto; }
+.date-range { @apply flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200; }
+.date-range input { @apply bg-transparent border-none text-xs font-bold focus:ring-0 p-0 text-slate-600; }
+.btn-filter { @apply bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all; }
+
+/* --- tabla ----*/
+.table-outer { @apply bg-slate-200 rounded-[2rem] p-1 shadow-md; }
+.table-inner { @apply bg-white rounded-[1.8rem] overflow-hidden; }
+.data-table { @apply w-full border-collapse; }
+
+/* encabezado*/
+.data-table thead tr {
+  @apply bg-slate-100 border-b border-slate-200;
+}
+.data-table th {
+  @apply text-left px-8 py-5 text-[11px] font-black text-slate-500 uppercase tracking-widest;
+}
+
+.table-row { @apply border-b border-slate-50 hover:bg-emerald-50/40 transition-colors; }
+
+/* datos */
+.col-id { @apply px-8 py-6 font-mono text-xs text-emerald-700 font-black; }
+.col-date { @apply px-8 py-6 text-sm text-slate-500 font-medium; }
+.col-concept { @apply px-8 py-6 text-sm text-slate-500; }
+
+.user-info { @apply flex items-center gap-3; }
+.avatar { @apply w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs; }
+
+.user-name { @apply text-sm font-medium text-slate-700; }
+
+.font-black { @apply text-sm font-bold text-slate-700; }
+
+.status-badge { @apply inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border; }
+.status-paid { @apply bg-emerald-50 text-emerald-700 border-emerald-100; }
+.status-paid .dot { @apply w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2; }
+
+.row-actions {
+  @apply flex items-center justify-center gap-2 pr-4 transition-all;
+}
+.btn-view { @apply p-2 hover:bg-emerald-100 rounded-lg text-emerald-600; }
+.btn-pdf { @apply p-2 hover:bg-slate-100 rounded-lg text-slate-400; }
+
+.avatar-1 { @apply bg-blue-100 text-blue-700; }
+.avatar-2 { @apply bg-purple-100 text-purple-700; }
+.avatar-3 { @apply bg-amber-100 text-amber-700; }
+.avatar-4 { @apply bg-emerald-100 text-emerald-700; }
+.avatar-5 { @apply bg-pink-100 text-pink-700; }
+
+/* paginacion */
+app-pagination {
+  @apply bg-slate-50 block border-t border-slate-100;
+}

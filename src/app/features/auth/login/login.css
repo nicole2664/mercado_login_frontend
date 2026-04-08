@@ -1,0 +1,99 @@
+@reference "../../../../styles.css";
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.login-wrapper {
+  @apply min-h-screen flex flex-col md:flex-row;
+}
+
+/* --- SECCIÓN VISUAL (AZUL) --- */
+.login-visual {
+  @apply relative hidden md:flex md:w-1/2 lg:w-3/5 items-center justify-center overflow-hidden bg-blue-900;
+}
+
+.visual-overlay {
+  @apply absolute inset-0 bg-gradient-to-br from-blue-800 to-slate-900 opacity-90;
+}
+
+.visual-content {
+  @apply relative z-10 px-12 text-center text-white;
+}
+
+.visual-logo-box {
+  @apply mb-8 inline-flex items-center justify-center p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+.icon-main {
+  @apply text-white text-5xl;
+}
+
+.visual-title {
+  @apply text-6xl font-bold tracking-tighter mb-4;
+}
+
+.visual-description {
+  @apply text-blue-200 text-xl font-light max-w-md mx-auto;
+}
+
+.visual-stats {
+  @apply mt-12 flex justify-center gap-8 opacity-60;
+}
+
+.stat-item {
+  @apply flex flex-col;
+}
+
+.stat-value {
+  @apply font-bold text-2xl;
+}
+
+.stat-label {
+  @apply text-[10px] uppercase;
+}
+
+/* --- SECCIÓN FORMULARIO --- */
+.login-form-container {
+  @apply flex-1 flex flex-col bg-white justify-center px-6 sm:px-12 lg:px-24 py-12;
+}
+
+.form-max-width {
+  @apply max-w-md w-full mx-auto;
+}
+
+.form-header {
+  @apply mb-12;
+}
+
+.label-portal {
+  @apply text-[11px] uppercase tracking-widest font-bold text-blue-600 mb-3 block;
+}
+
+.form-title {
+  @apply text-4xl font-bold tracking-tight text-slate-900 mb-2;
+}
+
+.form-subtitle {
+  @apply text-slate-500 text-sm;
+}
+
+/* --- ELEMENTOS DE ENTRADA --- */
+.input-group {
+  @apply space-y-2;
+}
+
+.input-label {
+  @apply text-[10px] uppercase tracking-widest font-bold text-slate-500 block;
+}
+
+.form-input {
+  @apply w-full bg-slate-50 border-b-2 border-slate-200 focus:border-blue-600
+  outline-none py-3 px-4 transition-all;
+}
+
+.link-forgot {
+  @apply text-[11px] text-blue-600 font-bold hover:underline;
+}
+
+.btn-login {
+  @apply w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4
+  rounded shadow-lg transition-all transform hover:scale-[1.01];
+}
