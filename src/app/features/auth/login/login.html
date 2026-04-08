@@ -1,0 +1,64 @@
+<main class="min-h-screen flex flex-col md:flex-row">
+  <section class="relative hidden md:flex md:w-1/2 lg:w-3/5 items-center justify-center overflow-hidden bg-blue-900">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-800 to-slate-900 opacity-90"></div>
+
+    <div class="relative z-10 px-12 text-center text-white">
+      <div class="mb-8 inline-flex items-center justify-center p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20">
+        <span class="material-symbols-outlined text-white text-5xl">account_balance</span>
+      </div>
+      <h1 class="text-6xl font-bold tracking-tighter mb-4">MarketPay</h1>
+      <p class="text-blue-200 text-xl font-light max-w-md mx-auto">
+        Infraestructura de precisión para el ecosistema financiero moderno.
+      </p>
+      <div class="mt-12 flex justify-center gap-8 opacity-60">
+        <div class="flex flex-col">
+          <span class="font-bold text-2xl">99.9%</span>
+          <span class="text-[10px] uppercase">Uptime</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-2xl">AES-256</span>
+          <span class="text-[10px] uppercase">Cifrado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex-1 flex flex-col bg-white justify-center px-6 sm:px-12 lg:px-24 py-12">
+    <div class="max-w-md w-full mx-auto">
+      <div class="mb-12">
+        <span class="text-[11px] uppercase tracking-widest font-bold text-blue-600 mb-3 block">Portal de Administración</span>
+        <h2 class="text-4xl font-bold tracking-tight text-slate-900 mb-2">Bienvenido de nuevo</h2>
+        <p class="text-slate-500 text-sm">Accede a tu panel de gestión.</p>
+      </div>
+
+      <form class="space-y-6">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-bold text-slate-500 block mb-2">Nombre de Usuario</label>
+
+          <input type="text"
+                 name="username"
+                 [(ngModel)]="loginData.username"
+                 class="w-full bg-slate-50 border-b-2 border-slate-200 focus:border-blue-600 outline-none py-3 px-4 transition-all"
+                 placeholder="Usuario">
+        </div>
+
+        <div>
+          <div class="flex justify-between mb-2">
+            <label class="text-[10px] uppercase tracking-widest font-bold text-slate-500">Contraseña</label>
+            <a href="#" class="text-[11px] text-blue-600 font-bold">¿Olvidaste tu contraseña?</a>
+          </div>
+          <input type="password"
+                 name="password"
+                 [(ngModel)]="loginData.password"
+                 class="w-full bg-slate-50 border-b-2 border-slate-200 focus:border-blue-600 outline-none py-3 px-4 transition-all"
+                 placeholder="••••••••">
+        </div>
+
+        <button (click)="onLogin()"
+                class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded shadow-lg transition-all transform hover:scale-[1.01]">
+          Iniciar sesión
+        </button>
+      </form>
+    </div>
+  </section>
+</main>

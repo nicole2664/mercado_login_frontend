@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login';
-import { LayoutComponent } from './components/layouts/layout-admin/layout';
-import { LayoutCajeroComponent } from './components/layouts/layout-cajero/layout-cajero';
-import { DashboardComponent } from './components/dashboard/dashboard';
+import { LoginComponent } from './features/auth/login/login';
+import { LayoutComponent } from './shared/layouts/layout-admin/layout';
+import { LayoutCajeroComponent } from './shared/layouts/layout-cajero/layout-cajero';
+import { DashboardComponent } from './features/admin/dashboard/dashboard';
+import { Pagos } from './features/admin/pagos/pagos';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -11,7 +12,8 @@ export const routes: Routes = [
     path: 'admin',
     component: LayoutComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent }
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'pagos', component: Pagos }
     ]
   },
 

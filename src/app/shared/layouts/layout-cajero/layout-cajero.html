@@ -1,0 +1,68 @@
+<header class="cashier-header">
+  <div class="flex items-center gap-4">
+    <span class="logo-text">MarketPay <span class="text-emerald-600">Caja</span></span>
+    <div class="header-nav">
+      <a class="header-link active" href="#">Operaciones</a>
+      <a class="header-link" href="#">Mi Turno</a>
+    </div>
+  </div>
+
+  <div class="flex items-center space-x-4">
+    <div class="user-badge">N</div>
+  </div>
+</header>
+
+<nav class="sidebar-cashier">
+  <div class="sidebar-brand">
+    <h2 class="module-title">Módulo Cajero</h2>
+    <p class="module-subtitle">Terminal de Cobros</p>
+  </div>
+
+  <div class="sidebar-menu">
+    <a class="nav-item active" routerLink="/cajero/inicio">
+      <span class="material-symbols-outlined icon-fill">point_of_sale</span>
+      <span>Inicio Caja</span>
+    </a>
+
+    <a class="nav-item" href="#">
+      <span class="material-symbols-outlined">person</span>
+      <span>Socio</span>
+    </a>
+
+    <a class="nav-item" href="#">
+      <span class="material-symbols-outlined">storefront</span>
+      <span>Puestos</span>
+    </a>
+
+    <a class="nav-item" href="#">
+      <span class="material-symbols-outlined">account_balance_wallet</span>
+      <span>Deudas</span>
+    </a>
+
+    <a class="nav-item" href="#">
+      <span class="material-symbols-outlined">payments</span>
+      <span>Pagos</span>
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="btn-new-transaction">
+      <span class="material-symbols-outlined text-sm">add</span>
+      <span>Nueva Transacción</span>
+    </button>
+
+    <a class="footer-action" href="#">
+      <span class="material-symbols-outlined text-xl">contact_support</span>
+      <span>Soporte</span>
+    </a>
+
+    <a (click)="onLogout()" class="footer-action logout">
+      <span class="material-symbols-outlined text-xl">logout</span>
+      <span>Cerrar Turno</span>
+    </a>
+  </div>
+</nav>
+
+<main class="cashier-content">
+  <router-outlet></router-outlet>
+</main>

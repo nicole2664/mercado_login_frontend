@@ -1,0 +1,28 @@
+<div class="pagination-container">
+  <div class="pagination-info">
+    Mostrando <span class="highlight">{{ fromItem() }}-{{ toItem() }}</span>
+    de <span class="highlight">{{ totalItems() | number }}</span> puestos
+  </div>
+
+  <div class="pagination-controls">
+    <button (click)="onPrev.emit()" [disabled]="currentPage() === 1" class="btn-arrow">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+
+    @for (page of pagesArray(); track $index) {
+      @if (page === '...') {
+        <span class="pagination-ellipsis">...</span>
+      } @else {
+        <button (click)="onPageChange.emit($any(page))"
+                class="btn-page"
+                [class.active]="currentPage() === page">
+          {{ page }}
+        </button>
+      }
+    }
+
+    <button (click)="onNext.emit()" [disabled]="currentPage() >= totalPages()" class="btn-arrow">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </div>
+</div>

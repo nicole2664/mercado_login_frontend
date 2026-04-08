@@ -1,0 +1,137 @@
+<div class="page-container">
+  <header class="page-header">
+    <div class="header-title">
+      <span class="label-uppercase">Archivo del Libro Mayor</span>
+      <h2 class="title-main">Historial de Pagos</h2>
+    </div>
+    <button class="btn-primary">
+      <span class="material-symbols-outlined">download</span>
+      Exportar
+    </button>
+  </header>
+
+  <section class="filter-section">
+    <div class="filter-group col-span-4">
+      <label class="filter-label">Rango de Fechas</label>
+      <div class="filter-input-wrapper">
+        <span class="material-symbols-outlined filter-icon">calendar_today</span>
+        <input type="text" class="filter-input" value="01 oct. 2023 - 31 oct. 2023">
+      </div>
+    </div>
+    <div class="filter-group col-span-3">
+      <label class="filter-label">ID del Puesto</label>
+      <select class="filter-select">
+        <option>Todos los Puestos</option>
+        <option>B-102</option>
+        <option>A-045</option>
+      </select>
+    </div>
+    <div class="filter-group col-span-3">
+      <label class="filter-label">Método de Pago</label>
+      <select class="filter-select">
+        <option>Todos los Métodos</option>
+        <option>Efectivo</option>
+        <option>Transferencia</option>
+      </select>
+    </div>
+    <div class="col-span-2 flex items-end">
+      <button class="btn-secondary">Limpiar</button>
+    </div>
+  </section>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Puesto</th>
+        <th>Concepto</th>
+        <th class="text-right">Monto</th>
+        <th class="text-center">Método</th>
+        <th class="text-center">ID Recibo</th>
+        <th class="text-center">Acción</th>
+      </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        @for (item of pagination.pagedData(); track item.idRecibo) {
+          <tr class="table-row group">
+            <td class="px-6 py-4">
+              <div class="flex flex-col">
+                <span class="text-bold text-sm">{{ item.fecha }}</span>
+                <span class="text-sub text-[10px]">{{ item.hora }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex flex-col">
+                <span class="badge-puesto">{{ item.puestoId }}</span>
+                <span class="text-sub text-[10px] mt-0.5">{{ item.inquilino }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-sm text-slate-600 italic">{{ item.concepto }}</td>
+            <td class="px-6 py-4 text-right font-black text-blue-900">{{ item.monto | currency }}</td>
+            <td class="px-6 py-4 text-center">
+              <span class="badge-metodo">{{ item.metodoPago }}</span>
+            </td>
+            <td class="px-6 py-4 text-center text-xs font-mono text-slate-400">{{ item.idRecibo }}</td>
+            <td class="px-6 py-4 text-center">
+              <button class="btn-action">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <app-pagination
+      [totalItems]="pagination.totalItems()"
+      [itemsPerPage]="pagination.itemsPerPage()"
+      [currentPage]="pagination.currentPage()"
+      [fromItem]="pagination.fromItem()"
+      [toItem]="pagination.toItem()"
+      [pagesArray]="pagination.pagesArray()"
+      [totalPages]="pagination.totalPages()"
+      (onPageChange)="pagination.goToPage($event)"
+      (onNext)="pagination.nextPage()"
+      (onPrev)="pagination.prevPage()">
+    </app-pagination>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h3 class="chart-title">Distribución de Pagos</h3>
+          <p class="chart-subtitle">Análisis por método de pago (Mes actual)</p>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="dot bg-blue-700"></div> Tarjeta</div>
+          <div class="legend-item"><div class="dot bg-emerald-600"></div> Transferencia</div>
+        </div>
+      </div>
+
+      <div class="chart-bars">
+        <div class="bar-wrapper h-[60%] bg-blue-100 group"><div class="bar-fill bg-blue-700 opacity-80"></div></div>
+        <div class="bar-wrapper h-[85%] bg-emerald-100 group"><div class="bar-fill bg-emerald-600 opacity-80"></div></div>
+        <div class="bar-wrapper h-[40%] bg-slate-100 group"><div class="bar-fill bg-slate-400 opacity-80"></div></div>
+        <div class="bar-wrapper h-[75%] bg-blue-100 group"><div class="bar-fill bg-blue-700 opacity-80"></div></div>
+      </div>
+    </div>
+
+    <div class="stats-column">
+      <div class="card-stat-blue">
+        <span class="stat-label">Recaudaciones Totales</span>
+        <h4 class="stat-value">$428,930.00</h4>
+        <div class="trend-badge">
+          <span class="material-symbols-outlined text-sm">trending_up</span>
+          <span>+12.4% vs mes anterior</span>
+        </div>
+      </div>
+
+      <div class="card-stat-slate">
+        <span class="stat-label-slate">Procesados Hoy</span>
+        <h4 class="stat-value-slate">124 <small>Trans.</small></h4>
+      </div>
+    </div>
+  </div>
+</div>

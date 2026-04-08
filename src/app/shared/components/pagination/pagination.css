@@ -1,0 +1,47 @@
+@reference "../../../../styles.css";
+
+/* Contenedor principal */
+.pagination-container {
+  @apply bg-white px-8 py-6 flex justify-between items-center border-t border-slate-100 rounded-b-3xl;
+}
+
+.pagination-info {
+  @apply text-slate-500 text-sm font-medium;
+}
+
+.pagination-info .highlight {
+  @apply text-slate-900 font-bold;
+}
+
+.pagination-controls {
+  @apply flex items-center gap-1;
+}
+
+/* Estilo base - botones de número */
+.btn-page {
+  @apply w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold
+  transition-all hover:bg-slate-200 active:scale-95 shadow-sm text-slate-600;
+}
+
+/* botón está activo (Azul) */
+.btn-page.active {
+  @apply bg-blue-700 text-white shadow-md shadow-blue-200;
+}
+
+/* flechas */
+.btn-arrow {
+  @apply w-8 h-8 flex items-center justify-center text-slate-400
+  hover:text-blue-700 disabled:opacity-20 transition-colors;
+}
+
+.btn-arrow .material-symbols-outlined {
+  @apply text-lg;
+}
+
+.pagination-ellipsis {
+  @apply px-2 text-slate-400 font-bold;
+}
+
+button:disabled {
+  pointer-events: none;
+}
