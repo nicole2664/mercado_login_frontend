@@ -1269,7 +1269,7 @@ export class PagosCajero {
 
   // 1. Recaudación Hoy
   recaudacionHoy = computed(() => {
-    const hoy = '14 Abr, 2026'; // En un proyecto real usarías new Date()
+    const hoy = '14 Abr, 2026'; // new Date()
     return this.allPagos()
       .filter((p) => p.fecha.includes(hoy) && p.estado === 'Completado')
       .reduce((acc, current) => acc + current.monto, 0);

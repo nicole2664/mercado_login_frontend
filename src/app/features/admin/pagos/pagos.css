@@ -46,7 +46,7 @@
 .bar-wrapper { @apply w-full rounded-t-lg relative; }
 .bar-fill { @apply absolute inset-0 rounded-t-lg group-hover:opacity-100 transition-opacity; }
 
-/* Stats Column */
+/* Estadisticas columnas */
 .stats-column { @apply col-span-4 space-y-6; }
 .card-stat-blue { @apply bg-blue-700 p-8 rounded-3xl text-white shadow-xl shadow-blue-200; }
 .card-stat-slate { @apply bg-slate-100 p-6 rounded-3xl border border-slate-200; }

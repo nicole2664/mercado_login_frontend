@@ -11,7 +11,7 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-//cambiar login component
+
 export class LoginComponent {
   private router = inject(Router);
   private authService = inject(AuthService);

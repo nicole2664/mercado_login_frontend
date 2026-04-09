@@ -1,6 +1,6 @@
 @reference "../../../../styles.css";
 
-/* --- CONTENEDOR PRINCIPAL --- */
+/* --- contenedor principal --- */
 .register-container {
   @apply max-w-7xl mx-auto p-8 space-y-8;
 }
@@ -8,31 +8,30 @@
 .breadcrumb { @apply text-[10px] font-black tracking-[0.2em] text-slate-400 mb-1 uppercase; }
 .title-main { @apply text-4xl font-black text-slate-900 tracking-tight; }
 
-/* GRID PRINCIPAL: Forzamos proporciones (2 partes para el form, 1 para info) */
+/* grid principal */
 .main-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Esto evita que se comprima */
+  grid-template-columns: 2fr 1fr;
   @apply gap-8 items-start;
 }
 
-/* Si la pantalla es pequeña, se pone uno debajo de otro */
 @media (max-width: 1024px) {
   .main-grid { grid-template-columns: 1fr; }
 }
 
 .card-main { @apply bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-100; }
 
-/* FILAS DE INPUTS */
+/* filas de inputs */
 .input-row { @apply grid grid-cols-2 gap-8 mb-8; }
 .input-group { @apply flex flex-col; }
 .input-label { @apply block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3; }
 
-/* --- SECCIÓN 1: BUSCADORES Y INPUTS (DNI, SOCIO, PUESTO) --- */
+/* --- BUSCADORES Y INPUTS (DNI, SOCIO, PUESTO) --- */
 .dropdown-custom, .select-wrapper {
   @apply relative w-full;
 }
 
-/* Estilo base para todos: Buscador, Readonly y Select */
+/* Estilo base */
 .dropdown-trigger, .input-readonly, .custom-select-simple {
   @apply w-full border-b-2 border-slate-200 rounded-2xl py-4 px-5 text-sm transition-all outline-none;
 }
@@ -43,12 +42,12 @@
 }
 .dropdown-trigger span { @apply text-slate-500; }
 
-/* El Nombre del Socio (Solo lectura - automático) */
+/* El Nombre del Socio  */
 .input-readonly {
   @apply bg-slate-100/50 text-slate-500 cursor-default border-slate-200;
 }
 
-/* El Selector de Puesto (Simple) */
+/* El Selector de Puesto  */
 .custom-select-simple {
   @apply bg-slate-50 cursor-pointer appearance-none focus:border-emerald-500;
 }
@@ -59,7 +58,7 @@
   @apply absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400;
 }
 
-/* --- DROPDOWN CONTENT (Buscador interno de DNI) --- */
+/* --- dropdown  --- */
 .dropdown-content {
   @apply absolute top-full left-0 w-full bg-white mt-2 rounded-2xl shadow-2xl border border-slate-100 z-50 p-2 hidden;
 }
@@ -80,7 +79,8 @@
 }
 .option-item p { @apply font-bold; }
 .option-item small { @apply text-[10px] opacity-60 block; }
-/* SECCIÓN DE DEUDAS */
+
+/* seccion de deudas */
 .debts-section { @apply mb-10; }
 .debts-list { @apply space-y-4 mb-4; }
 .debt-item {
@@ -94,7 +94,7 @@
 
 .info-text { @apply flex items-center gap-2 text-[11px] text-slate-400 italic mt-3; }
 
-/* MÉTODOS DE PAGO (Corregido para que no se encimen) */
+/* metodos de pago */
 .method-grid { @apply grid grid-cols-3 gap-3; }
 .method-option input { @apply hidden; }
 .method-box {
@@ -108,21 +108,21 @@
   @apply text-[10px] font-black uppercase text-center leading-tight;
 }
 
-/* DISPLAY DE TOTAL (Estilo moneda grande) */
+/* total */
 .total-display {
   @apply bg-slate-900 rounded-2xl p-6 flex items-center justify-center gap-2 text-white shadow-2xl min-h-[100px];
 }
 .total-display .currency { @apply text-emerald-400 font-bold text-xl; }
 .total-display .amount { @apply text-3xl font-black tabular-nums tracking-tighter; }
 
-/* BOTONES DE ACCIÓN */
+/* botones de accion */
 .form-footer { @apply flex justify-end gap-6 mt-10 pt-8 border-t border-slate-100; }
 .btn-cancel { @apply px-6 py-3 font-bold text-slate-400 hover:text-slate-600 transition-colors; }
 .btn-submit {
   @apply px-10 py-4 bg-emerald-600 text-white font-black rounded-2xl shadow-xl shadow-emerald-100 hover:bg-emerald-700 active:scale-95 transition-all;
 }
 
-/* COLUMNA DERECHA (Resumen) */
+/* Resumen */
 .card-status { @apply bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 space-y-8; }
 .status-badge { @apply inline-block bg-emerald-100 text-emerald-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider; }
 .status-puesto { @apply text-3xl font-black text-slate-900 mt-3 tracking-tight; }

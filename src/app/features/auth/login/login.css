@@ -1,11 +1,11 @@
 @reference "../../../../styles.css";
 
-/* --- CONTENEDOR PRINCIPAL --- */
+/* --- contenedor principal --- */
 .login-wrapper {
   @apply min-h-screen flex flex-col md:flex-row;
 }
 
-/* --- SECCIÓN VISUAL (AZUL) --- */
+/* --- visual (azul) --- */
 .login-visual {
   @apply relative hidden md:flex md:w-1/2 lg:w-3/5 items-center justify-center overflow-hidden bg-blue-900;
 }
@@ -50,7 +50,7 @@
   @apply text-[10px] uppercase;
 }
 
-/* --- SECCIÓN FORMULARIO --- */
+/* --- formulario --- */
 .login-form-container {
   @apply flex-1 flex flex-col bg-white justify-center px-6 sm:px-12 lg:px-24 py-12;
 }
@@ -75,7 +75,7 @@
   @apply text-slate-500 text-sm;
 }
 
-/* --- ELEMENTOS DE ENTRADA --- */
+/* --- elementos de entrada --- */
 .input-group {
   @apply space-y-2;
 }

@@ -13,7 +13,6 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   private router = inject(Router);
-  // El "saquito" para guardar lo que escribas en el diseño de MarketPay
   loginData = {
     email: '',
     password: '',
