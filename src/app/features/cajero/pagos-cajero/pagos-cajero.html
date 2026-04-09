@@ -14,7 +14,7 @@
         <span class="material-symbols-outlined">download</span>
         Exportar CSV
       </button>
-      <button class="btn-register">
+      <button class="btn-register" routerLink="/cajero/nuevo-pago">
         <span class="material-symbols-outlined">add_card</span>
         Registrar Pago
       </button>
@@ -25,7 +25,7 @@
     <div class="stat-card">
       <p class="stat-label">Recaudación Hoy</p>
       <div class="stat-value-container">
-        <h3 class="stat-value">$1,284.50</h3>
+        <h3 class="stat-value">{{ recaudacionHoy() | currency:'S/ ':'symbol':'1.2-2' }}</h3>
         <span class="stat-badge-up">+12%</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
@@ -34,7 +34,7 @@
     <div class="stat-card">
       <p class="stat-label">Pagos Procesados</p>
       <div class="stat-value-container">
-        <h3 class="stat-value">42</h3>
+        <h3 class="stat-value">{{ pagosProcesados() }}</h3>
       </div>
       <p class="stat-footer">Meta del turno: 60</p>
     </div>
@@ -42,7 +42,7 @@
     <div class="stat-card">
       <p class="stat-label">Total Mes</p>
       <div class="stat-value-container">
-        <h3 class="stat-value text-emerald-700">$84.2k</h3>
+        <h3 class="stat-value text-emerald-700">{{ totalMes() | currency:'S/ ':'symbol':'1.2-2' }}</h3>
       </div>
       <p class="stat-footer font-bold text-emerald-600">14.2% Sobre objetivo</p>
     </div>

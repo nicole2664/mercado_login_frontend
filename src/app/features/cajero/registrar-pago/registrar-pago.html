@@ -1,0 +1,175 @@
+<div class="register-container animate-fade-in">
+  <header class="form-header">
+    <div class="breadcrumb">PAGOS / NUEVA TRANSACCIÓN</div>
+    <h2 class="title-main">Registro de Cobros</h2>
+  </header>
+
+  <div class="main-grid">
+    <div class="form-column">
+      <div class="card-main">
+        <form class="payment-form">
+          <div class="input-row">
+            <div class="input-group">
+              <label class="input-label">Identificación del Socio (DNI)</label>
+              <div class="dropdown-custom">
+                <div class="dropdown-trigger">
+                  <span>Buscar DNI...</span>
+                  <span class="material-symbols-outlined">badge</span>
+                </div>
+                <div class="dropdown-content">
+                  <div class="search-inner">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" placeholder="Escriba el DNI...">
+                  </div>
+                  <div class="options-list">
+                    <div class="option-item">
+                      <p>72834951</p>
+                      <small>Socio: Alexander Hamilton</small>
+                    </div>
+                    <div class="option-item">
+                      <p>40592834</p>
+                      <small>Socio: Julianna De Marco</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Nombre del Socio</label>
+              <input type="text" class="input-readonly" value="Alexander Hamilton" readonly>
+            </div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-group">
+              <label class="input-label">Puesto Relacionado</label>
+              <div class="select-wrapper">
+                <select class="custom-select-simple">
+                  <option value="B-205">Puesto B-205 (Electrónica)</option>
+                  <option value="B-206">Puesto B-206 (Almacén)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Fecha de Operación</label>
+              <input type="text" class="input-readonly" value="08/04/2026" readonly>
+            </div>
+          </div>
+
+          <div class="debts-section">
+            <label class="input-label">Deudas Pendientes (Seleccione para pagar)</label>
+            <div class="debts-list">
+              <div class="debt-item" [class.selected]="true">
+                <div class="debt-info">
+                  <span class="debt-title">Renta Mensual - Abril 2026</span>
+                  <span class="debt-date">Vence: 10/04/2026</span>
+                </div>
+                <div class="debt-action">
+                  <span class="debt-amount">S/ 1,250.00</span>
+                  <input type="checkbox" class="debt-check">
+                </div>
+              </div>
+
+              <div class="debt-item">
+                <div class="debt-info">
+                  <span class="debt-title">Mantenimiento y Limpieza</span>
+                  <span class="debt-date">Vence: 05/04/2026</span>
+                </div>
+                <div class="debt-action">
+                  <span class="debt-amount">S/ 150.00</span>
+                  <input type="checkbox" class="debt-check">
+                </div>
+              </div>
+            </div>
+            <p class="info-text">
+              <span class="material-symbols-outlined">info</span>
+              No se permiten pagos parciales. El cobro será por el monto total del ítem.
+            </p>
+          </div>
+
+          <div class="input-row">
+            <div class="input-group">
+              <label class="input-label">Método de Pago</label>
+              <div class="method-grid">
+                <label class="method-option">
+                  <input type="radio" name="method" checked>
+                  <div class="method-box">
+                    <span class="material-symbols-outlined">payments</span>
+                    <p>Efectivo</p>
+                  </div>
+                </label>
+                <label class="method-option">
+                  <input type="radio" name="method">
+                  <div class="method-box">
+                    <span class="material-symbols-outlined">credit_card</span>
+                    <p>Tarjeta</p> </div>
+                </label>
+                <label class="method-option">
+                  <input type="radio" name="method">
+                  <div class="method-box">
+                    <span class="material-symbols-outlined">qr_code_2</span>
+                    <p>Yape/Plin</p> </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Total a Cobrar</label>
+              <div class="total-display">
+                <span class="currency">S/</span>
+                <span class="amount">1,400.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <button type="button" class="btn-cancel" routerLink="/cajero/pagos">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-submit">Registrar Pago Total</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="info-column">
+      <div class="card-status">
+        <div class="status-header">
+          <span class="status-badge">Inquilino Activo</span>
+          <h3 class="status-puesto">Puesto B-205</h3>
+        </div>
+
+        <div class="financial-summary">
+          <p class="label-tiny">DEUDA TOTAL ACUMULADA</p>
+          <h4 class="total-debt-red">S/ 1,400.00</h4>
+          <div class="progress-bar-red"><div class="fill" style="width: 85%"></div></div>
+        </div>
+
+        <div class="records-list">
+          <p class="label-tiny">DATOS DEL SOCIO</p>
+          <div class="record-item">
+            <div class="icon-circle"><span class="material-symbols-outlined">person</span></div>
+            <div>
+              <p class="record-label">Propietario</p>
+              <p class="record-value">Alexander Hamilton</p>
+            </div>
+          </div>
+          <div class="record-item">
+            <div class="icon-circle"><span class="material-symbols-outlined">mail</span></div>
+            <div>
+              <p class="record-label">Correo</p>
+              <p class="record-value">{{ 'a.hamilton@mail.com' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-box">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <p>Se generará un comprobante por cada servicio pagado automáticamente.</p>
+      </div>
+    </div>
+  </div>
+</div>

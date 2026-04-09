@@ -1,7 +1,8 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { PaginationService } from '../../../core/services/pagination';
+import { RouterLink } from '@angular/router';
 
 interface Pago {
   idRecibo: string;
@@ -16,7 +17,7 @@ interface Pago {
 
 @Component({
   selector: 'app-pagos-cajero',
-  imports: [CommonModule, Pagination],
+  imports: [CommonModule, Pagination, RouterLink],
   templateUrl: './pagos-cajero.html',
   styleUrl: './pagos-cajero.css',
 })
@@ -45,26 +46,6 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92834',
-      fecha: '14 Abr, 2026',
-      concepto: 'Renta Mensual',
-      puesto: 'B-102',
-      socio: 'Julianna De Marco',
-      avatar: 'JD',
-      monto: 3500.0,
-      estado: 'Completado',
-    },
-    {
-      idRecibo: '#REC-92835',
-      fecha: '15 Abr, 2026',
-      concepto: 'Mantenimiento',
-      puesto: 'A-045',
-      socio: 'Alex Rivera',
-      avatar: 'AR',
-      monto: 150.0,
-      estado: 'Completado',
-    },
-    {
       idRecibo: '#REC-92836',
       fecha: '01 Abr, 2026',
       concepto: 'Renta Mensual',
@@ -665,7 +646,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92834',
+      idRecibo: '#REC-92896',
       fecha: '14 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'B-102',
@@ -675,7 +656,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92835',
+      idRecibo: '#REC-92897',
       fecha: '15 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'A-045',
@@ -685,7 +666,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92836',
+      idRecibo: '#REC-92898',
       fecha: '01 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'A-001',
@@ -695,7 +676,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92837',
+      idRecibo: '#REC-92899',
       fecha: '01 Abr, 2026',
       concepto: 'Cuota de Mantenimiento',
       puesto: 'A-002',
@@ -705,7 +686,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92838',
+      idRecibo: '#REC-928100',
       fecha: '01 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'A-003',
@@ -715,7 +696,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92839',
+      idRecibo: '#REC-928101',
       fecha: '01 Abr, 2026',
       concepto: 'Luz',
       puesto: 'A-004',
@@ -725,7 +706,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92840',
+      idRecibo: '#REC-928102',
       fecha: '02 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'A-005',
@@ -735,7 +716,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92841',
+      idRecibo: '#REC-928103',
       fecha: '02 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'A-006',
@@ -745,7 +726,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92842',
+      idRecibo: '#REC-928104',
       fecha: '02 Abr, 2026',
       concepto: 'Agua',
       puesto: 'A-007',
@@ -755,7 +736,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92843',
+      idRecibo: '#REC-928105',
       fecha: '02 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'A-008',
@@ -765,7 +746,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92844',
+      idRecibo: '#REC-928106',
       fecha: '03 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'A-009',
@@ -775,7 +756,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92845',
+      idRecibo: '#REC-928107',
       fecha: '03 Abr, 2026',
       concepto: 'Cuota Extraordinaria',
       puesto: 'A-010',
@@ -785,7 +766,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92846',
+      idRecibo: '#REC-928108',
       fecha: '03 Abr, 2026',
       concepto: 'Estacionamiento',
       puesto: 'E-001',
@@ -795,7 +776,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92847',
+      idRecibo: '#REC-928109',
       fecha: '03 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'B-001',
@@ -805,7 +786,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92848',
+      idRecibo: '#REC-928110',
       fecha: '04 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'B-002',
@@ -815,7 +796,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92849',
+      idRecibo: '#REC-928111',
       fecha: '04 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'B-003',
@@ -825,7 +806,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92850',
+      idRecibo: '#REC-928112',
       fecha: '04 Abr, 2026',
       concepto: 'Luz',
       puesto: 'B-004',
@@ -835,7 +816,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92851',
+      idRecibo: '#REC-928113',
       fecha: '05 Abr, 2026',
       concepto: 'Agua',
       puesto: 'B-005',
@@ -845,7 +826,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92852',
+      idRecibo: '#REC-928114',
       fecha: '05 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'B-006',
@@ -855,7 +836,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92853',
+      idRecibo: '#REC-928115',
       fecha: '05 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'B-007',
@@ -865,7 +846,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92854',
+      idRecibo: '#REC-928116',
       fecha: '05 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'B-008',
@@ -875,7 +856,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92855',
+      idRecibo: '#REC-928117',
       fecha: '06 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'B-009',
@@ -885,7 +866,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92856',
+      idRecibo: '#REC-928118',
       fecha: '06 Abr, 2026',
       concepto: 'Cuota de Mantenimiento',
       puesto: 'B-010',
@@ -895,7 +876,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92857',
+      idRecibo: '#REC-928119',
       fecha: '06 Abr, 2026',
       concepto: 'Estacionamiento',
       puesto: 'E-002',
@@ -905,7 +886,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92858',
+      idRecibo: '#REC-928120',
       fecha: '06 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'C-001',
@@ -915,7 +896,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92859',
+      idRecibo: '#REC-928121',
       fecha: '07 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'C-002',
@@ -925,7 +906,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92860',
+      idRecibo: '#REC-928122',
       fecha: '07 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'C-003',
@@ -935,7 +916,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92861',
+      idRecibo: '#REC-928123',
       fecha: '07 Abr, 2026',
       concepto: 'Luz',
       puesto: 'C-004',
@@ -945,7 +926,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92862',
+      idRecibo: '#REC-928124',
       fecha: '07 Abr, 2026',
       concepto: 'Agua',
       puesto: 'C-005',
@@ -955,7 +936,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92863',
+      idRecibo: '#REC-928125',
       fecha: '08 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'C-006',
@@ -965,7 +946,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92864',
+      idRecibo: '#REC-928126',
       fecha: '08 Abr, 2026',
       concepto: 'Cuota Extraordinaria',
       puesto: 'C-007',
@@ -975,7 +956,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92865',
+      idRecibo: '#REC-928127',
       fecha: '08 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'C-008',
@@ -985,7 +966,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92866',
+      idRecibo: '#REC-928128',
       fecha: '08 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'C-009',
@@ -995,7 +976,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92867',
+      idRecibo: '#REC-928129',
       fecha: '09 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'C-010',
@@ -1005,7 +986,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92868',
+      idRecibo: '#REC-928130',
       fecha: '09 Abr, 2026',
       concepto: 'Luz',
       puesto: 'D-001',
@@ -1015,7 +996,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92869',
+      idRecibo: '#REC-928131',
       fecha: '09 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'D-002',
@@ -1025,7 +1006,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92870',
+      idRecibo: '#REC-928132',
       fecha: '09 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'D-003',
@@ -1035,7 +1016,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92871',
+      idRecibo: '#REC-928133',
       fecha: '10 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'D-004',
@@ -1045,7 +1026,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92872',
+      idRecibo: '#REC-928134',
       fecha: '10 Abr, 2026',
       concepto: 'Agua',
       puesto: 'D-005',
@@ -1055,7 +1036,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92873',
+      idRecibo: '#REC-928135',
       fecha: '10 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'D-006',
@@ -1065,7 +1046,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92874',
+      idRecibo: '#REC-928136',
       fecha: '10 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'D-007',
@@ -1075,7 +1056,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92875',
+      idRecibo: '#REC-928137',
       fecha: '11 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'D-008',
@@ -1085,7 +1066,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92876',
+      idRecibo: '#REC-928138',
       fecha: '11 Abr, 2026',
       concepto: 'Luz',
       puesto: 'D-009',
@@ -1095,7 +1076,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92877',
+      idRecibo: '#REC-928139',
       fecha: '11 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'D-010',
@@ -1105,7 +1086,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92878',
+      idRecibo: '#REC-928140',
       fecha: '11 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'E-003',
@@ -1115,7 +1096,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92879',
+      idRecibo: '#REC-928141',
       fecha: '12 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'E-004',
@@ -1125,7 +1106,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92880',
+      idRecibo: '#REC-928142',
       fecha: '12 Abr, 2026',
       concepto: 'Cuota de Mantenimiento',
       puesto: 'E-005',
@@ -1135,7 +1116,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92881',
+      idRecibo: '#REC-928143',
       fecha: '12 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'E-006',
@@ -1145,7 +1126,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92882',
+      idRecibo: '#REC-928144',
       fecha: '12 Abr, 2026',
       concepto: 'Agua',
       puesto: 'E-007',
@@ -1155,7 +1136,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92883',
+      idRecibo: '#REC-928145',
       fecha: '13 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'E-008',
@@ -1165,7 +1146,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92884',
+      idRecibo: '#REC-928146',
       fecha: '13 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'E-009',
@@ -1175,7 +1156,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92885',
+      idRecibo: '#REC-928147',
       fecha: '13 Abr, 2026',
       concepto: 'Luz',
       puesto: 'E-010',
@@ -1185,7 +1166,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92886',
+      idRecibo: '#REC-928148',
       fecha: '13 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'F-001',
@@ -1195,7 +1176,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92887',
+      idRecibo: '#REC-928149',
       fecha: '14 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'F-002',
@@ -1205,7 +1186,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92888',
+      idRecibo: '#REC-928150',
       fecha: '14 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'F-003',
@@ -1215,7 +1196,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92889',
+      idRecibo: '#REC-928151',
       fecha: '14 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'F-004',
@@ -1225,7 +1206,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92890',
+      idRecibo: '#REC-928152',
       fecha: '14 Abr, 2026',
       concepto: 'Agua',
       puesto: 'F-005',
@@ -1235,7 +1216,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92891',
+      idRecibo: '#REC-928153',
       fecha: '15 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'F-006',
@@ -1245,7 +1226,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92892',
+      idRecibo: '#REC-928154',
       fecha: '15 Abr, 2026',
       concepto: 'Luz',
       puesto: 'F-007',
@@ -1255,7 +1236,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92893',
+      idRecibo: '#REC-928155',
       fecha: '15 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'F-008',
@@ -1265,7 +1246,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92894',
+      idRecibo: '#REC-928156',
       fecha: '15 Abr, 2026',
       concepto: 'Mantenimiento',
       puesto: 'F-009',
@@ -1275,7 +1256,7 @@ export class PagosCajero {
       estado: 'Completado',
     },
     {
-      idRecibo: '#REC-92895',
+      idRecibo: '#REC-928157',
       fecha: '16 Abr, 2026',
       concepto: 'Renta Mensual',
       puesto: 'F-010',
@@ -1285,6 +1266,31 @@ export class PagosCajero {
       estado: 'Completado',
     },
   ]);
+
+  // 1. Recaudación Hoy
+  recaudacionHoy = computed(() => {
+    const hoy = '14 Abr, 2026'; // En un proyecto real usarías new Date()
+    return this.allPagos()
+      .filter((p) => p.fecha.includes(hoy) && p.estado === 'Completado')
+      .reduce((acc, current) => acc + current.monto, 0);
+  });
+
+  // 2. Pagos Procesados
+  pagosProcesados = computed(() => {
+    return this.allPagos().filter((p) => p.estado === 'Completado').length;
+  });
+
+  // 3. Total Mes
+  totalMes = computed(() => {
+    return this.allPagos()
+      .filter((p) => p.estado === 'Completado')
+      .reduce((acc, current) => acc + current.monto, 0);
+  });
+
+  // 4. Deudas Pendientes
+  //deudasPendientes = computed(() => {
+  //return this.allPagos().filter(p => p.estado === 'Pendiente' || p.estado === 'Vencido').length;
+  //});
 
   pagination = this.paginationService.createPagination(this.allPagos, 10);
 

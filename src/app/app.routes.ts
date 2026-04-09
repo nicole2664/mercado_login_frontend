@@ -5,6 +5,7 @@ import { LayoutCajeroComponent } from './shared/layouts/layout-cajero/layout-caj
 import { DashboardComponent } from './features/admin/dashboard/dashboard';
 import { Pagos } from './features/admin/pagos/pagos';
 import { PagosCajero } from './features/cajero/pagos-cajero/pagos-cajero';
+import { RegistrarPago } from './features/cajero/registrar-pago/registrar-pago';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -22,8 +23,10 @@ export const routes: Routes = [
     path: 'cajero',
     component: LayoutCajeroComponent,
     children: [
+      { path: 'pagos', component: PagosCajero },
+      { path: 'nuevo-pago', component: RegistrarPago },
       { path: 'dashboard', component: DashboardComponent },
-      {path: 'pagos', component: PagosCajero}
+      { path: '', redirectTo: 'pagos', pathMatch: 'full' }
     ],
   },
 
