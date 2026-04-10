@@ -20,7 +20,10 @@
                 <div class="dropdown-content">
                   <div class="search-inner">
                     <span class="material-symbols-outlined">search</span>
-                    <input type="text" placeholder="Escriba el DNI...">
+                    <input type="text" placeholder="Escriba el DNI..." #dniInput (keyup.enter)="seleccionarSocio(dniInput.value)">
+                  </div>
+                  <div class="option-item" (click)="seleccionarSocio(dniInput.value)">
+                    <p>Buscar: {{ dniInput.value }}</p>
                   </div>
                   <div class="options-list">
                     <div class="option-item" (click)="seleccionarSocio('72834951')">
