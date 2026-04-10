@@ -143,3 +143,66 @@
 }
 .help-box p { @apply text-sm font-medium leading-relaxed; }
 .help-box .material-symbols-outlined { @apply text-4xl; }
+
+
+/* --- MODAL Y RECIBO --- */
+.modal-overlay {
+  @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4;
+}
+
+.receipt-card {
+  @apply bg-white rounded-[2rem] shadow-2xl max-w-md w-full p-8 overflow-hidden;
+}
+
+.success-icon-wrapper { @apply text-center mb-6; }
+.success-check { @apply text-6xl text-emerald-500 mb-2; }
+.success-title { @apply text-xl font-black text-slate-900; }
+.success-subtitle { @apply text-xs text-slate-400 font-medium; }
+
+/* El Estilo del Ticket */
+.receipt-body {
+  @apply bg-slate-50 rounded-2xl p-6 border-2 border-dashed border-slate-200 relative;
+}
+
+.receipt-header { @apply flex justify-between items-center mb-4; }
+.receipt-logo { @apply font-black text-emerald-600 italic; }
+.receipt-id { @apply text-[10px] font-bold text-slate-400; }
+
+.detail-row { @apply flex justify-between text-xs mb-1.5; }
+.detail-row span { @apply text-slate-400; }
+.detail-row b { @apply text-slate-700; }
+
+.receipt-divider { @apply border-t border-slate-200 my-4; }
+
+.items-label { @apply text-[10px] font-black text-slate-400 uppercase mb-2; }
+.item-line { @apply flex justify-between text-xs mb-1; }
+
+.receipt-total {
+  @apply mt-4 pt-4 border-t border-slate-200 flex justify-between items-center text-slate-900;
+}
+.receipt-total span:first-child { @apply font-black text-xs; }
+.total-amount { @apply text-xl font-black text-emerald-600; }
+
+.receipt-footer { @apply text-center text-[10px] text-slate-400 mt-6 italic; }
+
+/* Botones del Modal */
+.modal-actions { @apply grid grid-cols-2 gap-4 mt-8; }
+.btn-print {
+  @apply flex items-center justify-center gap-2 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all;
+}
+.btn-close-modal {
+  @apply py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-all;
+}
+
+/* Animación  */
+.animate-scale-up {
+  animation: scaleUp 0.3s ease-out forwards;
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+
