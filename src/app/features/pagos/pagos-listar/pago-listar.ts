@@ -7,11 +7,12 @@ import { PermissionsService } from '../../../core/auth/permissions.service';
 
 import type { PageResponse, PagoListadoDto } from '../../../core/api/pagos/pagos.models';
 import { PagosApi } from '../../../core/api/pagos/pagos.api';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pagos-list',
   standalone: true,
-  imports: [CommonModule, Pagination, RouterLink],
+  imports: [CommonModule, Pagination, RouterLink, FormsModule],
   templateUrl: './pago-listar.html',
   styleUrl: './pago-listar.css',
 })
@@ -19,19 +20,61 @@ export class PagoListar implements OnInit {
   private pagosApi = inject(PagosApi);
   authz = inject(PermissionsService);
 
-  pageInfo = signal<PageResponse<PagoListadoDto> | null>(null);
-  loading = signal(false);
+  // Inputs (UI)
+  qInput = signal<string>('');
+  fromInput = signal<string>(''); // YYYY-MM-DD
+  toInput = signal<string>(''); // YYYY-MM-DD
 
-  // filtros (los conectamos luego al input si quieres)
+  // Filtros aplicados (los que realmente se envían al backend)
   q = signal<string>('');
   from = signal<string>('');
   to = signal<string>('');
+
+  pageInfo = signal<PageResponse<PagoListadoDto> | null>(null);
+  loading = signal(false);
 
   readonly pageSize = 10;
 
   ngOnInit() {
     this.cargarPagos(0);
   }
+
+  // ======== Acciones de filtros ========
+
+  aplicarFiltros() {
+    // Validación simple de rango
+    const from = this.fromInput();
+    const to = this.toInput();
+    if (from && to && from > to) return;
+
+    // “commit” de inputs a filtros aplicados
+    this.q.set(this.qInput());
+    this.from.set(this.fromInput());
+    this.to.set(this.toInput());
+
+    // al aplicar filtros, siempre volver a página 0
+    this.cargarPagos(0);
+  }
+
+  limpiarFiltros() {
+    this.qInput.set('');
+    this.fromInput.set('');
+    this.toInput.set('');
+
+    this.q.set('');
+    this.from.set('');
+    this.to.set('');
+
+    this.cargarPagos(0);
+  }
+
+  onSearchEnter(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    this.aplicarFiltros();
+  }
+
+  // ======== Carga ========
 
   cargarPagos(page: number) {
     this.loading.set(true);
@@ -95,8 +138,7 @@ export class PagoListar implements OnInit {
     this.cargarPagos(p.number - 1);
   };
 
-  // ========= Stats (siguen funcionando sobre la página actual) =========
-  // Si luego quieres stats globales reales, ahí sí habría que crear endpoints de resumen.
+  // ========= Stats (sobre la página actual) =========
   private esMismaFecha(d1: Date, d2: Date): boolean {
     return (
       d1.getFullYear() === d2.getFullYear() &&

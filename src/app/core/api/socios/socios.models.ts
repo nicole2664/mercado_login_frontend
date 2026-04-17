@@ -6,11 +6,6 @@ export interface Socio {
   estado: boolean;
 }
 
-export interface SocioDTO {
-  dni: string;
-  nombre: string;
-}
-
 export interface SocioBusquedaResponse {
   id: number;
   dni: string;
@@ -21,7 +16,17 @@ export interface SocioResponse {
   idSocio: number;
   dni: string;
   nombre: string;
-  correo?: string;
   telefono?: string;
-  puestos: { idPuesto: number; codigo: string; descripcion: string }[];
+  direccion?: string;
+  email?: string;
+  estado?: boolean;
+  fechaCreacion?: string;
+}
+
+export interface SocioDTO {
+  dni: string;
+  nombre: string;
+  telefono?: string;
+  direccion?: string;
+  email?: string;
 }

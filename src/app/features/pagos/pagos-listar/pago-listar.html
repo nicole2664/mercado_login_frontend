@@ -69,20 +69,39 @@
   <div class="filter-bar">
     <div class="search-box">
       <span class="material-symbols-outlined">search</span>
-      <input type="text" placeholder="Buscar por puesto, socio o recibo..." />
+      <input
+        type="text"
+        placeholder="Buscar por puesto, socio o recibo..."
+        [ngModel]="qInput()"
+        (ngModelChange)="qInput.set($event)"
+        (keydown)="onSearchEnter($event)"
+      />
     </div>
 
     <div class="filter-actions">
       <div class="date-range">
         <span class="material-symbols-outlined">calendar_month</span>
-        <input type="date" />
+        <input
+          type="date"
+          [ngModel]="fromInput()"
+          (ngModelChange)="fromInput.set($event)"
+        />
         <span>—</span>
-        <input type="date" />
+        <input
+          type="date"
+          [ngModel]="toInput()"
+          (ngModelChange)="toInput.set($event)"
+        />
       </div>
 
-      <button class="btn-filter">
+      <button class="btn-filter" (click)="aplicarFiltros()">
         <span class="material-symbols-outlined">filter_list</span>
         Filtros
+      </button>
+
+      <button class="btn-filter" (click)="limpiarFiltros()">
+        <span class="material-symbols-outlined">close</span>
+        Limpiar
       </button>
     </div>
   </div>
@@ -135,7 +154,7 @@
               </td>
 
               <td class="colw-estado td-compact text-center">
-                <span class="status-badge" [ngClass]="{'status-paid': item.estado === 'Completado'}">
+                <span class="status-badge" [ngClass]="{ 'status-paid': item.estado === 'Completado' }">
                   <span class="dot"></span> {{ item.estado }}
                 </span>
               </td>

@@ -33,7 +33,6 @@ export class PaginationService {
         return Array.from({ length: total }, (_, i) => i + 1);
       }
 
-
       if (current <= 3) {
         pages.push(1, 2, 3, 4, '...', total);
       } else if (current >= total - 2) {
