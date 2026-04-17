@@ -13,6 +13,8 @@ interface Pago {
   avatar: string;
   monto: number;
   estado: 'Completado' | 'Pendiente' | 'Vencido';
+  metodoPago?: string;   // <-- Agregado
+  nroOperacion?: string; // <-- Agregado
 }
 
 @Component({
@@ -24,6 +26,12 @@ interface Pago {
 export class PagosCajero {
   private paginationService = inject(PaginationService);
 
+  mostrarDetalle = signal(false);
+  pagoSeleccionado = signal<Pago | null>(null);
+
+  generandoPdf = signal(false);
+  reciboIdActual = signal('');
+
   allPagos = signal<Pago[]>([
     {
       idRecibo: '#REC-92834',
@@ -34,6 +42,8 @@ export class PagosCajero {
       avatar: 'JD',
       monto: 3500.0,
       estado: 'Completado',
+      metodoPago: 'Yape',      // <-- Nuevo
+      nroOperacion: '0928341'  // <-- Nuevo
     },
     {
       idRecibo: '#REC-92835',
@@ -44,6 +54,7 @@ export class PagosCajero {
       avatar: 'AR',
       monto: 150.0,
       estado: 'Completado',
+      metodoPago: 'Efectivo'
     },
     {
       idRecibo: '#REC-92836',
@@ -1292,10 +1303,32 @@ export class PagosCajero {
   //return this.allPagos().filter(p => p.estado === 'Pendiente' || p.estado === 'Vencido').length;
   //});
 
+  verDetalle(pago: Pago) {
+    this.pagoSeleccionado.set(pago);
+    this.mostrarDetalle.set(true);
+  }
+
+  cerrarDetalle() {
+    this.mostrarDetalle.set(false);
+    this.pagoSeleccionado.set(null);
+  }
+
   pagination = this.paginationService.createPagination(this.allPagos, 10);
 
   registrarPago() {
     console.log('Abriendo modal de registro...');
+  }
+
+  descargarRecibo(id: string) {
+    this.reciboIdActual.set(id);
+    this.generandoPdf.set(true);
+
+    // Simulamos la descarga
+    setTimeout(() => {
+      this.generandoPdf.set(false);
+      // Aquí iría la lógica real de guardado, por ahora un mensaje:
+      alert(`Archivo Recibo_${id}.pdf descargado con éxito.`);
+    }, 2000);
   }
 
   exportarCSV() {

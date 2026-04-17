@@ -74,7 +74,7 @@
             </td>
             <td class="px-6 py-4 text-center text-xs font-mono text-slate-400">{{ item.idRecibo }}</td>
             <td class="px-6 py-4 text-center">
-              <button class="btn-action">
+              <button class="btn-action" (click)="verDetalle(item)">
                 <span class="material-symbols-outlined">visibility</span>
               </button>
             </td>
@@ -135,3 +135,59 @@
     </div>
   </div>
 </div>
+
+@if (mostrarDetalle() && transaccionSeleccionada()) {
+  <div class="modal-overlay animate-fade-in">
+    <div class="modal-card-receipt animate-scale-up">
+
+      <div class="receipt-header">
+        <div class="icon-circle-success">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <h3 class="receipt-title">Comprobante de Pago</h3>
+        <p class="receipt-id">{{ transaccionSeleccionada().idRecibo }}</p>
+      </div>
+
+      <div class="receipt-body">
+        <div class="main-amount-box">
+          <span class="amount-label">Monto Procesado</span>
+          <h2 class="amount-value">{{ transaccionSeleccionada().monto | currency:'S/ ' }}</h2>
+          <span class="badge-status-paid">Pago Verificado</span>
+        </div>
+
+        <div class="info-grid-receipt">
+          <div class="info-row">
+            <span class="i-label">Inquilino</span>
+            <span class="i-value">{{ transaccionSeleccionada().inquilino }}</span>
+          </div>
+          <div class="info-row">
+            <span class="i-label">Puesto</span>
+            <span class="i-value-badge">{{ transaccionSeleccionada().puestoId }}</span>
+          </div>
+          <div class="info-row">
+            <span class="i-label">Concepto</span>
+            <span class="i-value">{{ transaccionSeleccionada().concepto }}</span>
+          </div>
+          <div class="info-row">
+            <span class="i-label">Método</span>
+            <span class="i-value">{{ transaccionSeleccionada().metodoPago }}</span>
+          </div>
+          <div class="info-row">
+            <span class="i-label">Fecha y Hora</span>
+            <span class="i-value">{{ transaccionSeleccionada().fecha }} • {{ transaccionSeleccionada().hora }}</span>
+          </div>
+        </div>
+
+        <div class="divider-dashed-receipt"></div>
+
+        <p class="receipt-footer-text">
+          Este documento es una copia informativa del Libro Mayor.
+        </p>
+      </div>
+
+      <button class="btn-close-receipt" (click)="cerrarDetalle()">
+        Cerrar Consulta
+      </button>
+    </div>
+  </div>
+}

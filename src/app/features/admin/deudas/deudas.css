@@ -1,0 +1,127 @@
+@reference "../../../../styles.css";
+
+/* --- LAYOUT Y CABECERA --- */
+.page-container { @apply p-8 space-y-8; }
+.page-header-flex { @apply flex justify-between items-center mb-2; }
+.breadcrumb-text { @apply text-[10px] font-black uppercase tracking-widest mb-1; }
+.title-main { @apply text-4xl font-black text-slate-900 tracking-tight; }
+
+/* Botón de Registro (Solo Admin) */
+.btn-register {
+  @apply flex items-center gap-2 px-6 py-3 bg-blue-700 text-white font-black rounded-xl shadow-lg hover:bg-blue-800 transition-all active:scale-95;
+}
+
+/* --- TARJETAS DE ESTADÍSTICAS --- */
+.stats-grid { @apply grid grid-cols-1 md:grid-cols-3 gap-6; }
+.stat-card { @apply bg-white p-7 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col; }
+.stat-label { @apply text-[11px] font-black uppercase text-slate-400 tracking-widest mb-2; }
+.stat-value { @apply text-3xl font-black tracking-tighter; }
+.stat-trend { @apply flex items-center gap-1 text-[11px] font-bold mt-3; }
+.stat-subtext { @apply text-[11px] text-slate-400 mt-1 font-medium; }
+.stats-grid-margin { margin-top: 2.5rem !important; }
+
+/* --- SECCIÓN DE FILTROS --- */
+.filter-section-wrapper {
+  @apply flex flex-wrap gap-8 items-end bg-slate-100 p-8 rounded-[2.5rem] border border-slate-200 shadow-inner;
+}
+.filter-label-top { @apply block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 ml-2; }
+
+.search-group-curtailed { @apply flex-[1.5] min-w-[250px]; }
+.search-box { @apply flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-slate-200 shadow-sm; }
+.search-box input { @apply w-full border-none outline-none text-sm font-medium focus:ring-0 bg-transparent; }
+
+.filters-actions-group { @apply flex-[3] flex gap-4 min-w-[450px]; }
+.select-container-wide { @apply flex-1; }
+.custom-select, .custom-date-input {
+  @apply w-full bg-white border border-slate-200 rounded-2xl text-xs font-bold px-4 py-3 shadow-sm outline-none cursor-pointer hover:border-blue-400 transition-colors;
+}
+
+/* --- TABLA DE DATOS --- */
+.table-card { @apply bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden; }
+.data-table { @apply w-full text-left; }
+.data-table th { @apply px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/50; }
+.table-row { @apply border-b border-slate-50 hover:bg-slate-50/40 transition-colors; }
+.table-row td { @apply px-6 py-4; }
+
+.puesto-badge { @apply px-3 py-1 bg-blue-50 text-blue-700 font-bold text-[11px] rounded-lg border border-blue-100; }
+
+.status-tag { @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase; }
+.tag-red { @apply bg-red-50 text-red-600; }
+.tag-green { @apply bg-emerald-50 text-emerald-600; }
+.dot { @apply w-1.5 h-1.5 rounded-full bg-current; }
+
+/* --- ACCIONES (BOTONES) --- */
+.btn-action { @apply p-2 rounded-xl transition-all hover:scale-110 active:scale-90; }
+
+/* El Ojito Fino y Estilizado */
+.btn-action.view { @apply transition-all; }
+.btn-action.view span {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20 !important;
+  font-size: 22px !important;
+}
+
+.btn-action.edit { @apply text-amber-500 hover:bg-amber-50; }
+.btn-action.delete { @apply text-red-500 hover:bg-red-50; }
+
+/* --- MODAL DE DETALLE (HÍBRIDO) --- */
+.modal-overlay { @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4; }
+.modal-card-detail { @apply bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full p-10 overflow-hidden border border-slate-100; }
+
+.detail-header { @apply flex justify-between items-start mb-8 pb-6 border-b border-slate-100; }
+.detail-id { @apply text-[11px] font-black text-slate-500 uppercase tracking-widest mb-1; }
+.detail-title { @apply text-2xl font-black text-slate-900 tracking-tight; }
+
+.detail-section { @apply flex flex-col; }
+.section-label { @apply block text-[12px] font-black uppercase tracking-[0.15em] mb-4 ml-1; }
+
+.data-box { @apply bg-slate-100/60 rounded-2xl p-6 border border-slate-200 space-y-4; }
+
+/* Highlights Dinámicos */
+.highlight-blue { @apply bg-blue-50/30 border-blue-100/50; }
+.highlight-emerald { @apply bg-emerald-50/30 border-emerald-100/50; }
+
+.data-row { @apply flex justify-between items-center py-1; }
+.data-label { @apply text-sm font-bold text-slate-500; }
+.data-value { @apply text-sm font-black text-slate-800; }
+
+.data-value-badge { @apply text-[12px] font-black bg-white px-4 py-1.5 rounded-lg border shadow-sm; }
+.data-value-price { @apply text-2xl font-black text-slate-900 tracking-tighter; }
+
+.divider-dashed { @apply border-t border-dashed border-slate-200 my-2; }
+.status-tag-large { @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-black uppercase; }
+
+.btn-close-detail {
+  @apply w-full mt-8 py-4 text-white font-black rounded-2xl transition-all active:scale-95;
+}
+
+/* Colores extras para el botón cerrar del cajero */
+.bg-emerald-900 { @apply bg-[#064e3b] hover:bg-[#065f46]; }
+
+/* --- MODAL EDITAR Y ELIMINAR (SOLO ADMIN) --- */
+.modal-card-edit { @apply bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full p-10 border border-slate-100; }
+.icon-circle-edit { @apply w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4; }
+.edit-header { @apply text-center mb-8; }
+.edit-title { @apply text-2xl font-black text-slate-800; }
+.edit-subtitle { @apply text-xs text-slate-400 font-medium; }
+.readonly-info { @apply flex items-center gap-3 bg-slate-50 p-4 rounded-xl text-[11px] text-slate-500 border border-slate-100 mb-6; }
+.edit-label { @apply block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2; }
+.edit-input { @apply w-full bg-slate-50 border-2 border-transparent rounded-xl py-4 pr-5 text-sm font-bold outline-none transition-all focus:bg-white focus:border-blue-500 text-slate-700; padding-left: 2.5rem !important; }
+.currency-prefix { @apply absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-sm; }
+.edit-actions { @apply grid grid-cols-2 gap-4 mt-10; }
+.btn-cancel-edit { @apply py-4 bg-slate-100 text-slate-500 font-black text-sm rounded-2xl hover:bg-slate-200 transition-all; }
+.btn-save-edit { @apply py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:bg-blue-700 transition-all; }
+
+/* Modal Eliminar */
+.modal-card-delete { @apply bg-white rounded-[2.5rem] shadow-2xl max-w-sm w-full p-10 border border-red-50; }
+.icon-circle-red { @apply w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center animate-pulse mx-auto mb-6; }
+.delete-title { @apply text-2xl font-black text-slate-800 text-center; }
+.delete-text { @apply text-sm text-slate-500 text-center leading-relaxed mb-10; }
+.delete-actions { @apply flex flex-col gap-3; }
+.btn-confirm-delete { @apply py-4 bg-red-600 text-white font-black rounded-2xl shadow-lg hover:bg-red-700 transition-all; }
+
+/* --- ANIMACIONES --- */
+.animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+.animate-scale-up { animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }

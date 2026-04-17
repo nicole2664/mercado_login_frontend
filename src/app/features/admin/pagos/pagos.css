@@ -55,3 +55,50 @@
 .stat-value { @apply text-4xl font-black mt-2 mb-4; }
 .stat-value-slate { @apply text-2xl font-bold mt-1 text-slate-900; }
 .trend-badge { @apply inline-flex items-center gap-2 py-1 px-3 bg-white/20 rounded-lg backdrop-blur-md text-[10px] font-bold; }
+
+
+/* --- ESTILOS MODAL RECIBO --- */
+.modal-overlay {
+  @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4;
+}
+
+.modal-card-receipt {
+  @apply bg-white rounded-[2.5rem] shadow-2xl max-w-[480px] w-full p-10 overflow-hidden border border-slate-100;
+}
+
+.receipt-header { @apply text-center mb-6; }
+.icon-circle-success {
+  @apply w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4;
+}
+.icon-circle-success span { font-size: 40px !important; }
+
+.receipt-title {
+  @apply text-2xl font-black text-slate-900;
+}
+.receipt-id { @apply text-[11px] font-mono text-slate-400 mt-1 uppercase; }
+
+.main-amount-box {
+  @apply bg-slate-50 rounded-3xl p-8 text-center border border-slate-100 mb-8;
+}
+
+.amount-label { @apply block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1; }
+.amount-value { @apply text-3xl font-black text-slate-900 tracking-tighter; }
+.badge-status-paid { @apply inline-block mt-2 px-3 py-1 bg-emerald-500 text-white text-[9px] font-black uppercase rounded-full; }
+
+.info-grid-receipt {@apply space-y-5 px-4;}
+.info-row { @apply flex justify-between items-start; }
+.i-label {@apply text-[12px] font-black text-slate-400 uppercase tracking-widest;}
+.i-value {@apply text-[13px] font-black text-slate-800 text-right max-w-[240px];}
+.i-value-badge { @apply text-[11px] font-black bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-100; }
+
+.divider-dashed-receipt { @apply border-t-2 border-dashed border-slate-100 my-6; }
+.receipt-footer-text { @apply text-[10px] text-slate-400 text-center font-medium italic; }
+
+.btn-close-receipt {@apply w-full mt-8 py-4 bg-blue-700 text-white font-black rounded-2xl hover:bg-blue-800 transition-all active:scale-95 shadow-lg shadow-blue-100;}
+
+/* Animaciones */
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-scale-up { animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }

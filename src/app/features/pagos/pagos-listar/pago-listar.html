@@ -1,0 +1,172 @@
+<div class="page-container animate-fade-in">
+  <header class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <span>Gestión</span>
+        <span class="material-symbols-outlined">chevron_right</span>
+        <span>Pagos</span>
+      </div>
+      <h2 class="title-main">Registro de Cobros</h2>
+      <p class="subtitle">Monitorea los ingresos y procesa nuevos pagos de los socios.</p>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-export">
+        <span class="material-symbols-outlined">download</span>
+        Exportar CSV
+      </button>
+
+      @if (authz.canRegisterPayment()) {
+        <button class="btn-register" routerLink="/pagos/nuevo">
+          <span class="material-symbols-outlined">add_card</span>
+          Registrar Pago
+        </button>
+      }
+    </div>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="stat-label">Recaudación Hoy</p>
+      <div class="stat-value-container">
+        <h3 class="stat-value">{{ recaudacionHoy() | currency:'S/ ':'symbol':'1.2-2' }}</h3>
+        <span class="stat-badge-up">+12%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 75%"></div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <p class="stat-label">Pagos Procesados</p>
+      <div class="stat-value-container">
+        <h3 class="stat-value">{{ pagosProcesados() }}</h3>
+      </div>
+      <p class="stat-footer">Meta del turno: 60</p>
+    </div>
+
+    <div class="stat-card">
+      <p class="stat-label">Total Mes</p>
+      <div class="stat-value-container">
+        <h3 class="stat-value text-emerald-700">
+          {{ totalMes() | currency:'S/ ':'symbol':'1.2-2' }}
+        </h3>
+      </div>
+      <p class="stat-footer font-bold text-emerald-600">14.2% Sobre objetivo</p>
+    </div>
+
+    <div class="stat-card border-l-4 border-l-red-500">
+      <p class="stat-label">Deudas Pendientes</p>
+      <div class="stat-value-container">
+        <h3 class="stat-value text-red-600">28</h3>
+      </div>
+      <button class="stat-action-red">
+        Ver Alertas <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="search-box">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" placeholder="Buscar por puesto, socio o recibo..." />
+    </div>
+
+    <div class="filter-actions">
+      <div class="date-range">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <input type="date" />
+        <span>—</span>
+        <input type="date" />
+      </div>
+
+      <button class="btn-filter">
+        <span class="material-symbols-outlined">filter_list</span>
+        Filtros
+      </button>
+    </div>
+  </div>
+
+  <div class="table-outer">
+    <div class="table-inner">
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th class="colw-idrecibo">ID Recibo</th>
+          <th class="colw-fecha">Fecha de Pago</th>
+          <th class="colw-puesto">Puesto</th>
+          <th class="colw-conceptos">Conceptos</th>
+          <th class="colw-socio">Socio</th>
+          <th class="colw-monto text-center">Monto</th>
+          <th class="colw-estado text-center">Estado</th>
+          <th class="colw-acciones text-right">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (item of items(); track item.idRecibo) {
+            <tr class="table-row group">
+              <td class="col-id colw-idrecibo td-compact nowrap">
+                {{ item.idRecibo }}
+              </td>
+
+              <td class="col-date colw-fecha">
+                {{ item.fechaPago | date:'dd MMM, yyyy' }}
+              </td>
+
+              <td class="col-puesto colw-puesto td-compact nowrap">
+                {{ item.puesto }}
+              </td>
+
+              <td class="col-conceptos colw-conceptos px-8 py-6">
+                <div class="chips-wrap">
+                  @for (c of item.conceptos; track c) {
+                    <span class="chip">{{ c }}</span>
+                  }
+                </div>
+              </td>
+
+              <td class="colw-socio px-8 py-6">
+                <span class="user-name">{{ item.socio }}</span>
+              </td>
+
+              <td class="colw-monto td-compact text-center font-black">
+                {{ item.monto | currency:'S/':'symbol-narrow':'1.2-2' }}
+              </td>
+
+              <td class="colw-estado td-compact text-center">
+                <span class="status-badge" [ngClass]="{'status-paid': item.estado === 'Completado'}">
+                  <span class="dot"></span> {{ item.estado }}
+                </span>
+              </td>
+
+              <td class="colw-acciones td-compact text-center">
+                <div class="row-actions">
+                  <button class="btn-view" title="Ver Recibo">
+                    <span class="material-symbols-outlined">visibility</span>
+                  </button>
+                  <button class="btn-pdf" title="Descargar PDF">
+                    <span class="material-symbols-outlined">picture_as_pdf</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <app-pagination
+        [totalItems]="totalItems()"
+        [itemsPerPage]="itemsPerPage()"
+        [currentPage]="currentPage()"
+        [fromItem]="fromItem()"
+        [toItem]="toItem()"
+        [pagesArray]="pagesArray()"
+        [totalPages]="totalPages()"
+        (onPageChange)="goToPage($event)"
+        (onNext)="nextPage()"
+        (onPrev)="prevPage()"
+      />
+    </div>
+  </div>
+</div>

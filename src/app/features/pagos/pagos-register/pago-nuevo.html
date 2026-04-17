@@ -1,0 +1,368 @@
+<div class="register-container animate-fade-in">
+  <header class="form-header">
+    <div class="breadcrumb">PAGOS / NUEVA TRANSACCIÓN</div>
+    <h2 class="title-main">Registro de Cobros</h2>
+  </header>
+
+  <div class="main-grid">
+    <div class="form-column">
+      <div class="card-main">
+        <form class="payment-form" (submit)="procesarPago(); $event.preventDefault()">
+          <!-- FILA: DNI + NOMBRE SOCIO -->
+          <div class="input-row">
+            <div class="input-group">
+              <label class="input-label">Identificación (DNI)</label>
+
+              <div class="dropdown-custom">
+                <div class="dropdown-trigger">
+                  <span>{{ socioSeleccionado()?.dni || 'Buscar DNI...' }}</span>
+                  <span class="material-symbols-outlined">badge</span>
+                </div>
+
+                <div class="dropdown-content">
+                  <div class="search-inner">
+                    <span class="material-symbols-outlined">search</span>
+                    <input
+                      type="text"
+                      placeholder="Escriba el DNI..."
+                      #dniInput
+                      maxlength="8"
+                      inputmode="numeric"
+                      pattern="[0-9]*"
+                      (input)="onDniInputChange(dniInput.value); dniInput.value = filtrarDni(dniInput.value)"
+                      (keydown.enter)="onEnterDni(dniInput.value, $event)"
+                    />
+                  </div>
+
+                  <!-- opción de búsqueda directa por DNI exacto -->
+                  <div class="option-item" (click)="seleccionarSocio(dniInput.value)">
+                    <p>Buscar: {{ dniInput.value }}</p>
+                  </div>
+
+                  <!-- lista de sugerencias de socios por prefijo de DNI -->
+                  @if (sugerenciasVisibles()) {
+                    <div class="options-list">
+                      @for (socio of sugerenciasDni(); track socio.dni) {
+                        <div class="option-item" (click)="onSelectSocioSugerencia(socio)">
+                          <p><strong>{{ socio.dni }}</strong> – {{ socio.nombreCompleto }}</p>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <!-- mensaje cuando no hay sugerencias y al menos 2 dígitos -->
+                  @if (
+                    dniInput.value &&
+                    filtrarDni(dniInput.value).length >= 2 &&
+                    sugerenciasDni().length === 0
+                    ) {
+                    <div class="options-list">
+                      <div class="option-item">
+                        <p>Sin resultados para: {{ filtrarDni(dniInput.value) }}</p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Nombre del Socio</label>
+              <input
+                type="text"
+                class="input-readonly"
+                [value]="socioSeleccionado()?.nombre || 'Esperando socio...'"
+                readonly
+              />
+            </div>
+          </div>
+
+          <!-- FILA: PUESTO + FECHA -->
+          <div class="input-row">
+            <div class="input-group">
+              <label class="input-label">Puesto Relacionado</label>
+              <div class="select-wrapper">
+                @if (socioSeleccionado() && socioSeleccionado()!.puestos.length > 1) {
+                  <select
+                    class="custom-select-simple"
+                    [ngModel]="puestoSeleccionadoCodigo()"
+                    (ngModelChange)="onPuestoChange($event)"
+                    name="puesto"
+                  >
+                    @for (puesto of socioSeleccionado()!.puestos; track puesto.idPuesto) {
+                      <option [value]="puesto.codigo">
+                        Puesto {{ puesto.codigo }}
+                      </option>
+                    }
+                  </select>
+                } @else {
+                  <input
+                    type="text"
+                    class="input-readonly"
+                    [value]="puestoSeleccionadoCodigo() || 'Seleccione socio...'"
+                    readonly
+                    name="puesto-fijo"
+                  />
+                }
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Fecha de Operación</label>
+              <input
+                type="text"
+                class="input-readonly"
+                [value]="fechaOperacion"
+                readonly
+                name="fecha"
+              />
+            </div>
+          </div>
+
+          <!-- SECCIÓN: DEUDAS PENDIENTES -->
+          <div class="debts-section">
+            <label class="input-label">Deudas Pendientes</label>
+
+            @if (socioSeleccionado() && puestoSeleccionadoCodigo()) {
+              <div class="debts-list">
+                @for (deuda of socioSeleccionado()!.deudas; track deuda.id) {
+                  <div
+                    class="debt-item"
+                    [class.selected]="deuda.seleccionada"
+                    (click)="toggleDeuda(deuda.id)"
+                  >
+                    <div class="debt-info">
+                      <span class="debt-title">{{ deuda.titulo }}</span>
+                      <span class="debt-date">Vence: {{ deuda.vencimiento }}</span>
+                    </div>
+                    <div class="debt-action">
+                      <span class="debt-amount">
+                        {{ deuda.monto | currency:'S/ ' }}
+                      </span>
+                      <input
+                        type="checkbox"
+                        class="debt-check"
+                        [checked]="deuda.seleccionada"
+                      />
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="p-10 text-center border-2 border-dashed border-slate-200 rounded-3xl text-slate-400">
+                <span class="material-symbols-outlined text-4xl mb-2">
+                  find_in_page
+                </span>
+                <p>Seleccione un socio y puesto para cargar deudas.</p>
+              </div>
+            }
+          </div>
+
+          <!-- FILA: MÉTOD0 DE PAGO + TOTAL -->
+          <div class="input-row">
+            <div class="input-group">
+              <label class="input-label">Método de Pago</label>
+              <div class="method-grid">
+                <label class="method-option">
+                  <input
+                    type="radio"
+                    name="method"
+                    (click)="metodoPago.set('Efectivo')"
+                    [checked]="metodoPago() === 'Efectivo'"
+                  />
+                  <div class="method-box">
+                    <span class="material-symbols-outlined">payments</span>
+                    <p>Efectivo</p>
+                  </div>
+                </label>
+
+                <label class="method-option">
+                  <input
+                    type="radio"
+                    name="method"
+                    (click)="metodoPago.set('Tarjeta')"
+                    [checked]="metodoPago() === 'Tarjeta'"
+                  />
+                  <div class="method-box">
+                    <span class="material-symbols-outlined">credit_card</span>
+                    <p>Tarjeta</p>
+                  </div>
+                </label>
+
+                <label class="method-option">
+                  <input
+                    type="radio"
+                    name="method"
+                    (click)="metodoPago.set('Yape/Plin')"
+                    [checked]="metodoPago() === 'Yape/Plin'"
+                  />
+                  <div class="method-box">
+                    <span class="material-symbols-outlined">qr_code_2</span>
+                    <p>Yape/Plin</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Total a Cobrar</label>
+              <div class="total-display">
+                <span class="currency">S/</span>
+                <span class="amount">
+                  {{ totalACobrar() | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTONES -->
+          <div class="form-footer">
+            <button type="button" class="btn-cancel" routerLink="/pagos">
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              class="btn-submit"
+              [disabled]="totalACobrar() === 0"
+            >
+              Registrar Pago Total
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: INFO SOCIO / PUESTO -->
+    <div class="info-column">
+      @if (socioSeleccionado() && puestoSeleccionadoCodigo()) {
+        <div class="card-status animate-fade-in">
+          <div class="status-header">
+            <span class="status-badge">Inquilino Activo</span>
+            <h3 class="status-puesto">
+              Puesto {{ puestoSeleccionadoCodigo() }}
+            </h3>
+          </div>
+
+          <div class="financial-summary">
+            <p class="label-tiny">DEUDA TOTAL ACUMULADA</p>
+            <h4 class="total-debt-red">
+              {{ deudaTotalPuesto() | currency:'S/ ' }}
+            </h4>
+            <div class="progress-bar-red">
+              <div class="fill" [style.width.%]="100"></div>
+            </div>
+          </div>
+
+          <div class="records-list">
+            <p class="label-tiny">DATOS DEL SOCIO</p>
+
+            <div class="record-item">
+              <div class="icon-circle">
+                <span class="material-symbols-outlined">person</span>
+              </div>
+              <div>
+                <p class="record-label">Propietario</p>
+                <p class="record-value">{{ socioSeleccionado()?.nombre }}</p>
+              </div>
+            </div>
+
+            <div class="record-item">
+              <div class="icon-circle">
+                <span class="material-symbols-outlined">mail</span>
+              </div>
+              <div>
+                <p class="record-label">Correo</p>
+                <p class="record-value">{{ socioSeleccionado()?.correo }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <div class="help-box">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <p>Se generará un comprobante por cada servicio pagado automáticamente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE RECIBO -->
+@if (mostrarRecibo()) {
+  <div class="modal-overlay animate-fade-in">
+    <div class="receipt-card animate-scale-up">
+      <div class="success-icon-wrapper no-print">
+        <span class="material-symbols-outlined success-check">
+          check_circle
+        </span>
+        <h3 class="success-title">¡Pago Registrado con Éxito!</h3>
+        <p class="success-subtitle">
+          Se ha generado el siguiente comprobante:
+        </p>
+      </div>
+
+      <div class="receipt-body">
+        <div class="receipt-header">
+          <span class="receipt-logo">MarketPay</span>
+          <p class="receipt-id">
+            Recibo: #REC-{{ socioSeleccionado()?.dni }}-001
+          </p>
+        </div>
+
+        <div class="receipt-details">
+          <div class="detail-row">
+            <span>Socio:</span>
+            <b>{{ socioSeleccionado()?.nombre }}</b>
+          </div>
+          <div class="detail-row">
+            <span>Puesto:</span>
+            <b>{{ puestoSeleccionadoCodigo() }}</b>
+          </div>
+          <div class="detail-row">
+            <span>Fecha:</span>
+            <b>{{ fechaOperacion }}</b>
+          </div>
+          <div class="detail-row">
+            <span>Método:</span>
+            <b>{{ metodoPago() }}</b>
+          </div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-items">
+          <p class="items-label">Conceptos Pagados:</p>
+
+          @for (deuda of socioSeleccionado()?.deudas; track deuda.id) {
+            @if (deuda.seleccionada) {
+              <div class="item-line">
+                <span>{{ deuda.titulo }}</span>
+                <b>{{ deuda.monto | currency:'S/ ' }}</b>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="receipt-total">
+          <span>TOTAL PAGADO</span>
+          <span class="total-amount">
+            {{ totalACobrar() | currency:'S/ ' }}
+          </span>
+        </div>
+
+        <p class="receipt-footer">¡Gracias por su puntualidad!</p>
+      </div>
+
+      <div class="modal-actions no-print">
+        <button class="btn-print" (click)="imprimirRecibo()">
+          <span class="material-symbols-outlined">print</span>
+          Imprimir Recibo
+        </button>
+        <button class="btn-close-modal" (click)="cerrarRecibo()">
+          Finalizar
+        </button>
+      </div>
+    </div>
+  </div>
+}

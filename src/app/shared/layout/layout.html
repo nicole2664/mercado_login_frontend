@@ -1,0 +1,115 @@
+<header class="top-header" [ngClass]="esAdmin() ? 'border-blue-100' : 'border-emerald-100'">
+  <div class="flex items-center gap-4">
+    <span class="logo-text">
+      MarketPay
+      <span [ngClass]="esAdmin() ? 'text-blue-950' : 'text-emerald-600'">
+        {{ esAdmin() ? 'Gestión' : 'Caja' }}
+      </span>
+    </span>
+
+    <div class="header-nav-links">
+      @if (esAdmin()) {
+        <a class="nav-link-top active" href="#">Panel de Control</a>
+        <a class="nav-link-top" href="#">Mercados</a>
+      } @else {
+        <a class="nav-link-top active" href="#">Operaciones</a>
+        <a class="nav-link-top" href="#">Mi Turno</a>
+      }
+    </div>
+  </div>
+
+  <div class="flex items-center space-x-4">
+    @if (esAdmin()) {
+      <div class="search-wrapper">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input class="search-input focus:ring-blue-600" placeholder="Buscar..." type="text"/>
+      </div>
+    }
+    <button class="material-symbols-outlined icon-btn">notifications</button>
+    <div class="user-avatar" [ngClass]="esAdmin() ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'">
+      {{ (username() || 'U')[0] | uppercase }}
+    </div>
+  </div>
+</header>
+
+<nav class="sidebar-nav">
+  <div class="sidebar-profile">
+    <h2 class="admin-name">{{ esAdmin() ? 'MarketPay Admin' : 'Módulo Cajero' }}</h2>
+    <p class="admin-role">{{ esAdmin() ? 'Regional Controller' : 'Terminal de Cobros' }}</p>
+  </div>
+
+  <div class="sidebar-links">
+    <!-- Dashboard solo ADMIN -->
+    @if (authz.canViewDashboard()) {
+      <a class="menu-link" routerLink="/dashboard" routerLinkActive="active">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Panel</span>
+      </a>
+    }
+
+    <!-- Deudas: ADMIN y CAJERO (si así lo defines en routes) -->
+    <a class="menu-link" routerLink="/deudas" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+      <span class="material-symbols-outlined">{{ esAdmin() ? 'history' : 'account_balance_wallet' }}</span>
+      <span>Deudas</span>
+    </a>
+
+    <!-- Conceptos solo ADMIN -->
+    @if (esAdmin()) {
+      <a class="menu-link" routerLink="/conceptos" routerLinkActive="active">
+        <span class="material-symbols-outlined">category</span>
+        <span>Conceptos</span>
+      </a>
+    }
+
+    <!-- Pagos: ambos roles -->
+    <a class="menu-link" routerLink="/pagos" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+      <span class="material-symbols-outlined">payments</span>
+      <span>Pagos</span>
+    </a>
+
+    <!-- Registrar pago: SOLO CAJERO (según tu regla) -->
+    <!-- @if (authz.canRegisterPayment()) {
+      <a class="menu-link" routerLink="/pagos/nuevo" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+        <span class="material-symbols-outlined">add</span>
+        <span>Nueva Transacción</span>
+      </a>
+    } -->
+
+  </div>
+
+  <div class="sidebar-footer">
+    @if (authz.canRegisterPayment()) {
+      <button
+        class="btn-new-trans"
+        [style.background]="'linear-gradient(135deg, #059669 0%, #10b981 100%)'"
+        routerLink="/pagos/nuevo"
+      >
+        <span class="material-symbols-outlined text-sm">add</span>
+        <span>Nueva Transacción</span>
+      </button>
+    } @else {
+      <button
+        class="btn-new-trans"
+        [style.background]="'linear-gradient(135deg, #24389c 0%, #3f51b5 100%)'"
+        routerLink="/deudas/nueva"
+      >
+        <span class="material-symbols-outlined text-sm">add</span>
+        <span>Nueva Deuda</span>
+      </button>
+    }
+
+    <a class="footer-link hover-blue" href="#">
+      <span class="material-symbols-outlined">contact_support</span>
+      <span>Soporte</span>
+    </a>
+
+    <a class="footer-link hover-red" (click)="logout()" style="cursor: pointer;">
+      <span class="material-symbols-outlined">logout</span>
+      <span>{{ esAdmin() ? 'Salir' : 'Cerrar Turno' }}</span>
+    </a>
+  </div>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

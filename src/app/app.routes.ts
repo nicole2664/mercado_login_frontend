@@ -1,35 +1,80 @@
 import { Routes } from '@angular/router';
+
 import { LoginComponent } from './features/auth/login/login';
-import { LayoutComponent } from './shared/layouts/layout-admin/layout';
-import { LayoutCajeroComponent } from './shared/layouts/layout-cajero/layout-cajero';
+import { HomeRedirectComponent } from './features/home-redirect/home-redirect';
+import { LayoutComponent } from './shared/layout/layout';
+
 import { DashboardComponent } from './features/admin/dashboard/dashboard';
-import { Pagos } from './features/admin/pagos/pagos';
-import { PagosCajero } from './features/cajero/pagos-cajero/pagos-cajero';
-import { RegistrarPago } from './features/cajero/registrar-pago/registrar-pago';
+import { PagoListar } from './features/pagos/pagos-listar/pago-listar';
+import { Deudas } from './features/admin/deudas/deudas';
+import { RegistrarDeuda } from './features/admin/registrar-deuda/registrar-deuda';
+import { Conceptos } from './features/admin/conceptos/conceptos';
+
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { PagoNuevo } from './features/pagos/pagos-register/pago-nuevo';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
+  // Shell autenticado
   {
-    path: 'admin',
+    path: '',
     component: LayoutComponent,
+    canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'pagos', component: Pagos },
+      // Home inteligente
+      { path: 'home', component: HomeRedirectComponent },
+
+      // ADMIN only
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] },
+      },
+      {
+        path: 'conceptos',
+        component: Conceptos,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] },
+      },
+      {
+        path: 'deudas/nueva',
+        component: RegistrarDeuda,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] },
+      },
+
+      // Ambos roles
+      {
+        path: 'deudas',
+        component: Deudas,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CAJERO'] },
+      },
+      {
+        path: 'pagos',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CAJERO'] },
+        children: [
+          // listado
+          { path: '', component: PagoListar },
+
+          // solo cajero
+           {
+            path: 'nuevo',
+            component: PagoNuevo,
+            canActivate: [roleGuard],
+            data: { roles: ['CAJERO'] },
+          },
+        ],
+      },
+
+      // default: manda a home (para que redirija por rol)
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },
 
-  {
-    path: 'cajero',
-    component: LayoutCajeroComponent,
-    children: [
-      { path: 'pagos', component: PagosCajero },
-      { path: 'nuevo-pago', component: RegistrarPago },
-      { path: 'dashboard', component: DashboardComponent },
-      { path: '', redirectTo: 'pagos', pathMatch: 'full' }
-    ],
-  },
-
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
 ];

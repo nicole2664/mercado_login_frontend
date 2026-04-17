@@ -13,6 +13,10 @@ import { Pagination } from '../../../shared/components/pagination/pagination';
 })
 export class Pagos {
   private paginationService = inject(PaginationService);
+
+  mostrarDetalle = signal(false);
+  transaccionSeleccionada = signal<any>(null);
+
   // datos (simulando lo que vendrá del backend)
   allTransactions = signal<Transaccion[]>([
     {
@@ -1138,6 +1142,16 @@ export class Pagos {
   ]);
 
   pagination = this.paginationService.createPagination(this.allTransactions, 15);
+
+  verDetalle(item: any) {
+    this.transaccionSeleccionada.set(item);
+    this.mostrarDetalle.set(true);
+  }
+
+  cerrarDetalle() {
+    this.mostrarDetalle.set(false);
+    this.transaccionSeleccionada.set(null);
+  }
 
   /*
     ngOnInit() {

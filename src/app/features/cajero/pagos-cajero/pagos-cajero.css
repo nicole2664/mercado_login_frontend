@@ -80,3 +80,98 @@
 app-pagination {
   @apply bg-slate-50 block border-t border-slate-100;
 }
+
+/* --- ESTILOS MODAL TICKET CAJERO --- */
+.modal-overlay {
+  @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4;
+}
+
+.modal-card-ticket {
+  /* Pasamos de max-w-sm a un ancho de 480px para que respire mejor */
+  @apply bg-white rounded-[2.5rem] shadow-2xl max-w-[480px] w-full p-10 overflow-hidden border-t-8 border-emerald-500;
+}
+
+.ticket-header { @apply text-center mb-6; }
+.icon-circle-caja {
+  @apply w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4;
+}
+.icon-circle-caja span { font-size: 35px !important; }
+
+.ticket-title { @apply text-xl font-black text-slate-900 uppercase tracking-tighter; }
+.ticket-id { @apply text-[10px] font-mono text-slate-400 mt-1; }
+
+.ticket-amount-box {
+  /* Un poco más de altura y aire para el monto */
+  @apply bg-emerald-50/50 rounded-3xl p-8 text-center border border-emerald-100 mb-8;
+}
+.amount-label { @apply block text-[10px] font-black text-emerald-600/60 uppercase tracking-widest mb-1; }
+.amount-value {
+  @apply text-5xl font-black text-emerald-700 tracking-tighter; /* Monto un poco más imponente */
+}
+.badge-verified { @apply inline-flex items-center gap-1 mt-2 px-3 py-1 bg-emerald-600 text-white text-[9px] font-black uppercase rounded-full; }
+
+.ticket-info-grid {
+  @apply space-y-5 px-4; /* Más espacio entre cada fila de datos */
+}
+.t-row { @apply flex justify-between items-start; }
+.t-label {
+  @apply text-[11px] font-black text-slate-400 uppercase tracking-widest;
+}
+.t-value {
+  /* Aumentamos el tamaño de la letra de los datos */
+  @apply text-sm font-black text-slate-800 text-right max-w-[250px];
+}
+.t-value-badge {
+  @apply text-xs font-black bg-slate-900 text-white px-3 py-1 rounded-md;
+}
+
+.ticket-divider {
+  @apply border-t-2 border-dashed border-slate-200 my-8;
+}
+.ticket-footer-msg { @apply text-[9px] text-slate-400 text-center font-bold uppercase tracking-widest; }
+
+.btn-ticket-close {
+  /* Botón más alto para que sea más fácil de presionar en pantallas táctiles o con mouse */
+  @apply w-full mt-2 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all active:scale-95 text-base uppercase tracking-widest;
+}
+.font-mono {
+  @apply font-mono text-[10px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200;
+}
+
+/* Animaciones */
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-scale-up { animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* --- MODAL CARGA PDF --- */
+.modal-card-loader {
+  @apply bg-white rounded-[2rem] p-10 shadow-2xl text-center max-w-xs w-full;
+}
+
+.pdf-spinner {
+  @apply relative w-20 h-20 mx-auto mb-6 flex items-center justify-center;
+}
+
+.pdf-spinner span {
+  @apply text-red-500 text-4xl;
+  animation: pulsePdf 1.5s infinite;
+}
+
+.spinner-ring {
+  @apply absolute inset-0 border-4 border-slate-100 border-t-emerald-500 rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+.loader-title { @apply text-lg font-black text-slate-800; }
+.loader-subtitle { @apply text-xs text-slate-400 font-medium mt-1; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulsePdf {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}

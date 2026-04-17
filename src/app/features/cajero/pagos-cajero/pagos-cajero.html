@@ -113,8 +113,12 @@
               </td>
               <td class="text-center">
                 <div class="row-actions">
-                  <button class="btn-view" title="Ver Recibo"><span class="material-symbols-outlined">visibility</span></button>
-                  <button class="btn-pdf" title="Descargar PDF"><span class="material-symbols-outlined">picture_as_pdf</span></button>
+                  <button class="btn-view" title="Ver Recibo" (click)="verDetalle(item)">
+                    <span class="material-symbols-outlined">visibility</span>
+                  </button>
+                  <button class="btn-pdf" title="Descargar PDF" (click)="descargarRecibo(item.idRecibo)">
+                    <span class="material-symbols-outlined">picture_as_pdf</span>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -137,3 +141,85 @@
     </div>
   </div>
 </div>
+
+@if (mostrarDetalle() && pagoSeleccionado()) {
+  <div class="modal-overlay animate-fade-in">
+    <div class="modal-card-ticket animate-scale-up">
+
+      <div class="ticket-header">
+        <div class="icon-circle-caja">
+          <span class="material-symbols-outlined">receipt_long</span>
+        </div>
+        <h3 class="ticket-title">Comprobante de Ingreso</h3>
+        <p class="ticket-id">RECIBO N° {{ pagoSeleccionado()?.idRecibo }}</p>
+      </div>
+
+      <div class="ticket-body">
+        <div class="ticket-amount-box">
+          <span class="amount-label">Monto Recaudado</span>
+          <h2 class="amount-value">{{ pagoSeleccionado()?.monto | currency:'S/ ' }}</h2>
+          <div class="badge-verified">
+            <span class="material-symbols-outlined text-[12px]">verified</span>
+            OPERACIÓN CONFIRMADA
+          </div>
+        </div>
+
+        <div class="ticket-info-grid">
+          <div class="t-row">
+            <span class="t-label">Socio / Cliente</span>
+            <span class="t-value">{{ pagoSeleccionado()?.socio }}</span>
+          </div>
+          <div class="t-row">
+            <span class="t-label">Identificador Puesto</span>
+            <span class="t-value-badge">{{ pagoSeleccionado()?.puesto }}</span>
+          </div>
+          <div class="t-row">
+            <span class="t-label">Por concepto de</span>
+            <span class="t-value">{{ pagoSeleccionado()?.concepto }}</span>
+          </div>
+
+          <div class="t-row">
+            <span class="t-label">Método de Pago</span>
+            <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[14px] text-slate-400">
+        @if(pagoSeleccionado()?.metodoPago === 'Efectivo') { payments }
+        @else if(pagoSeleccionado()?.metodoPago === 'Tarjeta') { credit_card }
+        @else { smartphone }
+      </span>
+              <span class="t-value">{{ pagoSeleccionado()?.metodoPago }}</span>
+            </div>
+          </div>
+
+          <div class="t-row">
+            <span class="t-label">Fecha de Registro</span>
+            <span class="t-value">{{ pagoSeleccionado()?.fecha }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-divider"></div>
+        <p class="ticket-footer-msg">
+          Terminal N° 01 • Cajero: Nicol Nolasco
+        </p>
+      </div>
+
+      <button class="btn-ticket-close" (click)="cerrarDetalle()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+}
+
+@if (generandoPdf()) {
+  <div class="modal-overlay z-[110]">
+    <div class="modal-card-loader animate-scale-up">
+      <div class="loader-content">
+        <div class="pdf-spinner">
+          <span class="material-symbols-outlined">picture_as_pdf</span>
+          <div class="spinner-ring"></div>
+        </div>
+        <h3 class="loader-title">Generando Comprobante</h3>
+        <p class="loader-subtitle">Preparando archivo para {{ reciboIdActual() }}...</p>
+      </div>
+    </div>
+  </div>
+}

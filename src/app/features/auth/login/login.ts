@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,20 +11,13 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-
 export class LoginComponent {
   private router = inject(Router);
-  private authService = inject(AuthService);
+  private auth = inject(AuthService);
 
-  loginData = {
-    username: '',
-    password: '',
-  };
+  loginData = { username: '', password: '' };
 
   onLogin() {
-    console.log('Datos capturados:', this.loginData);
-
-    // VALIDACIÓN
     if (!this.loginData.username || !this.loginData.password) {
       Swal.fire({
         title: 'Campos incompletos',
@@ -35,47 +28,29 @@ export class LoginComponent {
       return;
     }
 
-    // LLAMADA AL BACKEND
-    this.authService.login(this.loginData).subscribe({
-      next: (response: any) => {
-        console.log('Respuesta backend:', response);
-
-        // 💾 GUARDAR SESIÓN
-        localStorage.setItem('user', JSON.stringify(response));
+    this.auth.login(this.loginData).subscribe({
+      next: (res) => {
+        // AuthService ya guardó token/user en localStorage
+        const roles = res.roles ?? [];
 
         Swal.fire({
           title: '¡Bienvenido!',
-          text: 'Inicio de sesión correcto',
+          text: `Hola, ${res.username}`,
           icon: 'success',
           showConfirmButton: false,
-          timer: 1500,
+          timer: 1200,
           timerProgressBar: true,
         }).then(() => {
-          console.log('ROL RECIBIDO:', response.rol);
-
-          // MAPA DE RUTAS POR ROL
-          const roleRoutes: any = {
-            ADMIN: '/admin/dashboard',
-            CAJERO: '/cajero/dashboard',
-          };
-
-          const route = roleRoutes[response.rol];
-
-          if (route) {
-            this.router.navigate([route]);
-          } else {
-            console.warn('Rol no configurado:', response.rol);
-            this.router.navigate(['/login']);
-          }
+          const roles = res.roles ?? [];
+          if (roles.includes('ADMIN')) this.router.navigate(['/dashboard']);
+          else if (roles.includes('CAJERO')) this.router.navigate(['/pagos']);
+          else this.router.navigate(['/login']);
         });
       },
-
-      error: (error) => {
-        console.log('Error:', error);
-
+      error: (e) => {
         Swal.fire({
           title: 'Acceso denegado',
-          text: 'Usuario o contraseña incorrectos',
+          text: e?.message ?? 'Usuario o contraseña incorrectos',
           icon: 'error',
           confirmButtonColor: '#1d4ed8',
         });

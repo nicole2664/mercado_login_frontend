@@ -1,0 +1,182 @@
+@reference "../../../../styles.css";
+
+.page-container { @apply p-8 max-w-7xl mx-auto space-y-8; }
+
+/* Cabecera con aire */
+.form-header-flex { @apply flex justify-between items-end mb-4; }
+.breadcrumb-text { @apply text-[11px] font-black uppercase tracking-widest text-blue-600 mb-1; }
+.title-main { @apply text-4xl font-black text-slate-900 tracking-tight; }
+
+/* Grid principal con separación mt-10 */
+.main-grid-form {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-10 items-stretch mt-10;
+}
+
+.form-column { @apply lg:col-span-2 flex flex-col; }
+.preview-column { @apply flex flex-col; }
+
+/* Tarjetas */
+.card-white { @apply bg-white rounded-2xl border border-slate-200 shadow-sm flex-1; }
+.card-preview-blue { @apply bg-blue-900 rounded-2xl shadow-2xl flex flex-col h-full sticky top-24; }
+
+/* Etiquetas y campos */
+.label-form { @apply block text-[11px] font-black uppercase tracking-widest text-slate-600 mb-2 ml-1; }
+.label-form-lg { @apply block text-lg font-black text-slate-800; }
+
+.input-form {
+  @apply w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-4 px-5 text-sm font-bold outline-none transition-all focus:bg-white focus:border-blue-500 text-slate-700;
+}
+
+.divider { @apply h-px bg-slate-100 my-8; }
+
+/* Botón de Seleccionar Todo general */
+.btn-select-all {
+  @apply flex items-center gap-2 px-4 py-2 bg-slate-100 text-blue-700 font-black text-[10px] uppercase rounded-xl border border-slate-200 hover:bg-blue-600 hover:text-white transition-all active:scale-95;
+}
+
+/* Buscador mini */
+.search-mini-box {
+  @apply flex items-center gap-3 bg-slate-100 px-5 py-3 rounded-xl mb-4 border border-slate-200 focus-within:bg-white focus-within:border-blue-500 transition-all;
+}
+.search-mini-box input { @apply bg-transparent border-none outline-none text-sm font-bold w-full text-slate-700; }
+.search-mini-box span { @apply text-slate-400; }
+
+/* === LISTA DE PUESTOS Y SECTORES === */
+.puestos-container {
+  @apply space-y-4 max-h-[520px] overflow-y-auto pr-3; /* Cambié space-y-3 por space-y-4 */
+}
+
+/* Ajuste del encabezado de sector estilo IntelliJ */
+.sector-header {
+  @apply flex items-center justify-between p-2 mt-8 mb-4 bg-slate-50 border-b border-slate-200;
+  /* Aumenté mt-8 para separar del grupo anterior y mb-4 para separar del primer puesto */
+  border-radius: 8px 8px 0 0;
+}
+
+.sector-title {
+  @apply text-[11px] font-black uppercase tracking-widest text-slate-500;
+}
+
+.sector-count {
+  @apply text-[10px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-full border border-slate-200;
+}
+
+/* Botón inteligente de check del sector */
+.btn-check-sector {
+  @apply flex items-center justify-center p-1 rounded-md hover:bg-white transition-colors;
+}
+
+.btn-check-sector span {
+  font-size: 20px !important;
+  @apply text-blue-600;
+}
+
+/* Filas de puestos e indentación */
+.puesto-row-item {
+  @apply flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-xl cursor-pointer transition-all hover:border-blue-200;
+  margin-bottom: 0.75rem;
+}
+
+.ml-6 {
+  margin-left: 1.5rem;
+  width: calc(100% - 1.5rem);
+}
+
+.puesto-row-item.is-selected { @apply border-blue-600 bg-blue-50/30; }
+.puesto-row-item.is-match { @apply border-amber-400 bg-amber-50/20 ring-2 ring-amber-100; }
+
+/* Resaltar sector al buscar */
+.sector-header:has(+ .is-match) {
+  @apply border-blue-200 bg-blue-50/30;
+}
+
+/* Textos dentro de la fila */
+.puesto-row-item p:first-child { @apply text-base font-black text-slate-800; }
+.puesto-row-item p:last-child { @apply text-slate-600 font-bold; }
+
+/* Checkbox personalizado */
+.checkbox-wrapper { @apply relative w-6 h-6; }
+.check-real { @apply absolute inset-0 opacity-0 cursor-pointer z-10; }
+.check-dummy {
+  @apply w-6 h-6 border-2 border-slate-300 rounded-md bg-white transition-all flex items-center justify-center;
+}
+.check-real:checked + .check-dummy { @apply bg-blue-600 border-blue-600; }
+.check-real:checked + .check-dummy::after {
+  content: 'check'; font-family: 'Material Symbols Outlined';
+  @apply text-white text-base;
+}
+
+/* Botones de acción */
+.btn-confirm-final {
+  @apply w-full py-5 bg-blue-600 text-white font-black rounded-xl shadow-lg hover:bg-blue-700 active:scale-95 transition-all;
+}
+.btn-back { @apply flex items-center gap-2 text-slate-500 font-bold hover:text-blue-600 transition-colors; }
+
+/* Animaciones */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar Profesional */
+.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #f8fafc; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid #f8fafc; }
+
+/* --- MODAL STYLES --- */
+.modal-overlay {
+  @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4;
+}
+
+.modal-card {
+  @apply bg-white rounded-[2rem] shadow-2xl max-w-lg w-full p-8 overflow-hidden;
+}
+
+.modal-header { @apply text-center mb-8; }
+.icon-circle-warning {
+  @apply w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4;
+}
+.modal-title { @apply text-2xl font-black text-slate-800; }
+.modal-subtitle { @apply text-sm text-slate-500 font-medium px-4; }
+
+.info-grid { @apply grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-2xl; }
+.info-label { @apply block text-[10px] font-black text-slate-400 uppercase tracking-widest; }
+.info-value { @apply block text-sm font-bold text-slate-700; }
+
+.total-highlight-grid {@apply grid grid-cols-2 py-6 border-y border-slate-100 mb-6 bg-slate-50/50 rounded-xl;}
+.highlight-item {
+  @apply text-center px-6 py-2;
+}
+.total-label {@apply text-[11px] font-black text-blue-600 uppercase tracking-[0.2em] mb-2;}
+.total-value-sub {@apply text-2xl font-black text-slate-800 tracking-tighter;}
+.total-value-main-blue {@apply text-2xl font-black text-blue-700 tracking-tighter;}
+
+.affected-list-wrapper { @apply space-y-3; }
+.list-title { @apply text-[10px] font-black text-slate-400 uppercase tracking-widest; }
+.affected-list { @apply max-h-40 overflow-y-auto space-y-2 pr-2 bg-slate-50/50 p-3 rounded-xl; }
+
+.affected-item { @apply flex items-center justify-between text-xs py-1 border-b border-slate-200/50 last:border-0; }
+.item-puesto { @apply font-black text-slate-800; }
+.item-socio { @apply text-slate-500 font-medium; }
+
+.modal-actions { @apply grid grid-cols-2 gap-4 mt-8; }
+.btn-cancel-modal {
+  @apply py-4 bg-slate-100 text-slate-600 font-black rounded-xl hover:bg-slate-200 transition-all;
+}
+.btn-confirm-modal {
+  @apply py-4 bg-blue-600 text-white font-black rounded-xl shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95 transition-all;
+}
+
+/* Animación de entrada */
+.animate-scale-up {
+  animation: scaleUp 0.3s ease-out forwards;
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

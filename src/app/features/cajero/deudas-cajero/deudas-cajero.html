@@ -1,0 +1,186 @@
+<div class="page-container animate-fade-in">
+  <header class="page-header-flex">
+    <div>
+      <p class="breadcrumb-text-cajero">Módulo de Cobranzas • Caja</p>
+      <h2 class="title-main">Listado de Deudas</h2>
+    </div>
+  </header>
+
+  <div class="stats-grid stats-grid-margin">
+    <div class="stat-card">
+      <span class="stat-label">Total Pendiente</span>
+      <span class="stat-value text-slate-900">{{ totalPendiente() | currency:'S/ ' }}</span>
+      <div class="stat-trend text-red-500">
+        <span class="material-symbols-outlined text-sm">trending_up</span> 12% vs mes pasado
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Deudas Vencidas</span>
+      <span class="stat-value text-red-600">{{ conteoVencidas() }}</span>
+      <span class="stat-subtext">Atención inmediata</span>
+    </div>
+    <div class="stat-card border-emerald-100">
+      <span class="stat-label">Recaudación Esperada</span>
+      <span class="stat-value text-emerald-600">{{ recaudacionEsperada() | currency:'S/ ' }}</span>
+      <span class="stat-subtext">Proyección cierre de lote</span>
+    </div>
+  </div>
+
+  <div class="filter-section-wrapper">
+    <div class="search-group-curtailed">
+      <label class="filter-label-top text-emerald-600">Búsqueda</label>
+      <div class="search-box">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Buscar socio, puesto o ID..." (input)="onSearch($event)">
+      </div>
+    </div>
+
+    <div class="filters-actions-group">
+      <div class="select-container-wide">
+        <label class="filter-label-top">Motivo</label>
+        <select class="custom-select-cajero"><option>Todos</option></select>
+      </div>
+
+      <div class="select-container-wide">
+        <label class="filter-label-top">Sector</label>
+        <select class="custom-select-cajero"><option>Todos los Sectores</option></select>
+      </div>
+
+      <div class="select-container-wide">
+        <label class="filter-label-top">Fecha Emisión</label>
+        <div class="date-input-wrapper">
+          <input type="date" class="custom-date-input-cajero">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Socio / Partner</th>
+        <th class="text-center">Puesto</th>
+        <th>Motivo</th>
+        <th class="text-right">Monto</th>
+        <th class="text-center">Estado</th>
+        <th class="text-right">Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (deuda of pagination.pagedData(); track deuda.id) {
+          <tr class="table-row group">
+            <td class="font-mono text-xs text-slate-400">{{ deuda.id }}</td>
+            <td>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-slate-700">{{ deuda.socio }}</span>
+                <span class="text-[10px] text-slate-400">{{ deuda.correo }}</span>
+              </div>
+            </td>
+            <td class="text-center"><span class="puesto-badge-cajero">{{ deuda.puesto }}</span></td>
+            <td class="text-sm text-slate-600">{{ deuda.concepto }}</td>
+
+            <td class="text-right font-black text-slate-900">{{ deuda.monto | currency:'S/ ' }}</td>
+
+            <td class="text-center">
+              <span class="status-tag" [ngClass]="deuda.estado === 'PENDIENTE' ? 'tag-red' : 'tag-green'">
+                <span class="dot"></span> {{ deuda.estado }}
+              </span>
+            </td>
+
+            <td class="text-right">
+              <div class="flex justify-end pr-4">
+                <button class="btn-action-view" (click)="verDetalle(deuda)" title="Ver Detalle">
+                  <span class="material-symbols-outlined !text-2xl">visibility</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="py-20 text-center">
+              <span class="material-symbols-outlined text-4xl text-slate-200">search_off</span>
+              <p class="text-slate-400 font-medium mt-2">No se encontraron resultados</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <app-pagination
+      [totalItems]="pagination.totalItems()"
+      [itemsPerPage]="pagination.itemsPerPage()"
+      [currentPage]="pagination.currentPage()"
+      [fromItem]="pagination.fromItem()"
+      [toItem]="pagination.toItem()"
+      [pagesArray]="pagination.pagesArray()"
+      [totalPages]="pagination.totalPages()"
+      (onPageChange)="pagination.goToPage($event)"
+      (onNext)="pagination.nextPage()"
+      (onPrev)="pagination.prevPage()">
+    </app-pagination>
+  </div>
+</div>
+
+@if (mostrarDetalle() && deudaSeleccionada()) {
+  <div class="modal-overlay animate-fade-in">
+    <div class="modal-card-detail animate-scale-up">
+
+      <div class="detail-header">
+        <div>
+          <p class="detail-id">Transacción #{{ deudaSeleccionada().id }}</p>
+          <h3 class="detail-title">Detalle de Cobranza</h3>
+        </div>
+        <span class="status-tag-large" [ngClass]="deudaSeleccionada().estado === 'PENDIENTE' ? 'tag-red' : 'tag-green'">
+          <span class="dot"></span> {{ deudaSeleccionada().estado }}
+        </span>
+      </div>
+
+      <div class="detail-body">
+        <div class="detail-section">
+          <label class="section-label">Información del Socio</label>
+          <div class="data-box">
+            <div class="data-row">
+              <span class="data-label">Nombre Completo</span>
+              <span class="data-value">{{ deudaSeleccionada().socio }}</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Correo Electrónico</span>
+              <span class="data-value">{{ deudaSeleccionada().correo }}</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Ubicación</span>
+              <span class="data-value-badge">Puesto {{ deudaSeleccionada().puesto }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section mt-6">
+          <label class="section-label">Concepto y Monto</label>
+          <div class="data-box highlight">
+            <div class="data-row">
+              <span class="data-label">Motivo de Deuda</span>
+              <span class="data-value">{{ deudaSeleccionada().concepto }}</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Fecha de Emisión</span>
+              <span class="data-value">{{ deudaSeleccionada().fecha || '14 de abril, 2026' }}</span>
+            </div>
+            <div class="divider-dashed"></div>
+            <div class="data-row pt-2">
+              <span class="data-label text-emerald-600 font-bold">Monto Total</span>
+              <span class="data-value-price">{{ deudaSeleccionada().monto | currency:'S/ ' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn-close-detail-cajero" (click)="cerrarDetalle()">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+}

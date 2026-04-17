@@ -1,0 +1,208 @@
+<div class="page-container animate-fade-in">
+  <header class="form-header-flex">
+    <div>
+      <p class="breadcrumb-text">ADMINISTRACIÓN / DEUDAS / DISTRIBUCIÓN</p>
+      <h2 class="title-main">Distribución de Cargos</h2>
+    </div>
+    <button class="btn-back" routerLink="/admin/deudas">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver al Listado
+    </button>
+  </header>
+
+  <div class="main-grid-form mt-10">
+    <div class="form-column space-y-8">
+      <div class="card-white p-8">
+        <div class="flex items-center gap-3 mb-10">
+          <div class="icon-box bg-blue-50 text-blue-700">
+            <span class="material-symbols-outlined">payments</span>
+          </div>
+          <h3 class="text-xl font-black text-slate-800">Cargar Nueva Obligación</h3>
+        </div>
+
+        <form class="space-y-10">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-2">
+              <label class="label-form">Concepto del Cargo</label>
+              <select class="input-form" [(ngModel)]="conceptoSeleccionado" name="concepto">
+                <option value="Servicio Eléctrico Común">Servicio Eléctrico Común</option>
+                <option value="Mantenimiento Bloque A">Mantenimiento Bloque A</option>
+                <option value="Seguridad y Vigilancia">Seguridad y Vigilancia</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="label-form">Monto Total Base (S/)</label>
+              <input type="number"
+                     class="input-form font-black text-blue-800 text-lg"
+                     placeholder="0.00"
+                     [(ngModel)]="montoBase"
+                     name="montoBase">
+            </div>
+            <div class="space-y-2">
+              <label class="label-form">Fecha de Emisión</label>
+              <input type="text" class="input-form bg-slate-50 text-slate-600 font-bold" [value]="fechaHoy" readonly>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="space-y-6">
+            <div class="flex justify-between items-center">
+              <div>
+                <label class="label-form-lg">Selección de Locales</label>
+                <p class="text-sm text-slate-500 font-medium">Asignados: <b>{{ totalSeleccionados() }} puestos</b></p>
+              </div>
+              <button type="button" class="btn-select-all" (click)="seleccionarTodos()">
+                <span class="material-symbols-outlined text-sm">done_all</span>
+                {{ todosSeleccionados() ? 'Desmarcar Todos' : 'Seleccionar Todos' }}
+              </button>
+            </div>
+
+            <div class="search-mini-box">
+              <span class="material-symbols-outlined">search</span>
+              <input type="text" placeholder="Buscar por número de puesto o nombre del socio..." (input)="filtrarPuestos($event)">
+            </div>
+
+            <div class="puestos-container custom-scrollbar">
+              @for (grupo of puestosAgrupados(); track grupo.nombre) {
+                <div class="sector-header">
+                  <div class="flex items-center gap-2 flex-1 cursor-pointer" (click)="toggleColapsarSector(grupo.nombre)">
+        <span class="material-symbols-outlined transition-transform duration-200 text-slate-400"
+              [style.transform]="sectoresOcultos()[grupo.nombre] ? 'rotate(-90deg)' : 'rotate(0deg)'">
+          expand_more
+        </span>
+                    <span class="sector-title">{{ grupo.nombre }}</span>
+                  </div>
+
+                  <div class="flex items-center gap-4">
+                    <span class="sector-count">{{ grupo.puestos.length }} puestos</span>
+                    <button type="button" class="btn-check-sector" (click)="toggleSector(grupo.nombre)">
+          <span class="material-symbols-outlined">
+            {{ obtenerIconoSector(grupo) }}
+          </span>
+                    </button>
+                  </div>
+                </div>
+
+                @if (!sectoresOcultos()[grupo.nombre]) {
+                  <div class="animate-fade-in">
+                    @for (puesto of grupo.puestos; track puesto.id) {
+                      <label class="puesto-row-item ml-6" [class.is-selected]="puesto.seleccionado">
+                        <div class="flex items-center gap-5">
+                          <div class="checkbox-wrapper">
+                            <input type="checkbox" [checked]="puesto.seleccionado" (change)="togglePuesto(puesto.id)" class="check-real">
+                            <div class="check-dummy"></div>
+                          </div>
+                          <div>
+                            <p class="text-base font-black text-slate-800">{{ puesto.codigo }}</p>
+                            <p class="text-xs text-slate-600 font-bold">{{ puesto.socio }}</p>
+                          </div>
+                        </div>
+                        <span class="text-xs font-black text-slate-400 bg-slate-100 px-3 py-1 rounded-md">{{ puesto.area }} m²</span>
+                      </label>
+                    }
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="preview-column">
+      <div class="card-preview-blue p-8">
+        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-blue-200 mb-8">Vista Previa del Impacto</h3>
+
+        <div class="space-y-8 flex-1">
+          <div class="flex justify-between items-center py-3 border-b border-white/10">
+            <span class="text-blue-100 text-sm font-medium">Puestos Seleccionados</span>
+            <span class="text-white font-black text-xl">{{ totalSeleccionados() }} locales</span>
+          </div>
+          <div class="flex justify-between items-center py-3 border-b border-white/10">
+            <span class="text-blue-100 text-sm font-medium">Monto por Local</span>
+            <span class="text-emerald-400 font-black text-2xl tabular-numbers"> S/ {{ montoPorLocal() | number:'1.2-2' }}</span>
+          </div>
+          <div class="pt-4">
+            <p class="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-2">Total a Recaudar</p>
+            <h4 class="text-5xl font-black text-white tracking-tighter">S/ {{ totalARecaudar() | number:'1.2-2' }}</h4>
+          </div>
+        </div>
+
+        <div class="mt-12 space-y-4">
+          <div class="bg-white/10 p-5 rounded-2xl border border-white/10">
+            <p class="text-[10px] font-black text-blue-200 uppercase mb-2">Nota de Auditoría</p>
+            <p class="text-[11px] text-blue-50 leading-relaxed opacity-90 font-medium">
+              Este cargo se reflejará automáticamente en el próximo ciclo de facturación.
+            </p>
+          </div>
+          <button type="button" class="btn-confirm-final" (click)="abrirConfirmacion()">
+            Confirmar y Repartir Deuda
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (mostrarConfirmacion()) {
+  <div class="modal-overlay animate-fade-in">
+    <div class="modal-card animate-scale-up">
+
+      <div class="modal-header">
+        <div class="icon-circle-warning">
+          <span class="material-symbols-outlined">priority_high</span>
+        </div>
+        <h3 class="modal-title">Confirmar Distribución</h3>
+        <p class="modal-subtitle">Revisa el resumen antes de generar los cargos en el sistema.</p>
+      </div>
+
+      <div class="modal-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Concepto</span>
+            <span class="info-value">{{ conceptoSeleccionado() }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha Emisión</span>
+            <span class="info-value">{{ fechaHoy }}</span>
+          </div>
+        </div>
+
+        <div class="total-highlight-grid">
+          <div class="highlight-item border-r border-slate-100">
+            <p class="total-label">MONTO POR LOCAL</p>
+            <h4 class="total-value-sub">S/ {{ montoPorLocal() | number:'1.2-2' }}</h4>
+          </div>
+          <div class="highlight-item">
+            <p class="total-label">TOTAL A REPARTIR</p>
+            <h4 class="total-value-main-blue">S/ {{ totalARecaudar() | number:'1.2-2' }}</h4>
+          </div>
+        </div>
+
+        <div class="affected-list-wrapper">
+          <p class="list-title">SOCIOS AFECTADOS ({{ totalSeleccionados() }})</p>
+          <div class="affected-list custom-scrollbar">
+            @for (puesto of allPuestos(); track puesto.id) {
+              @if (puesto.seleccionado) {
+                <div class="affected-item">
+                  <span class="item-puesto">{{ puesto.codigo }}</span>
+                  <span class="item-socio">{{ puesto.socio }}</span>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" (click)="mostrarConfirmacion.set(false)">
+          Cancelar
+        </button>
+        <button class="btn-confirm-modal" (click)="confirmarYRepartir()">
+          Confirmar y Procesar
+        </button>
+      </div>
+    </div>
+  </div>
+}
