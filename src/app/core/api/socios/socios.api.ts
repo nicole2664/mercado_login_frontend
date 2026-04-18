@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { apiUrl, API_CONFIG } from '../api.config';
 import { Observable } from 'rxjs';
-import { Socio, SocioBusquedaResponse, SocioDTO, SocioResponse } from './socios.models';
+import { SocioBusquedaResponse, SocioDTO, SocioResponse } from './socios.models';
 
 @Injectable({ providedIn: 'root' })
 export class SociosApi {
@@ -17,16 +17,16 @@ export class SociosApi {
     );
   }
 
-  listar(): Observable<Socio[]> {
-    return this.http.get<Socio[]>(apiUrl(API_CONFIG.endpoints.socios));
+  listar(): Observable<SocioResponse[]> {
+    return this.http.get<SocioResponse[]>(apiUrl(API_CONFIG.endpoints.socios));
   }
 
-  crear(dto: SocioDTO): Observable<Socio> {
-    return this.http.post<Socio>(apiUrl(API_CONFIG.endpoints.socios), dto);
+  crear(dto: SocioDTO): Observable<SocioResponse> {
+    return this.http.post<SocioResponse>(apiUrl(API_CONFIG.endpoints.socios), dto);
   }
 
-  actualizar(id: number, dto: SocioDTO): Observable<Socio> {
-    return this.http.put<Socio>(apiUrl(`${API_CONFIG.endpoints.socios}/${id}`), dto);
+  actualizar(id: number, dto: SocioDTO): Observable<SocioResponse> {
+    return this.http.put<SocioResponse>(apiUrl(`${API_CONFIG.endpoints.socios}/${id}`), dto);
   }
 
   eliminar(id: number): Observable<void> {

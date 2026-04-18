@@ -29,6 +29,11 @@ export interface SocioPuestoResponse {
   };
 }
 
+export interface SocioPuestoCountResponse {
+  idSocio: number;
+  puestosActivos: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SocioPuestoApi {
   private http = inject(HttpClient);
@@ -38,4 +43,11 @@ export class SocioPuestoApi {
       apiUrl(`${API_CONFIG.endpoints.socioPuesto}/socio/${idSocio}/puestos`),
     );
   }
+
+  contadorPuestosActivosPorSocio(): Observable<SocioPuestoCountResponse[]> {
+    return this.http.get<SocioPuestoCountResponse[]>(
+      apiUrl(`${API_CONFIG.endpoints.socioPuesto}/activos/contador-por-socio`),
+    );
+  }
+
 }

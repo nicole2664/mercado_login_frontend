@@ -47,6 +47,12 @@
       </a>
     }
 
+    <!-- Socios: ambos roles -->
+    <a class="menu-link" routerLink="/socios" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+      <span class="material-symbols-outlined">group</span>
+      <span>Socios</span>
+    </a>
+
     <!-- Deudas: ADMIN y CAJERO (si así lo defines en routes) -->
     <a class="menu-link" routerLink="/deudas" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
       <span class="material-symbols-outlined">{{ esAdmin() ? 'history' : 'account_balance_wallet' }}</span>

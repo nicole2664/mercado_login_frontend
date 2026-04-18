@@ -9,6 +9,9 @@ import { PagoListar } from './features/pagos/pagos-listar/pago-listar';
 import { Deudas } from './features/admin/deudas/deudas';
 import { RegistrarDeuda } from './features/admin/registrar-deuda/registrar-deuda';
 import { Conceptos } from './features/admin/conceptos/conceptos';
+import { SociosComponent } from './features/socios/socios';
+// import { PuestosComponent } from './features/puestos/puestos';
+// import { SocioPuestoComponent } from './features/socio-puesto/socio-puesto';
 
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
@@ -40,6 +43,24 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] },
       },
       {
+        path: 'socios',
+        component: SociosComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CAJERO'] },
+      },
+      // {
+      //   path: 'puestos',
+      //   component: PuestosComponent,
+      //   canActivate: [roleGuard],
+      //   data: { roles: ['ADMIN', 'CAJERO'] },
+      // },
+      // {
+      //   path: 'socio-puesto',
+      //   component: SocioPuestoComponent,
+      //   canActivate: [roleGuard],
+      //   data: { roles: ['ADMIN', 'CAJERO'] },
+      // },
+      {
         path: 'deudas/nueva',
         component: RegistrarDeuda,
         canActivate: [roleGuard],
@@ -62,7 +83,7 @@ export const routes: Routes = [
           { path: '', component: PagoListar },
 
           // solo cajero
-           {
+          {
             path: 'nuevo',
             component: PagoNuevo,
             canActivate: [roleGuard],

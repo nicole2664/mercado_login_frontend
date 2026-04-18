@@ -16,9 +16,9 @@ export interface SocioResponse {
   idSocio: number;
   dni: string;
   nombre: string;
-  telefono?: string;
-  direccion?: string;
-  email?: string;
+  telefono?: string | null;
+  direccion?: string | null;
+  email?: string | null;
   estado?: boolean;
   fechaCreacion?: string;
 }

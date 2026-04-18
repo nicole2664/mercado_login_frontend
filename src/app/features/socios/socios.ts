@@ -1,15 +1,18 @@
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { forkJoin, of } from 'rxjs';
-import { catchError, finalize, map, mergeMap, toArray } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { SociosApi } from '../../core/api/socios/socios.api';
-import { SocioPuestoApi } from '../../core/api/socio-puesto/socio-puesto.api';
+import {
+  SocioPuestoApi,
+  type SocioPuestoResponse,
+  type SocioPuestoCountResponse,
+} from '../../core/api/socio-puesto/socio-puesto.api';
 
-import type { Socio, SocioDTO, SocioResponse } from '../../core/api/socios/socios.models';
-import type { SocioPuestoResponse } from '../../core/api/socio-puesto/socio-puesto.api';
+import type { SocioDTO, SocioResponse } from '../../core/api/socios/socios.models';
 
 @Component({
   selector: 'app-socios',
@@ -24,15 +27,17 @@ export class SociosComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   // Data
-  socios: SocioResponse[] = [];
-  sociosFiltrados: SocioResponse[] = [];
+  socios = signal<SocioResponse[]>([]);
+  sociosFiltrados = signal<SocioResponse[]>([]);
 
   // UI filtros
   textoBusqueda = '';
   filtroEstado: 'todos' | 'activo' | 'inactivo' = 'todos';
 
-  // Puestos por socio
+  // Puestos por socio (solo conteo para la tabla)
   puestosPorSocio = new Map<number, number>();
+
+  // Asignaciones (solo para el modal “ver puestos”, se cargan bajo demanda)
   asignacionesPorSocio = new Map<number, SocioPuestoResponse[]>();
 
   // Paginación (client-side)
@@ -58,7 +63,7 @@ export class SociosComponent implements OnInit {
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
     this.verificarRol();
-    this.cargarSocios();
+    this.cargarSocios(); // ✅ ahora trae socios + conteos en 2 requests (sin N+1)
   }
 
   private nuevoSocioDTO(): SocioDTO {
@@ -66,8 +71,6 @@ export class SociosComponent implements OnInit {
   }
 
   verificarRol() {
-    // Tu AuthService guarda {username, roles[]} no {rol}.
-    // Dejamos ambas compatibilidades por si hay restos antiguos.
     const raw = localStorage.getItem('user');
     if (!raw) return;
 
@@ -80,89 +83,40 @@ export class SociosComponent implements OnInit {
     }
   }
 
-  // ======== Carga socios ========
+  // ======== Carga socios (sin N+1) ========
 
   cargarSocios() {
     this.cargando = true;
 
-    this.sociosApi
-      .listar()
-      .pipe(
-        map((lista: Socio[]) =>
-          // Normalizamos a SocioResponse para que el HTML pueda usar idSocio
-          lista.map(
-            (s) =>
-              ({
-                idSocio: s.id,
-                dni: s.dni,
-                nombre: s.nombre,
-                estado: s.estado,
-                telefono: undefined,
-                direccion: undefined,
-                email: undefined,
-                fechaCreacion: undefined,
-              }) satisfies SocioResponse,
-          ),
-        ),
-        finalize(() => (this.cargando = false)),
-      )
+    forkJoin({
+      socios: this.sociosApi.listar(), // SocioResponse[]
+      counts: this.socioPuestoApi.contadorPuestosActivosPorSocio(), // SocioPuestoCountResponse[]
+    })
+      .pipe(finalize(() => (this.cargando = false)))
       .subscribe({
-        next: (data) => {
-          this.socios = data;
+        next: ({ socios, counts }) => {
+          // data base
+          this.socios.set(socios);
           this.textoBusqueda = '';
           this.filtroEstado = 'todos';
           this.paginaActual = 1;
 
-          // Cargar conteo/asignaciones (N+1 controlado)
-          this.cargarPuestosPorSocio(data);
+          // reset conteos y cache de asignaciones
+          this.puestosPorSocio.clear();
+          this.asignacionesPorSocio.clear();
+
+          // counts solo trae socios con >=1 puesto activo.
+          // Los que no están, quedan con 0.
+          for (const c of counts) {
+            const id = Number(c.idSocio);
+            const n = Number(c.puestosActivos ?? 0);
+            if (Number.isFinite(id)) this.puestosPorSocio.set(id, n);
+          }
+
+          this.filtrar();
         },
         error: () => Swal.fire('Error', 'No se pudieron cargar los socios', 'error'),
       });
-  }
-
-  /**
-   * N+1 controlado:
-   * - Llama /socio-puesto/socio/{id}/puestos por cada socio
-   * - Pero con concurrencia limitada (mergeMap with concurrency)
-   */
-  cargarPuestosPorSocio(socios: SocioResponse[]) {
-    this.puestosPorSocio.clear();
-    this.asignacionesPorSocio.clear();
-
-    if (socios.length === 0) {
-      this.filtrar();
-      return;
-    }
-
-    const CONCURRENCY = 6; // ajustable
-
-    of(...socios)
-      .pipe(
-        mergeMap((s) => {
-          const idSocio = s.idSocio;
-          return this.socioPuestoApi.puestosActivosPorSocio(idSocio).pipe(
-            map((asignaciones) => ({ idSocio, asignaciones })),
-            catchError(() => of({ idSocio, asignaciones: [] as SocioPuestoResponse[] })),
-          );
-        }, CONCURRENCY),
-        toArray(),
-      )
-      .subscribe({
-        next: (rows) => {
-          for (const r of rows) {
-            this.puestosPorSocio.set(r.idSocio, r.asignaciones.length);
-            this.asignacionesPorSocio.set(r.idSocio, r.asignaciones);
-          }
-          this.filtrar();
-        },
-        error: () => {
-          // si algo raro pasa, igual filtramos
-          this.filtrar();
-        },
-      });
-
-    // Filtrado inicial mientras llegan asignaciones (evita pantalla vacía)
-    this.filtrar();
   }
 
   // ======== Helpers puestos ========
@@ -172,19 +126,44 @@ export class SociosComponent implements OnInit {
   }
 
   get totalActivos(): number {
-    return this.socios.filter((s) => this.getPuestosCount(s.idSocio) > 0).length;
+    return this.socios().filter((s) => this.getPuestosCount(s.idSocio) > 0).length;
   }
 
   get totalInactivos(): number {
-    return this.socios.filter((s) => this.getPuestosCount(s.idSocio) === 0).length;
+    return this.socios().filter((s) => this.getPuestosCount(s.idSocio) === 0).length;
   }
 
-  // ======== Modal ver puestos ========
+  get totalConMasDeUnPuesto(): number {
+    return this.socios().filter((s) => this.getPuestosCount(s.idSocio) > 1).length;
+  }
+
+  // ======== Modal ver puestos (cargar bajo demanda) ========
 
   verPuestosSocio(socio: SocioResponse) {
     this.socioSeleccionado = socio;
-    this.puestosSocioSeleccionado = this.asignacionesPorSocio.get(socio.idSocio) ?? [];
+
+    // Si ya lo tenemos cacheado, lo mostramos de una
+    const cached = this.asignacionesPorSocio.get(socio.idSocio);
+    if (cached) {
+      this.puestosSocioSeleccionado = cached;
+      this.modalPuestosAbierto = true;
+      return;
+    }
+
+    // Si no, lo traemos del backend y lo cacheamos
+    this.puestosSocioSeleccionado = [];
     this.modalPuestosAbierto = true;
+
+    this.socioPuestoApi.puestosActivosPorSocio(socio.idSocio).subscribe({
+      next: (asig) => {
+        this.asignacionesPorSocio.set(socio.idSocio, asig);
+        this.puestosSocioSeleccionado = asig;
+      },
+      error: () => {
+        this.asignacionesPorSocio.set(socio.idSocio, []);
+        this.puestosSocioSeleccionado = [];
+      },
+    });
   }
 
   cerrarModalPuestos() {
@@ -202,7 +181,7 @@ export class SociosComponent implements OnInit {
   }
 
   filtrar() {
-    let resultado = this.socios;
+    let resultado = this.socios();
 
     const texto = this.textoBusqueda.toLowerCase().trim();
     if (texto) {
@@ -220,16 +199,16 @@ export class SociosComponent implements OnInit {
       resultado = resultado.filter((s) => this.getPuestosCount(s.idSocio) === 0);
     }
 
-    this.sociosFiltrados = resultado;
+    this.sociosFiltrados.set(resultado);
   }
 
   get totalPaginas(): number {
-    return Math.max(1, Math.ceil(this.sociosFiltrados.length / this.itemsPorPagina));
+    return Math.max(1, Math.ceil(this.sociosFiltrados().length / this.itemsPorPagina));
   }
 
   get sociosPaginados(): SocioResponse[] {
     const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
-    return this.sociosFiltrados.slice(inicio, inicio + this.itemsPorPagina);
+    return this.sociosFiltrados().slice(inicio, inicio + this.itemsPorPagina);
   }
 
   get paginas(): number[] {
@@ -311,6 +290,7 @@ export class SociosComponent implements OnInit {
     operacion.pipe(finalize(() => (this.guardando = false))).subscribe({
       next: () => {
         this.cerrarModal();
+        // recargar (socios + conteos)
         this.cargarSocios();
         Swal.fire({
           title: this.modoEdicion ? 'Actualizado' : 'Guardado',
@@ -343,6 +323,7 @@ export class SociosComponent implements OnInit {
 
       this.sociosApi.eliminar(id).subscribe({
         next: () => {
+          // recargar (socios + conteos)
           this.cargarSocios();
           Swal.fire({
             title: 'Eliminado',
