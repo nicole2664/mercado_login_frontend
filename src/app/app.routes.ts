@@ -6,8 +6,6 @@ import { LayoutComponent } from './shared/layout/layout';
 
 import { DashboardComponent } from './features/admin/dashboard/dashboard';
 import { PagoListar } from './features/pagos/pagos-listar/pago-listar';
-import { Deudas } from './features/admin/deudas/deudas';
-import { RegistrarDeuda } from './features/admin/registrar-deuda/registrar-deuda';
 import { Conceptos } from './features/admin/conceptos/conceptos';
 import { SociosComponent } from './features/socios/socios';
 // import { PuestosComponent } from './features/puestos/puestos';
@@ -16,6 +14,10 @@ import { SociosComponent } from './features/socios/socios';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { PagoNuevo } from './features/pagos/pagos-register/pago-nuevo';
+import { PuestosComponent } from './features/puestos/puestos';
+import { SocioPuestoComponent } from './features/socio-puesto/socio-puesto';
+import { DeudaListar } from './features/deudas/deudas-listar/deuda-listar';
+import { RegistrarDeuda } from './features/deudas/deudas-register/registrar-deuda';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -48,32 +50,36 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'CAJERO'] },
       },
-      // {
-      //   path: 'puestos',
-      //   component: PuestosComponent,
-      //   canActivate: [roleGuard],
-      //   data: { roles: ['ADMIN', 'CAJERO'] },
-      // },
-      // {
-      //   path: 'socio-puesto',
-      //   component: SocioPuestoComponent,
-      //   canActivate: [roleGuard],
-      //   data: { roles: ['ADMIN', 'CAJERO'] },
-      // },
       {
-        path: 'deudas/nueva',
-        component: RegistrarDeuda,
-        canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] },
-      },
-
-      // Ambos roles
-      {
-        path: 'deudas',
-        component: Deudas,
+        path: 'puestos',
+        component: PuestosComponent,
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'CAJERO'] },
       },
+      {
+        path: 'socio-puesto',
+        component: SocioPuestoComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CAJERO'] },
+      },
+      {
+        path: 'deudas',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CAJERO'] },
+        children: [
+          // listado
+          { path: '', component: DeudaListar },
+
+          // solo cajero
+          {
+            path: 'nuevo',
+            component: RegistrarDeuda,
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN'] },
+          },
+        ],
+      },
+
       {
         path: 'pagos',
         canActivate: [roleGuard],

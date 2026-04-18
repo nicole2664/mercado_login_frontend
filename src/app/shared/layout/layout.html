@@ -47,10 +47,21 @@
       </a>
     }
 
+    <a class="menu-link" routerLink="/socio-puesto" routerLinkActive="active">
+      <span class="material-symbols-outlined">link</span>
+      <span>Asignaciones</span>
+    </a>
+
     <!-- Socios: ambos roles -->
     <a class="menu-link" routerLink="/socios" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
       <span class="material-symbols-outlined">group</span>
       <span>Socios</span>
+    </a>
+
+    <!-- Puestos: ambos roles -->
+    <a class="menu-link" routerLink="/puestos" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+      <span class="material-symbols-outlined">storefront</span>
+      <span>Puestos</span>
     </a>
 
     <!-- Deudas: ADMIN y CAJERO (si así lo defines en routes) -->

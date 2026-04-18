@@ -5,6 +5,7 @@ export const API_CONFIG = {
     auth: {
       login: '/auth/login',
     },
+    motivosCobro: '/motivos-cobro',
     pagos: '/pagos',
     puestos: '/puestos',
     socios: '/socios',

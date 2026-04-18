@@ -17,11 +17,11 @@ export class PuestosApi {
     return this.http.post<Puesto>(apiUrl(API_CONFIG.endpoints.puestos), dto);
   }
 
-  actualizar(id: number, dto: PuestoDTO): Observable<Puesto> {
-    return this.http.put<Puesto>(apiUrl(`${API_CONFIG.endpoints.puestos}/${id}`), dto);
+  actualizar(idPuesto: number, dto: PuestoDTO): Observable<Puesto> {
+    return this.http.put<Puesto>(apiUrl(`${API_CONFIG.endpoints.puestos}/${idPuesto}`), dto);
   }
 
-  eliminar(id: number): Observable<void> {
-    return this.http.delete<void>(apiUrl(`${API_CONFIG.endpoints.puestos}/${id}`));
+  eliminar(idPuesto: number): Observable<void> {
+    return this.http.delete<void>(apiUrl(`${API_CONFIG.endpoints.puestos}/${idPuesto}`));
   }
 }

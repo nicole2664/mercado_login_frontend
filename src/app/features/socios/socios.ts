@@ -53,12 +53,13 @@ export class SociosComponent implements OnInit {
   guardando = false;
 
   // Modal ver puestos
-  modalPuestosAbierto = false;
-  socioSeleccionado: SocioResponse | null = null;
-  puestosSocioSeleccionado: SocioPuestoResponse[] = [];
+  modalPuestosAbierto = signal(false);
+  socioSeleccionado = signal<SocioResponse | null>(null);
+  puestosSocioSeleccionado = signal<SocioPuestoResponse[]>([]);
+  cargandoPuestosModal = signal(false);
 
   // Loading general
-  cargando = false;
+  cargando = signal(false);
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -67,7 +68,13 @@ export class SociosComponent implements OnInit {
   }
 
   private nuevoSocioDTO(): SocioDTO {
-    return { nombre: '', dni: '', telefono: '', direccion: '', email: '' };
+    return {
+      nombre: '',
+      dni: '',
+      telefono: '',
+      direccion: '',
+      email: '',
+    };
   }
 
   verificarRol() {
@@ -86,13 +93,13 @@ export class SociosComponent implements OnInit {
   // ======== Carga socios (sin N+1) ========
 
   cargarSocios() {
-    this.cargando = true;
+    this.cargando.set(true);
 
     forkJoin({
       socios: this.sociosApi.listar(), // SocioResponse[]
       counts: this.socioPuestoApi.contadorPuestosActivosPorSocio(), // SocioPuestoCountResponse[]
     })
-      .pipe(finalize(() => (this.cargando = false)))
+      .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
         next: ({ socios, counts }) => {
           // data base
@@ -138,38 +145,51 @@ export class SociosComponent implements OnInit {
   }
 
   // ======== Modal ver puestos (cargar bajo demanda) ========
-
   verPuestosSocio(socio: SocioResponse) {
-    this.socioSeleccionado = socio;
-
+    this.socioSeleccionado.set(socio);
+    console.log('CLICK ver puestos:', socio?.idSocio, socio);
     // Si ya lo tenemos cacheado, lo mostramos de una
     const cached = this.asignacionesPorSocio.get(socio.idSocio);
     if (cached) {
-      this.puestosSocioSeleccionado = cached;
-      this.modalPuestosAbierto = true;
+      this.puestosSocioSeleccionado.set(cached);
+      this.modalPuestosAbierto.set(true);
       return;
     }
 
-    // Si no, lo traemos del backend y lo cacheamos
-    this.puestosSocioSeleccionado = [];
-    this.modalPuestosAbierto = true;
 
-    this.socioPuestoApi.puestosActivosPorSocio(socio.idSocio).subscribe({
-      next: (asig) => {
-        this.asignacionesPorSocio.set(socio.idSocio, asig);
-        this.puestosSocioSeleccionado = asig;
-      },
-      error: () => {
-        this.asignacionesPorSocio.set(socio.idSocio, []);
-        this.puestosSocioSeleccionado = [];
-      },
-    });
+
+    // Si no, lo traemos del backend y lo cacheamos
+    this.cargandoPuestosModal.set(true);
+    this.puestosSocioSeleccionado.set([]);
+    this.modalPuestosAbierto.set(true);
+
+    this.socioPuestoApi
+      .puestosActivosPorSocio(socio.idSocio)
+      .pipe(finalize(() => this.cargandoPuestosModal.set(false)))
+      .subscribe({
+        next: (asig) => {
+          // Cache + set data
+          this.asignacionesPorSocio.set(socio.idSocio, asig);
+          this.puestosSocioSeleccionado.set(asig);
+
+          // ✅ Abrir recién con data lista
+          this.modalPuestosAbierto.set(true);
+        },
+        error: () => {
+          // Cache vacío para no reintentar en cada click si el endpoint falla
+          this.asignacionesPorSocio.set(socio.idSocio, []);
+          this.puestosSocioSeleccionado.set([]);
+
+          // ✅ Igual abrimos, pero ya con estado final (vacío) y no “parpadea”
+          this.modalPuestosAbierto.set(true);
+        },
+      });
   }
 
   cerrarModalPuestos() {
-    this.modalPuestosAbierto = false;
-    this.socioSeleccionado = null;
-    this.puestosSocioSeleccionado = [];
+    this.modalPuestosAbierto.set(false);
+    this.socioSeleccionado.set(null);
+    this.puestosSocioSeleccionado.set([]);
   }
 
   // ======== Filtros + paginación ========

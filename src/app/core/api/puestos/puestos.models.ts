@@ -1,12 +1,16 @@
 // src/app/core/api/puestos/puestos.models.ts
 export interface Puesto {
-  id: number; // ajusta si tu backend usa idPuesto
+  idPuesto: number;
   codigo: string;
-  descripcion: string;
+  sector?: string | null;
+  numero?: string | null;
+  descripcion?: string | null;
   estado: boolean;
 }
 
 export interface PuestoDTO {
   codigo: string;
-  descripcion: string;
+  sector?: string;
+  numero?: string;
+  descripcion?: string;
 }

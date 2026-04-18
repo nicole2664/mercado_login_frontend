@@ -7,8 +7,10 @@ export interface DeudaPendienteResponse {
 }
 
 export interface DistribuirDeudaRequest {
-  // completa según tu DTO real
-  [key: string]: any;
+  idMotivo: number;
+  montoTotal: number;
+  fecha?: string; // yyyy-mm-dd
+  codigosPuestos?: string[]; // si no mandas => backend usa todos
 }
 
 export interface MismaDeudaRequest {
@@ -22,4 +24,20 @@ export interface DeudaResponse {
   monto: number;
   fecha: string; // yyyy-mm-dd o ISO
   estado: 'PENDIENTE' | 'PAGADA' | string;
+}
+
+export interface DeudaListadoResponse {
+  idDeuda: number;
+  codigoPuesto: string;
+  idPuesto: number;
+  idMotivo: number;
+  motivoNombre: string;
+  monto: number;
+  fecha: string; // yyyy-mm-dd
+  estado: 'PENDIENTE' | 'PAGADA';
+
+  idSocio: number | null;
+  socioNombre: string | null;
+  socioDni: string | null;
+  socioEmail: string | null;
 }

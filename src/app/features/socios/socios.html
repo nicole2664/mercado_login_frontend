@@ -140,7 +140,8 @@
             <td class="py-2.5 px-4 text-center whitespace-nowrap space-x-1">
               @if (getPuestosCount(socio.idSocio) > 0) {
                 <button
-                  (click)="verPuestosSocio(socio)"
+                  type="button"
+                  (click)="$event.preventDefault(); $event.stopPropagation(); verPuestosSocio(socio)"
                   class="text-blue-600 hover:bg-blue-100 p-1.5 rounded-md transition-colors"
                   title="Ver puestos asignados"
                 >
@@ -322,13 +323,13 @@
 }
 
 <!-- MODAL VER PUESTOS DEL SOCIO -->
-@if (modalPuestosAbierto) {
+@if (modalPuestosAbierto()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
     <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden socios-modal">
       <div class="bg-blue-700 px-6 py-4 flex justify-between items-center text-white">
         <div>
-          <h3 class="font-bold text-lg">Puestos de {{ socioSeleccionado?.nombre }}</h3>
-          <p class="text-xs opacity-80">DNI: {{ socioSeleccionado?.dni }}</p>
+          <h3 class="font-bold text-lg">Puestos de {{ socioSeleccionado()?.nombre }}</h3>
+          <p class="text-xs opacity-80">DNI: {{ socioSeleccionado()?.dni }}</p>
         </div>
         <button (click)="cerrarModalPuestos()" class="hover:text-blue-200">
           <span class="material-symbols-outlined">close</span>
@@ -340,15 +341,15 @@
           <span class="material-symbols-outlined text-blue-700 text-2xl">storefront</span>
           <div>
             <p class="text-sm font-bold text-blue-800">
-              {{ puestosSocioSeleccionado.length }}
-              {{ puestosSocioSeleccionado.length === 1 ? 'puesto asignado' : 'puestos asignados' }}
+              {{ puestosSocioSeleccionado().length }}
+              {{ puestosSocioSeleccionado().length === 1 ? 'puesto asignado' : 'puestos asignados' }}
             </p>
             <p class="text-xs text-blue-600">Asignaciones activas</p>
           </div>
         </div>
 
         <div class="space-y-2 max-h-72 overflow-y-auto">
-          @for (asig of puestosSocioSeleccionado; track asig.idSocioPuesto) {
+          @for (asig of puestosSocioSeleccionado(); track asig.idSocioPuesto) {
             <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">

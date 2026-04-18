@@ -8,16 +8,14 @@
 
 /* Botón de Registro (Solo Admin) */
 .btn-register {
-  @apply flex items-center gap-2 px-6 py-3 bg-blue-700 text-white font-black rounded-xl shadow-lg hover:bg-blue-800 transition-all active:scale-95;
+  @apply flex items-center gap-2 px-6 py-3 text-white font-black rounded-xl shadow-lg transition-all active:scale-95;
 }
 
 /* --- TARJETAS DE ESTADÍSTICAS --- */
 .stats-grid { @apply grid grid-cols-1 md:grid-cols-3 gap-6; }
-.stat-card { @apply bg-white p-7 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col; }
+.stat-card { @apply bg-white p-7 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col transition-colors; }
 .stat-label { @apply text-[11px] font-black uppercase text-slate-400 tracking-widest mb-2; }
 .stat-value { @apply text-3xl font-black tracking-tighter; }
-.stat-trend { @apply flex items-center gap-1 text-[11px] font-bold mt-3; }
-.stat-subtext { @apply text-[11px] text-slate-400 mt-1 font-medium; }
 .stats-grid-margin { margin-top: 2.5rem !important; }
 
 /* --- SECCIÓN DE FILTROS --- */
@@ -33,7 +31,7 @@
 .filters-actions-group { @apply flex-[3] flex gap-4 min-w-[450px]; }
 .select-container-wide { @apply flex-1; }
 .custom-select, .custom-date-input {
-  @apply w-full bg-white border border-slate-200 rounded-2xl text-xs font-bold px-4 py-3 shadow-sm outline-none cursor-pointer hover:border-blue-400 transition-colors;
+  @apply w-full bg-white border border-slate-200 rounded-2xl text-xs font-bold px-4 py-3 shadow-sm outline-none cursor-pointer transition-colors;
 }
 
 /* --- TABLA DE DATOS --- */
@@ -43,18 +41,17 @@
 .table-row { @apply border-b border-slate-50 hover:bg-slate-50/40 transition-colors; }
 .table-row td { @apply px-6 py-4; }
 
-.puesto-badge { @apply px-3 py-1 bg-blue-50 text-blue-700 font-bold text-[11px] rounded-lg border border-blue-100; }
+/* Badge de puesto genérico (el color lo da el HTML o lo dejamos en azul suave) */
+.puesto-badge { @apply px-3 py-1 bg-slate-50 text-slate-600 font-bold text-[11px] rounded-lg border border-slate-100; }
 
 .status-tag { @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase; }
 .tag-red { @apply bg-red-50 text-red-600; }
-.tag-green { @apply bg-emerald-50 text-emerald-600; }
+.tag-green { @apply bg-emerald-50 text-emerald-700; }
 .dot { @apply w-1.5 h-1.5 rounded-full bg-current; }
 
 /* --- ACCIONES (BOTONES) --- */
 .btn-action { @apply p-2 rounded-xl transition-all hover:scale-110 active:scale-90; }
 
-/* El Ojito Fino y Estilizado */
-.btn-action.view { @apply transition-all; }
 .btn-action.view span {
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20 !important;
   font-size: 22px !important;
@@ -63,20 +60,22 @@
 .btn-action.edit { @apply text-amber-500 hover:bg-amber-50; }
 .btn-action.delete { @apply text-red-500 hover:bg-red-50; }
 
-/* --- MODAL DE DETALLE (HÍBRIDO) --- */
+/* --- MODALES --- */
 .modal-overlay { @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4; }
-.modal-card-detail { @apply bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full p-10 overflow-hidden border border-slate-100; }
+.modal-card-detail, .modal-card-edit, .modal-card-delete {
+  @apply bg-white rounded-[2.5rem] shadow-2xl border border-slate-100;
+}
+
+.modal-card-detail { @apply max-w-lg w-full p-10 overflow-hidden; }
 
 .detail-header { @apply flex justify-between items-start mb-8 pb-6 border-b border-slate-100; }
 .detail-id { @apply text-[11px] font-black text-slate-500 uppercase tracking-widest mb-1; }
 .detail-title { @apply text-2xl font-black text-slate-900 tracking-tight; }
 
-.detail-section { @apply flex flex-col; }
 .section-label { @apply block text-[12px] font-black uppercase tracking-[0.15em] mb-4 ml-1; }
-
 .data-box { @apply bg-slate-100/60 rounded-2xl p-6 border border-slate-200 space-y-4; }
 
-/* Highlights Dinámicos */
+/* Highlights de Modales */
 .highlight-blue { @apply bg-blue-50/30 border-blue-100/50; }
 .highlight-emerald { @apply bg-emerald-50/30 border-emerald-100/50; }
 
@@ -94,11 +93,12 @@
   @apply w-full mt-8 py-4 text-white font-black rounded-2xl transition-all active:scale-95;
 }
 
-/* Colores extras para el botón cerrar del cajero */
-.bg-emerald-900 { @apply bg-[#064e3b] hover:bg-[#065f46]; }
+/* Colores de Botones de Cierre */
+.bg-slate-900 { @apply bg-slate-900 hover:bg-slate-800; }
+.bg-emerald-900 { @apply bg-emerald-900 hover:bg-emerald-800; }
 
-/* --- MODAL EDITAR Y ELIMINAR (SOLO ADMIN) --- */
-.modal-card-edit { @apply bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full p-10 border border-slate-100; }
+/* --- MODAL EDITAR Y ELIMINAR --- */
+.modal-card-edit { @apply max-w-md w-full p-10; }
 .icon-circle-edit { @apply w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4; }
 .edit-header { @apply text-center mb-8; }
 .edit-title { @apply text-2xl font-black text-slate-800; }
@@ -112,7 +112,7 @@
 .btn-save-edit { @apply py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:bg-blue-700 transition-all; }
 
 /* Modal Eliminar */
-.modal-card-delete { @apply bg-white rounded-[2.5rem] shadow-2xl max-w-sm w-full p-10 border border-red-50; }
+.modal-card-delete { @apply max-w-sm w-full p-10 border border-red-50; }
 .icon-circle-red { @apply w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center animate-pulse mx-auto mb-6; }
 .delete-title { @apply text-2xl font-black text-slate-800 text-center; }
 .delete-text { @apply text-sm text-slate-500 text-center leading-relaxed mb-10; }

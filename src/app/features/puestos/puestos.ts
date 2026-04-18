@@ -1,237 +1,280 @@
-// import { Component, OnInit, inject, PLATFORM_ID, ChangeDetectorRef, NgZone } from '@angular/core';
-// import { CommonModule, isPlatformBrowser } from '@angular/common';
-// import { FormsModule } from '@angular/forms';
-// import Swal from 'sweetalert2';
-// import { PuestoService } from '../../core/services/puesto.service';
-// import { SocioPuestoService } from '../../core/services/socio-puesto.service';
-// import { Puesto, PuestoDTO } from '../../core/models/puesto.model';
-//
-// @Component({
-//   selector: 'app-puestos',
-//   standalone: true,
-//   imports: [CommonModule, FormsModule],
-//   templateUrl: './puestos.html',
-//   styleUrl: './puestos.css'
-// })
-// export class PuestosComponent implements OnInit {
-//   private puestoService = inject(PuestoService);
-//   private socioPuestoService = inject(SocioPuestoService);
-//   private platformId = inject(PLATFORM_ID);
-//   private cdr = inject(ChangeDetectorRef);
-//   private ngZone = inject(NgZone);
-//
-//   puestos: Puesto[] = [];
-//   puestosFiltrados: Puesto[] = [];
-//   textoBusqueda = '';
-//   filtroEstado: 'todos' | 'ocupado' | 'libre' = 'todos';
-//   filtroSector = '';
-//   puestosOcupadosIds = new Set<number>();
-//
-//   paginaActual = 1;
-//   itemsPorPagina = 10;
-//
-//   puestoActual: PuestoDTO = this.nuevoPuestoDTO();
-//   idEditando: number | null = null;
-//   esAdmin = false;
-//   modalAbierto = false;
-//   modoEdicion = false;
-//   guardando = false;
-//
-//   ngOnInit() {
-//     if (!isPlatformBrowser(this.platformId)) return;
-//     this.verificarRol();
-//     this.cargarPuestos();
-//   }
-//
-//   private nuevoPuestoDTO(): PuestoDTO {
-//     return { codigo: '', sector: '', numero: '', descripcion: '' };
-//   }
-//
-//   verificarRol() {
-//     const userData = localStorage.getItem('user');
-//     if (userData) {
-//       const user = JSON.parse(userData);
-//       this.esAdmin = user.rol === 'ADMIN';
-//     }
-//   }
-//
-//   cargarPuestos() {
-//     this.puestoService.listarTodos().subscribe({
-//       next: (data) => {
-//         this.ngZone.run(() => {
-//           this.puestos = data;
-//           this.paginaActual = 1;
-//           this.textoBusqueda = '';
-//           this.filtroEstado = 'todos';
-//           this.filtroSector = '';
-//           this.cargarEstadosPuestos();
-//           this.cdr.detectChanges();
-//         });
-//       },
-//       error: () => Swal.fire('Error', 'No se pudieron cargar los puestos', 'error')
-//     });
-//   }
-//
-//   cargarEstadosPuestos() {
-//     this.socioPuestoService.obtenerPuestosOcupados().subscribe({
-//       next: (ids) => {
-//         this.ngZone.run(() => {
-//           this.puestosOcupadosIds = new Set(ids);
-//           this.filtrar();
-//           this.cdr.detectChanges();
-//         });
-//       },
-//       error: () => {
-//         this.filtrar();
-//       }
-//     });
-//   }
-//
-//   estaOcupado(idPuesto: number): boolean {
-//     return this.puestosOcupadosIds.has(idPuesto);
-//   }
-//
-//   get totalOcupados(): number { return this.puestosOcupadosIds.size; }
-//   get totalLibres(): number { return this.puestos.length - this.totalOcupados; }
-//
-//   setFiltroEstado(estado: 'todos' | 'ocupado' | 'libre') {
-//     this.filtroEstado = estado;
-//     this.paginaActual = 1;
-//     this.filtrar();
-//   }
-//
-//   filtrar() {
-//     let resultado = this.puestos;
-//
-//     // Filtro por texto
-//     const texto = this.textoBusqueda.toLowerCase().trim();
-//     if (texto) {
-//       resultado = resultado.filter(p =>
-//         p.codigo.toLowerCase().includes(texto) ||
-//         (p.sector ?? '').toLowerCase().includes(texto) ||
-//         (p.descripcion ?? '').toLowerCase().includes(texto)
-//       );
-//     }
-//
-//     // Filtro por sector
-//     if (this.filtroSector) {
-//       resultado = resultado.filter(p => p.sector === this.filtroSector);
-//     }
-//
-//     // Filtro por estado
-//     if (this.filtroEstado === 'ocupado') {
-//       resultado = resultado.filter(p => this.estaOcupado(p.idPuesto!));
-//     } else if (this.filtroEstado === 'libre') {
-//       resultado = resultado.filter(p => !this.estaOcupado(p.idPuesto!));
-//     }
-//
-//     this.puestosFiltrados = resultado;
-//     this.paginaActual = 1;
-//     this.cdr.detectChanges();
-//   }
-//
-//   get totalPaginas(): number {
-//     return Math.max(1, Math.ceil(this.puestosFiltrados.length / this.itemsPorPagina));
-//   }
-//
-//   get puestosPaginados(): Puesto[] {
-//     const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
-//     return this.puestosFiltrados.slice(inicio, inicio + this.itemsPorPagina);
-//   }
-//
-//   get paginas(): number[] {
-//     return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
-//   }
-//
-//   cambiarPagina(p: number) {
-//     if (p >= 1 && p <= this.totalPaginas) {
-//       this.paginaActual = p;
-//       this.cdr.detectChanges();
-//     }
-//   }
-//
-//   abrirModalNuevo() {
-//     this.modoEdicion = false;
-//     this.idEditando = null;
-//     this.guardando = false;
-//     this.puestoActual = this.nuevoPuestoDTO();
-//     this.modalAbierto = true;
-//     this.cdr.detectChanges();
-//   }
-//
-//   abrirModalEditar(puesto: Puesto) {
-//     this.modoEdicion = true;
-//     this.idEditando = puesto.idPuesto!;
-//     this.guardando = false;
-//     this.puestoActual = {
-//       codigo: puesto.codigo,
-//       sector: puesto.sector ?? '',
-//       numero: puesto.numero ?? '',
-//       descripcion: puesto.descripcion ?? ''
-//     };
-//     this.modalAbierto = true;
-//     this.cdr.detectChanges();
-//   }
-//
-//   cerrarModal() {
-//     this.ngZone.run(() => {
-//       this.modalAbierto = false;
-//       this.guardando = false;
-//       this.puestoActual = this.nuevoPuestoDTO();
-//       this.idEditando = null;
-//       this.cdr.detectChanges();
-//     });
-//   }
-//
-//   guardarPuesto() {
-//     if (this.guardando) return;
-//     if (!this.puestoActual.codigo.trim()) {
-//       Swal.fire('Atención', 'El código del puesto es obligatorio', 'warning');
-//       return;
-//     }
-//     this.guardando = true;
-//     this.cdr.detectChanges();
-//
-//     const operacion = this.modoEdicion && this.idEditando
-//       ? this.puestoService.actualizar(this.idEditando, this.puestoActual)
-//       : this.puestoService.guardar(this.puestoActual);
-//
-//     operacion.subscribe({
-//       next: () => {
-//         this.ngZone.run(() => {
-//           this.cerrarModal();
-//           this.cargarPuestos();
-//           Swal.fire({ title: this.modoEdicion ? 'Actualizado' : 'Guardado', text: `Puesto ${this.modoEdicion ? 'actualizado' : 'registrado'} correctamente`, icon: 'success', timer: 1500, showConfirmButton: false });
-//         });
-//       },
-//       error: (err) => {
-//         this.ngZone.run(() => {
-//           this.guardando = false;
-//           this.cdr.detectChanges();
-//           Swal.fire('Error', err.error?.detalles?.[0] || 'Error al guardar', 'error');
-//         });
-//       }
-//     });
-//   }
-//
-//   eliminarPuesto(id: number | undefined) {
-//     if (!id) return;
-//     Swal.fire({
-//       title: '¿Estás seguro?', text: 'El puesto será inhabilitado', icon: 'warning',
-//       showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#ef4444',
-//       confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar'
-//     }).then((result) => {
-//       if (result.isConfirmed) {
-//         this.puestoService.eliminar(id).subscribe({
-//           next: () => {
-//             this.ngZone.run(() => {
-//               this.cargarPuestos();
-//               Swal.fire({ title: 'Eliminado', text: 'El puesto ha sido eliminado', icon: 'success', timer: 1500, showConfirmButton: false });
-//             });
-//           },
-//           error: () => Swal.fire('Error', 'No se pudo eliminar el puesto', 'error')
-//         });
-//       }
-//     });
-//   }
-// }
+import { Component, OnInit, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
+import { PuestosApi } from '../../core/api/puestos/puestos.api';
+import { SocioPuestoApi } from '../../core/api/socio-puesto/socio-puesto.api';
+import type { Puesto, PuestoDTO } from '../../core/api/puestos/puestos.models';
+
+@Component({
+  selector: 'app-puestos',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './puestos.html',
+  styleUrl: './puestos.css',
+})
+export class PuestosComponent implements OnInit {
+  private puestosApi = inject(PuestosApi);
+  private socioPuestoApi = inject(SocioPuestoApi);
+  private platformId = inject(PLATFORM_ID);
+
+  // Auth
+  esAdmin = false;
+
+  // Loading
+  cargando = signal(false);
+
+  // Data
+  puestos = signal<Puesto[]>([]);
+  puestosOcupadosIds = signal<Set<number>>(new Set<number>());
+
+  // UI filtros
+  textoBusqueda = signal('');
+  filtroEstado = signal<'todos' | 'ocupado' | 'libre'>('todos');
+  filtroSector = signal(''); // '' = todos
+
+  // Paginación
+  paginaActual = signal(1);
+  itemsPorPagina = 10;
+
+  // Modal
+  modalAbierto = signal(false);
+  modoEdicion = signal(false);
+  guardando = signal(false);
+  idEditando = signal<number | null>(null);
+  puestoActual = signal<PuestoDTO>(this.nuevoPuestoDTO());
+
+  // Sectores disponibles (derivados de data)
+  sectoresDisponibles = computed(() => {
+    const sectores = new Set<string>();
+    for (const p of this.puestos()) {
+      const s = (p.sector ?? '').trim();
+      if (s) sectores.add(s);
+    }
+    return Array.from(sectores).sort();
+  });
+
+  // Filtrado reactivo
+  puestosFiltrados = computed(() => {
+    let res = this.puestos();
+
+    const texto = this.textoBusqueda().toLowerCase().trim();
+    if (texto) {
+      res = res.filter((p) => {
+        const codigo = (p.codigo ?? '').toLowerCase();
+        const sector = (p.sector ?? '').toLowerCase();
+        const desc = (p.descripcion ?? '').toLowerCase();
+        const numero = (p.numero ?? '').toLowerCase();
+        return (
+          codigo.includes(texto) ||
+          sector.includes(texto) ||
+          desc.includes(texto) ||
+          numero.includes(texto)
+        );
+      });
+    }
+
+    const sectorFiltro = this.filtroSector().trim();
+    if (sectorFiltro) {
+      res = res.filter((p) => (p.sector ?? '') === sectorFiltro);
+    }
+
+    const estado = this.filtroEstado();
+    if (estado === 'ocupado') {
+      res = res.filter((p) => this.estaOcupado(p.idPuesto));
+    } else if (estado === 'libre') {
+      res = res.filter((p) => !this.estaOcupado(p.idPuesto));
+    }
+
+    return res;
+  });
+
+  totalPaginas = computed(() =>
+    Math.max(1, Math.ceil(this.puestosFiltrados().length / this.itemsPorPagina)),
+  );
+
+  puestosPaginados = computed(() => {
+    const page = this.paginaActual();
+    const start = (page - 1) * this.itemsPorPagina;
+    return this.puestosFiltrados().slice(start, start + this.itemsPorPagina);
+  });
+
+  paginas = computed(() => Array.from({ length: this.totalPaginas() }, (_, i) => i + 1));
+
+  // Resumen
+  totalPuestos = computed(() => this.puestos().length);
+  totalOcupados = computed(() => this.puestos().filter((p) => this.estaOcupado(p.idPuesto)).length);
+  totalLibres = computed(() => this.totalPuestos() - this.totalOcupados());
+  porcentajeOcupacion = computed(() => {
+    const total = this.totalPuestos();
+    return total === 0 ? 0 : Math.round((this.totalOcupados() / total) * 100);
+  });
+
+  ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.verificarRol();
+    this.cargarPuestos();
+  }
+
+  private nuevoPuestoDTO(): PuestoDTO {
+    return { codigo: '', sector: '', numero: '', descripcion: '' };
+  }
+
+  verificarRol() {
+    const raw = localStorage.getItem('user');
+    if (!raw) return;
+
+    try {
+      const user = JSON.parse(raw);
+      const roles: string[] = user.roles ?? [];
+      this.esAdmin = roles.includes('ADMIN') || user.rol === 'ADMIN';
+    } catch {
+      this.esAdmin = false;
+    }
+  }
+
+  cargarPuestos() {
+    this.cargando.set(true);
+
+    forkJoin({
+      puestos: this.puestosApi.listar(),
+      ocupados: this.socioPuestoApi.obtenerPuestosOcupados(),
+    })
+      .pipe(finalize(() => this.cargando.set(false)))
+      .subscribe({
+        next: ({ puestos, ocupados }) => {
+          this.puestos.set(puestos);
+          this.puestosOcupadosIds.set(new Set(ocupados ?? []));
+
+          // reset UI
+          this.textoBusqueda.set('');
+          this.filtroEstado.set('todos');
+          this.filtroSector.set('');
+          this.paginaActual.set(1);
+        },
+        error: () => Swal.fire('Error', 'No se pudieron cargar los puestos', 'error'),
+      });
+  }
+
+  estaOcupado(idPuesto: number): boolean {
+    return this.puestosOcupadosIds().has(idPuesto);
+  }
+
+  // UI handlers
+  setFiltroEstado(estado: 'todos' | 'ocupado' | 'libre') {
+    this.filtroEstado.set(estado);
+    this.paginaActual.set(1);
+  }
+
+  onChangeTextoBusqueda(value: string) {
+    this.textoBusqueda.set(value);
+    this.paginaActual.set(1);
+  }
+
+  onChangeSector(value: string) {
+    this.filtroSector.set(value);
+    this.paginaActual.set(1);
+  }
+
+  cambiarPagina(p: number) {
+    if (p >= 1 && p <= this.totalPaginas()) this.paginaActual.set(p);
+  }
+
+  // Modal
+  abrirModalNuevo() {
+    this.modoEdicion.set(false);
+    this.idEditando.set(null);
+    this.guardando.set(false);
+    this.puestoActual.set(this.nuevoPuestoDTO());
+    this.modalAbierto.set(true);
+  }
+
+  abrirModalEditar(puesto: Puesto) {
+    this.modoEdicion.set(true);
+    this.idEditando.set(puesto.idPuesto);
+    this.guardando.set(false);
+    this.puestoActual.set({
+      codigo: puesto.codigo,
+      sector: puesto.sector ?? '',
+      numero: puesto.numero ?? '',
+      descripcion: puesto.descripcion ?? '',
+    });
+    this.modalAbierto.set(true);
+  }
+
+  cerrarModal() {
+    this.modalAbierto.set(false);
+    this.guardando.set(false);
+    this.puestoActual.set(this.nuevoPuestoDTO());
+    this.idEditando.set(null);
+  }
+
+  guardarPuesto() {
+    if (this.guardando()) return;
+
+    const dto = this.puestoActual();
+
+    if (!dto.codigo?.trim()) {
+      Swal.fire('Atención', 'El código del puesto es obligatorio', 'warning');
+      return;
+    }
+
+    this.guardando.set(true);
+
+    const req =
+      this.modoEdicion() && this.idEditando()
+        ? this.puestosApi.actualizar(this.idEditando()!, dto)
+        : this.puestosApi.crear(dto);
+
+    req.pipe(finalize(() => this.guardando.set(false))).subscribe({
+      next: () => {
+        this.cerrarModal();
+        this.cargarPuestos();
+        Swal.fire({
+          title: this.modoEdicion() ? 'Actualizado' : 'Guardado',
+          text: `Puesto ${this.modoEdicion() ? 'actualizado' : 'registrado'} correctamente`,
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      },
+      error: (err) => {
+        Swal.fire('Error', err?.error?.detalles?.[0] || 'Error al guardar', 'error');
+      },
+    });
+  }
+
+  eliminarPuesto(idPuesto: number | undefined) {
+    if (!idPuesto) return;
+
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'El puesto será inhabilitado',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#ef4444',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
+      this.puestosApi.eliminar(idPuesto).subscribe({
+        next: () => {
+          this.cargarPuestos();
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'El puesto ha sido eliminado',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        },
+        error: () => Swal.fire('Error', 'No se pudo eliminar el puesto', 'error'),
+      });
+    });
+  }
+}
