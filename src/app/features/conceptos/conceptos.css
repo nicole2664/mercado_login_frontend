@@ -1,0 +1,121 @@
+@reference "../../../styles.css";
+
+/* ... (Todo tu CSS anterior se mantiene igual) ... */
+
+/* [Mantenemos las clases previas de layout, stats, table, modal-card-edit, etc.] */
+
+.page-container { @apply p-8 space-y-8; }
+.page-header-flex { @apply flex justify-between items-center mb-2; }
+.breadcrumb-text { @apply text-[10px] font-black uppercase tracking-widest text-blue-600 mb-1; }
+.title-main { @apply text-4xl font-black text-slate-900 tracking-tight; }
+.btn-register { @apply flex items-center gap-2 px-6 py-3 bg-blue-700 text-white font-black rounded-xl shadow-lg hover:bg-blue-800 transition-all active:scale-95; }
+.stats-grid { @apply grid grid-cols-1 md:grid-cols-2 gap-6; }
+.stat-card { @apply bg-white p-7 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col; }
+.stat-label { @apply text-[11px] font-black uppercase text-slate-400 tracking-widest mb-2; }
+.stat-value { @apply text-3xl font-black tracking-tighter; }
+.stat-subtext { @apply text-[11px] text-slate-400 mt-1 font-medium; }
+.stats-grid-margin { margin-top: 2.5rem !important; }
+.table-toolbar { @apply p-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-white border-b border-slate-100; }
+.search-container-conceptos { @apply relative w-full md:w-96; }
+.search-icon-v2 { @apply absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 text-xl font-bold; }
+.search-input-v2 { @apply w-full pl-12 pr-4 py-3 bg-slate-100 border-none rounded-2xl text-sm font-bold text-slate-700 outline-none transition-all focus:ring-2 focus:ring-blue-500/10 focus:bg-white focus:shadow-inner; }
+.results-text { @apply text-xs text-slate-400 font-medium; }
+.table-card { @apply bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden; }
+.data-table { @apply w-full text-left; }
+.header-styled { @apply bg-slate-50 border-b border-slate-200; }
+.header-styled th { @apply py-6 px-6 text-[12px] font-black uppercase tracking-widest text-slate-500; }
+.table-row { @apply border-b border-slate-50 hover:bg-blue-50/20 transition-colors; }
+.table-row td { @apply py-6 px-6; }
+.status-tag { @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase; }
+.tag-red { @apply bg-red-50 text-red-600; }
+.tag-green { @apply bg-emerald-50 text-emerald-600; }
+.dot { @apply w-1.5 h-1.5 rounded-full bg-current; }
+.btn-action { @apply p-2 rounded-xl transition-all hover:scale-110 active:scale-90; }
+.btn-action.edit { @apply text-amber-500 hover:bg-amber-50; }
+.modal-overlay { @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4; }
+.modal-card-edit { @apply bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full p-10 overflow-hidden border border-slate-100; }
+.edit-header { @apply text-center mb-8; }
+.edit-title { @apply text-2xl font-black text-slate-800 tracking-tight; }
+.edit-subtitle { @apply text-xs text-slate-400 font-medium mt-1; }
+.edit-label { @apply block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2; }
+.edit-input-concept { @apply w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3 px-4 text-sm font-bold outline-none transition-all focus:bg-white focus:border-blue-500 text-slate-700; }
+.edit-actions { @apply grid grid-cols-2 gap-4 mt-10; }
+.btn-cancel-edit { @apply py-4 bg-slate-100 text-slate-500 font-black text-sm rounded-2xl hover:bg-slate-200 hover:text-slate-700 transition-all active:scale-95; }
+.btn-save-edit { @apply py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95 transition-all; }
+textarea.edit-input-concept { @apply resize-none; }
+
+.modal-card-confirm-pro {
+  @apply bg-white rounded-[2.5rem] shadow-2xl !max-w-lg w-full p-12 flex flex-col items-center border border-slate-100;
+  /* !max-w-lg lo hace más ancho y espacioso */
+}
+
+.confirm-header-pro {
+  @apply text-center mb-10 flex flex-col items-center gap-6;
+}
+
+.confirm-icon-circle-pro {
+  @apply w-28 h-28 rounded-full flex items-center justify-center border-8 shadow-inner;
+  /* Icono mucho más grande y con borde grueso */
+}
+
+/* Colores Dinámicos del Icono */
+.icon-bg-danger {
+  @apply bg-red-50 text-red-500 border-red-100;
+}
+.icon-bg-success {
+  @apply bg-emerald-50 text-emerald-500 border-emerald-100;
+}
+
+.confirm-title-pro {
+  @apply text-3xl font-black tracking-tighter leading-tight;
+}
+
+.confirm-body-pro {
+  @apply text-center bg-slate-50 p-6 rounded-2xl mb-12 border border-slate-100;
+  /* Un fondo sutil para resaltar el mensaje */
+}
+
+.confirm-message-text {
+  @apply text-sm font-medium leading-relaxed;
+}
+
+/* --- ESTILOS MODAL CORPORATIVO --- */
+
+.shadow-modal {
+  box-shadow: 0px 20px 40px rgba(24, 28, 30, 0.12);
+}
+
+/* Badges de la comparativa */
+.status-badge-confirm {
+  @apply px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider inline-block;
+}
+
+.badge-active { @apply bg-emerald-100 text-emerald-700; }
+.badge-suspended { @apply bg-red-100 text-red-700; }
+
+/* El "Siguiente Estado" tiene un toque sutil de sombra interna */
+.badge-active-next { @apply bg-emerald-500 text-white shadow-sm; }
+.badge-suspended-next { @apply bg-red-500 text-white shadow-sm; }
+
+/* Botones */
+.btn-modal-cancel {
+  @apply flex-1 py-3 px-6 rounded-md border border-slate-200 text-slate-600 font-bold text-sm
+  hover:bg-slate-50 transition-all active:scale-95;
+}
+
+.btn-modal-confirm {
+  @apply flex-[1.5] py-3 px-6 rounded-md bg-blue-700 text-white font-bold text-sm shadow-sm
+  hover:bg-blue-800 transition-all active:scale-95;
+  background: linear-gradient(135deg, #00478d 0%, #005eb8 100%);
+}
+
+.btn-save-edit:disabled {
+  @apply opacity-50 cursor-not-allowed bg-slate-400 shadow-none;
+}
+
+/* Animaciones (si no las tienes aún) */
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+.animate-scale-up { animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }

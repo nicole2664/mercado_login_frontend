@@ -1,0 +1,200 @@
+<div class="page-container animate-fade-in">
+  <header class="page-header-flex">
+    <div>
+      <p class="breadcrumb-text">Administración • Catálogos</p>
+      <h2 class="title-main">Listado de Conceptos</h2>
+    </div>
+    <button class="btn-register" (click)="abrirNuevo()">
+      <span class="material-symbols-outlined">add_circle</span>
+      Nuevo Concepto
+    </button>
+  </header>
+
+  <div class="stats-grid stats-grid-margin">
+    <div class="stat-card">
+      <span class="stat-label">Total en Catálogo</span>
+      <span class="stat-value text-slate-900">{{ totalItems() }}</span>
+      <span class="stat-subtext">Conceptos registrados</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Conceptos Activos</span>
+      <span class="stat-value text-emerald-600">{{ totalActivosGlobal() }}</span>
+      <span class="stat-subtext">Disponibles para cobro</span>
+    </div>
+  </div>
+
+  <div class="table-card mt-8">
+    <div class="table-toolbar">
+      <div class="search-container-conceptos">
+        <span class="material-symbols-outlined search-icon-v2">search</span>
+        <input
+          type="text"
+          class="search-input-v2"
+          placeholder="Buscar por nombre o descripción..."
+          (input)="onSearch($event)">
+      </div>
+
+      <p class="results-text">
+        Mostrando <b>{{ totalItems() }}</b> conceptos encontrados
+      </p>
+    </div>
+
+    <table class="data-table">
+      <thead class="header-styled">
+      <tr>
+        <th class="text-lg">Código</th>
+        <th class="text-lg">Nombre del Concepto</th>
+        <th class="text-lg">Descripción Detallada</th>
+        <th class="text-lg">Fecha Registro</th>
+        <th class="text-center text-lg">Estado</th>
+        <th class="text-right text-lg">Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (item of items(); track item.idMotivo) {
+          <tr class="table-row group">
+            <td class="font-mono text-sm text-slate-400">#{{ item.idMotivo.toString().padStart(3, '0') }}</td>
+            <td>
+              <span class="text-base font-bold text-slate-800">{{ item.nombre }}</span>
+            </td>
+            <td>
+              <span class="text-sm text-slate-500 font-medium">{{ item.descripcion }}</span>
+            </td>
+            <td>
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-700">{{ item.fechaCreacion | date:'dd/MM/yyyy' }}</span>
+                <span class="text-[10px] text-slate-400">{{ item.fechaCreacion | date:'hh:mm a' }}</span>
+              </div>
+            </td>
+            <td class="text-center">
+              <span class="status-tag" [ngClass]="item.estado === 'ACTIVO' ? 'tag-green' : 'tag-red'">
+                <span class="dot"></span> {{ item.estado }}
+              </span>
+            </td>
+            <td class="text-right">
+              <div class="flex justify-end gap-3">
+                <button class="btn-action edit" (click)="abrirEditar(item)" title="Editar">
+                  <span class="material-symbols-outlined !text-2xl">edit_note</span>
+                </button>
+                <button class="btn-action" [ngClass]="item.estado === 'ACTIVO' ? 'text-red-400' : 'text-emerald-400'"
+                        (click)="confirmarCambioEstado(item)" [title]="item.estado === 'ACTIVO' ? 'Suspender' : 'Activar'">
+                  <span class="material-symbols-outlined !text-2xl">
+                    {{ item.estado === 'ACTIVO' ? 'block' : 'check_circle' }}
+                  </span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="py-20 text-center text-slate-400 italic">
+              {{ loading() ? 'Cargando conceptos...' : 'No hay conceptos registrados.' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (pageInfo()) {
+      <app-pagination
+        [totalItems]="totalItems()"
+        [itemsPerPage]="pageInfo()!.size"
+        [currentPage]="pageInfo()!.number + 1"
+        [fromItem]="(pageInfo()!.number * pageInfo()!.size) + 1"
+        [toItem]="(pageInfo()!.number + 1) * pageInfo()!.size > totalItems() ? totalItems() : (pageInfo()!.number + 1) * pageInfo()!.size"
+        [pagesArray]="pagesArray()"
+        [totalPages]="pageInfo()!.totalPages"
+        (onPageChange)="goToPage($event)"
+        (onNext)="goToPage(pageInfo()!.number + 2)"
+        (onPrev)="goToPage(pageInfo()!.number)">
+      </app-pagination>
+    }
+  </div>
+</div>
+
+@if (mostrarModal()) {
+  <div class="modal-overlay animate-fade-in">
+    <div class="modal-card-edit animate-scale-up !max-w-xl">
+      <div class="edit-header">
+        <h3 class="edit-title !text-3xl">{{ editando() ? 'Modificar' : 'Nuevo' }} Concepto</h3>
+        <p class="edit-subtitle text-sm">Asegúrate de que los nombres sean claros para el socio</p>
+      </div>
+
+      <div class="space-y-6 mt-8">
+        <div>
+          <label class="edit-label !text-xs">Nombre del Concepto</label>
+          <input type="text" class="edit-input-concept !py-4 !text-base" [(ngModel)]="conceptoForm().nombre" placeholder="Ej: Aporte por Seguridad">
+        </div>
+        <div>
+          <label class="edit-label !text-xs">Descripción para el Recibo</label>
+          <textarea class="edit-input-concept !py-4 !text-base min-h-[100px]" [(ngModel)]="conceptoForm().descripcion" placeholder="Explica brevemente qué se está cobrando..."></textarea>
+        </div>
+      </div>
+      @if (errorMessage()) {
+        <div class="bg-red-50 border border-red-100 p-3 rounded-xl flex items-center gap-2 mt-4 animate-fade-in">
+          <span class="material-symbols-outlined text-red-500 text-sm">error</span>
+          <p class="text-red-600 text-[11px] font-bold">{{ errorMessage() }}</p>
+        </div>
+      }
+      <div class="edit-actions mt-10">
+        <button class="btn-cancel-edit !py-5" (click)="mostrarModal.set(false)">Descartar</button>
+        <button class="btn-save-edit !py-5"
+                (click)="guardar()"
+                [disabled]="!conceptoForm().nombre.trim()">
+          {{ editando() ? 'Guardar Cambios' : 'Registrar Concepto' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (mostrarConfirmacion()) {
+  <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in"
+       (click)="mostrarConfirmacion.set(false)">
+
+    <div class="bg-white w-full max-w-lg rounded-xl overflow-hidden flex flex-col shadow-modal animate-scale-up"
+         (click)="$event.stopPropagation()">
+
+      <div class="px-8 pt-8 pb-6 text-center">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 mb-6">
+          <span class="material-symbols-outlined text-blue-600 text-3xl">info</span>
+        </div>
+        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 mb-3">Confirmar Cambio de Estado</h2>
+        <p class="text-slate-500 leading-relaxed text-sm max-w-[340px] mx-auto">
+          ¿Está seguro de que desea cambiar el estado de este elemento? Esta acción afectará la visibilidad y disponibilidad del mismo en el sistema.
+        </p>
+      </div>
+
+      <div class="mx-8 mb-8 p-6 bg-slate-50 rounded-lg flex items-center justify-between relative border border-slate-100">
+        <div class="flex-1 text-center">
+          <p class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-2">Estado Actual</p>
+          <span class="status-badge-confirm"
+                [ngClass]="conceptoPorCambiar()?.estado === 'ACTIVO' ? 'badge-active' : 'badge-suspended'">
+            {{ conceptoPorCambiar()?.estado }}
+          </span>
+        </div>
+
+        <div class="flex items-center justify-center px-4">
+          <span class="material-symbols-outlined text-slate-300">trending_flat</span>
+        </div>
+
+        <div class="flex-1 text-center">
+          <p class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-2">Nuevo Estado</p>
+          <span class="status-badge-confirm"
+                [ngClass]="conceptoPorCambiar()?.estado === 'ACTIVO' ? 'badge-suspended-next' : 'badge-active-next'">
+            {{ conceptoPorCambiar()?.estado === 'ACTIVO' ? 'SUSPENDIDO' : 'ACTIVO' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="px-8 pb-8 flex gap-3">
+        <button class="btn-modal-cancel" (click)="mostrarConfirmacion.set(false)">
+          Cancelar
+        </button>
+        <button class="btn-modal-confirm" (click)="ejecutarCambioEstado()">
+          Confirmar Cambio
+        </button>
+      </div>
+    </div>
+  </div>
+}
