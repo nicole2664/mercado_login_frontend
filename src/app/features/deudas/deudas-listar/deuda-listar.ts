@@ -8,13 +8,11 @@ import { PermissionsService } from '../../../core/auth/permissions.service';
 
 import { DeudasApi } from '../../../core/api/deudas/deudas.api';
 import type { DeudaListadoResponse } from '../../../core/api/deudas/deudas.models';
-import {
-  MotivosCobroApi,
-  type MotivoCobroResponse,
-} from '../../../core/api/motivos-cobro/motivos-cobro.api';
 
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ConceptosApi } from '../../../core/api/conceptos/conceptos.api';
+import { ConceptoResponse } from '../../../core/api/conceptos/conceptos.models';
 
 @Component({
   selector: 'app-deudas',
@@ -27,7 +25,7 @@ export class DeudaListar implements OnInit {
   authz = inject(PermissionsService);
   private paginationService = inject(PaginationService);
   private deudasApi = inject(DeudasApi);
-  private motivosApi = inject(MotivosCobroApi);
+  private motivosApi = inject(ConceptosApi);
   private destroyRef = inject(DestroyRef);
 
   // UI state
@@ -35,7 +33,7 @@ export class DeudaListar implements OnInit {
 
   // data
   deudas = signal<DeudaListadoResponse[]>([]);
-  motivos = signal<MotivoCobroResponse[]>([]);
+  motivos = signal<ConceptoResponse[]>([]);
 
   // modales
   mostrarDetalle = signal(false);
@@ -71,12 +69,9 @@ export class DeudaListar implements OnInit {
 
   // ====== Cargas ======
   cargarMotivos() {
-    this.motivosApi.listar().subscribe({
+    this.motivosApi.listarActivos().subscribe({
       next: (data) => this.motivos.set(data ?? []),
-      error: () => {
-        // si falla, igual dejamos que la pantalla funcione sin el combo
-        this.motivos.set([]);
-      },
+      error: () => this.motivos.set([]),
     });
   }
 

@@ -6,7 +6,7 @@ import { LayoutComponent } from './shared/layout/layout';
 
 import { DashboardComponent } from './features/admin/dashboard/dashboard';
 import { PagoListar } from './features/pagos/pagos-listar/pago-listar';
-import { Conceptos } from './features/admin/conceptos/conceptos';
+import { Conceptos } from './features/conceptos/conceptos';
 import { SociosComponent } from './features/socios/socios';
 // import { PuestosComponent } from './features/puestos/puestos';
 // import { SocioPuestoComponent } from './features/socio-puesto/socio-puesto';

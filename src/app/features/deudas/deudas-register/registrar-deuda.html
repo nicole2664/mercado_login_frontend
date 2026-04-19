@@ -26,8 +26,8 @@
               <label class="label-form">Concepto del Cargo</label>
 
               <select class="input-form" [(ngModel)]="idMotivoSeleccionado" name="idMotivoSeleccionado">
-                @for (m of motivos(); track m.idMotivo) {
-                  <option [ngValue]="m.idMotivo">{{ m.nombre }}</option>
+                @for (c of conceptos(); track c.idMotivo) {
+                  <option [ngValue]="c.idMotivo">{{ c.nombre }}</option>
                 }
               </select>
             </div>
@@ -195,12 +195,7 @@
         <div class="info-grid">
           <div class="info-item">
             <span class="info-label">Concepto</span>
-            <span class="info-value">
-              {{
-                (motivos().find(m => m.idMotivo === idMotivoSeleccionado())?.nombre)
-                || '—'
-              }}
-            </span>
+            <span class="info-value">{{ conceptoSeleccionadoNombre() }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Fecha Emisión</span>

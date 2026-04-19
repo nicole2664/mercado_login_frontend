@@ -7,12 +7,9 @@ import Swal from 'sweetalert2';
 import { PermissionsService } from '../../../core/auth/permissions.service';
 import { PuestosApi } from '../../../core/api/puestos/puestos.api';
 import type { Puesto as PuestoApiModel } from '../../../core/api/puestos/puestos.models';
-
 import { SocioPuestoApi } from '../../../core/api/socio-puesto/socio-puesto.api';
-import {
-  MotivosCobroApi,
-  type MotivoCobroResponse,
-} from '../../../core/api/motivos-cobro/motivos-cobro.api';
+import { ConceptosApi } from '../../../core/api/conceptos/conceptos.api';
+import type { ConceptoResponse } from '../../../core/api/conceptos/conceptos.models';
 import { DeudasApi } from '../../../core/api/deudas/deudas.api';
 import type { DistribuirDeudaRequest } from '../../../core/api/deudas/deudas.models';
 
@@ -38,59 +35,57 @@ export class RegistrarDeuda implements OnInit {
 
   private puestosApi = inject(PuestosApi);
   private socioPuestoApi = inject(SocioPuestoApi);
-  private motivosApi = inject(MotivosCobroApi);
+  private conceptosApi = inject(ConceptosApi);
   private deudasApi = inject(DeudasApi);
 
   cargando = signal(false);
   enviando = signal(false);
 
-  // UI inputs
+  // UI
   textoBusqueda = signal('');
   montoBase = signal<number | null>(null);
 
-  // fecha: para el backend conviene yyyy-mm-dd
-  fechaHoyIso = new Date().toISOString().slice(0, 10);
-  // solo display bonito
+  // Fechas
+  fechaHoyIso = new Date().toISOString().slice(0, 10); // yyyy-mm-dd (para backend)
   fechaHoy = new Date().toLocaleDateString('es-PE', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 
-  // motivos reales
-  motivos = signal<MotivoCobroResponse[]>([]);
-  idMotivoSeleccionado = signal<number | null>(null);
+  // Conceptos (activos)
+  conceptos = signal<ConceptoResponse[]>([]);
+  idMotivoSeleccionado = signal<number | null>(null); // idMotivo = idConcepto en backend
 
-  // puestos UI
+  // Puestos UI
   sectoresOcultos = signal<Record<string, boolean>>({});
   allPuestos = signal<PuestoUI[]>([]);
 
-  // modal confirmación
+  // Modal confirmación
   mostrarConfirmacion = signal(false);
 
   ngOnInit() {
     this.cargarPantalla();
   }
 
-  cargarPantalla() {
+  private cargarPantalla() {
     this.cargando.set(true);
 
-    // 1) motivos
-    this.motivosApi.listar().subscribe({
-      next: (motivos) => {
-        this.motivos.set(motivos ?? []);
-        // default: primer motivo si existe
-        if (!this.idMotivoSeleccionado() && this.motivos().length > 0) {
-          this.idMotivoSeleccionado.set(this.motivos()[0].idMotivo);
+    // 1) cargar conceptos activos
+    this.conceptosApi.listarActivos().subscribe({
+      next: (data) => {
+        this.conceptos.set(data ?? []);
+        if (!this.idMotivoSeleccionado() && this.conceptos().length > 0) {
+          this.idMotivoSeleccionado.set(this.conceptos()[0].idMotivo);
         }
       },
-      error: () => {
-        this.motivos.set([]);
+      error: (e) => {
+        console.error('Error cargando conceptos activos', e);
+        this.conceptos.set([]);
       },
     });
 
-    // 2) puestos + socio-puesto activos
-    // usamos subscribe anidados para no meter forkJoin si alguno falla y queremos igual seguir
+    // 2) cargar puestos + asignaciones activas
     this.puestosApi.listar().subscribe({
       next: (puestos) => {
         this.socioPuestoApi.listarActivos().subscribe({
@@ -116,14 +111,13 @@ export class RegistrarDeuda implements OnInit {
               };
             });
 
-            // orden: por sector y código
             ui.sort((a, b) => a.sector.localeCompare(b.sector) || a.codigo.localeCompare(b.codigo));
-
             this.allPuestos.set(ui);
             this.cargando.set(false);
           },
-          error: () => {
-            // sin asignaciones, igual mostramos puestos
+          error: (e) => {
+            console.error('Error cargando asignaciones activas', e);
+
             const ui: PuestoUI[] = (puestos ?? []).map((p: PuestoApiModel) => ({
               idPuesto: p.idPuesto,
               codigo: p.codigo,
@@ -134,13 +128,13 @@ export class RegistrarDeuda implements OnInit {
             }));
 
             ui.sort((a, b) => a.sector.localeCompare(b.sector) || a.codigo.localeCompare(b.codigo));
-
             this.allPuestos.set(ui);
             this.cargando.set(false);
           },
         });
       },
-      error: () => {
+      error: (e) => {
+        console.error('Error cargando puestos', e);
         this.allPuestos.set([]);
         this.cargando.set(false);
         Swal.fire('Error', 'No se pudieron cargar los puestos', 'error');
@@ -198,7 +192,6 @@ export class RegistrarDeuda implements OnInit {
     if (!grupo) return;
 
     const todosMarcados = grupo.puestos.every((p) => p.seleccionado);
-
     this.allPuestos.update((ps) =>
       ps.map((p) => (p.sector === nombreSector ? { ...p, seleccionado: !todosMarcados } : p)),
     );
@@ -235,7 +228,7 @@ export class RegistrarDeuda implements OnInit {
     const monto = this.montoBase();
 
     if (!idMotivo) {
-      Swal.fire('Atención', 'Debe seleccionar un motivo de cobro', 'warning');
+      Swal.fire('Atención', 'Debe seleccionar un concepto', 'warning');
       return;
     }
 
@@ -265,8 +258,8 @@ export class RegistrarDeuda implements OnInit {
     const dto: DistribuirDeudaRequest = {
       idMotivo,
       montoTotal,
-      fecha: this.fechaHoyIso, // opcional
-      codigosPuestos, // ✅ seleccionados
+      fecha: this.fechaHoyIso,
+      codigosPuestos,
     };
 
     this.enviando.set(true);
@@ -284,7 +277,6 @@ export class RegistrarDeuda implements OnInit {
           showConfirmButton: false,
         });
 
-        // volver al listado y refrescar
         this.router.navigateByUrl('/deudas');
       },
       error: (err) => {
@@ -294,4 +286,10 @@ export class RegistrarDeuda implements OnInit {
       },
     });
   }
+
+  // Helper: nombre del concepto seleccionado para el modal
+  conceptoSeleccionadoNombre = computed(() => {
+    const id = this.idMotivoSeleccionado();
+    return this.conceptos().find((c) => c.idMotivo === id)?.nombre ?? '—';
+  });
 }
