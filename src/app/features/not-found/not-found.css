@@ -1,0 +1,92 @@
+@reference "../../../styles.css";
+
+/* --- CONFIGURACIÓN DE TEMAS --- */
+.theme-admin {
+  --theme-color: #dbeafe !important;
+  --theme-primary: #1d4ed8 !important;
+  --theme-blob: rgba(30, 64, 175, 0.08) !important;
+}
+
+.theme-cajero {
+  --theme-color: #d1fae5 !important;
+  --theme-primary: #059669 !important;
+  --theme-blob: rgba(6, 95, 70, 0.08) !important;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.error-container {
+  @apply min-h-screen bg-slate-50 flex flex-col items-center justify-center relative overflow-hidden p-8;
+  transition: all 0.5s ease;
+}
+
+/* --- DECORACIONES DE FONDO --- */
+.bg-blob-1 {
+  @apply absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl -translate-y-1/2 translate-x-1/4;
+  background-color: var(--theme-primary);
+  opacity: 0.05;
+}
+.bg-blob-2 {
+  @apply absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-3xl translate-y-1/4 -translate-x-1/4;
+  background-color: var(--theme-primary);
+  opacity: 0.07;
+}
+
+.content-wrapper { @apply max-w-4xl w-full text-center z-10; }
+
+/* --- INDICADOR 404 --- */
+.huge-404-wrapper { @apply relative inline-block mb-8; }
+.huge-text {
+  @apply text-[12rem] md:text-[18rem] font-black leading-none tracking-tighter select-none opacity-10;
+  color: var(--theme-primary);
+}
+.icon-center { @apply absolute inset-0 flex items-center justify-center; }
+.icon-circle { @apply w-32 h-32 md:w-48 md:h-48 bg-white rounded-full flex items-center justify-center border border-slate-100; }
+.icon-main {
+  @apply text-6xl md:text-8xl;
+  color: var(--theme-primary);
+  font-variation-settings: 'FILL' 1;
+}
+
+/* --- TEXTOS --- */
+.title-error { @apply text-4xl md:text-5xl font-black text-slate-900 tracking-tight; }
+.subtitle-error { @apply text-slate-500 text-lg md:text-xl max-w-xl mx-auto font-medium; }
+.brand-name { color: var(--theme-primary); }
+
+/* --- BENTO GRID (BOTONES) --- */
+.bento-grid { @apply grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto; }
+
+.bento-card {
+  @apply bg-white p-8 rounded-[2.5rem] border border-slate-200 transition-all
+  flex flex-col items-center justify-center text-center outline-none
+  shadow-sm hover:shadow-2xl hover:-translate-y-2;
+}
+
+.bento-card:hover {
+  border-color: var(--theme-primary);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 0 0 2px var(--theme-color);
+}
+
+.bento-icon {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mb-4 border border-white shadow-md;
+  background-color: var(--theme-color);
+  color: var(--theme-primary);
+}
+
+.bento-title { @apply font-black text-xl text-slate-800 mb-1; }
+.bento-desc { @apply text-sm text-slate-400 font-medium; }
+
+/* --- FOOTER LINKS --- */
+.help-links { @apply mt-16 flex flex-wrap justify-center gap-8 border-t border-slate-200 pt-8; }
+.help-item { @apply flex items-center gap-2 text-slate-400 text-sm font-bold; }
+
+/* --- SYSTEM STATUS CARD --- */
+.system-status-card { @apply absolute bottom-10 right-10 hidden xl:block w-72 p-6 rounded-3xl border border-white shadow-2xl; }
+.glass { @apply bg-white/70 backdrop-blur-xl; }
+.pulse-dot { @apply w-2 h-2 rounded-full animate-pulse; background-color: var(--theme-primary); }
+.status-label { @apply text-[10px] font-black uppercase tracking-widest text-slate-400; }
+.progress-bar-bg { @apply h-1.5 w-full bg-slate-100 rounded-full overflow-hidden; }
+.progress-bar-fill { @apply h-full rounded-full; background-color: var(--theme-primary); }
+.status-text { @apply text-[10px] text-slate-500 font-bold leading-relaxed; }
+
+.animate-fade-in { animation: fadeIn 0.8s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

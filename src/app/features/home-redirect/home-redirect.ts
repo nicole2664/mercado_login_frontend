@@ -12,10 +12,23 @@ export class HomeRedirectComponent implements OnInit {
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     const roles = this.auth.getRoles();
-    if (!this.auth.isLoggedIn()) this.router.navigate(['/login']);
-    else if (roles.includes('ADMIN')) this.router.navigate(['/dashboard']);
-    else if (roles.includes('CAJERO')) this.router.navigate(['/pagos']);
-    else this.router.navigate(['/login']);
+
+    if (roles.includes('ADMIN')) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
+    if (roles.includes('CAJERO')) {
+      this.router.navigate(['/dashboard-caja']);
+      return;
+    }
+
+    this.router.navigate(['/login']);
   }
 }

@@ -161,10 +161,11 @@
 
               <td class="colw-acciones td-compact text-center">
                 <div class="row-actions">
-                  <button class="btn-view" title="Ver Recibo">
+                  <button class="btn-view" title="Ver comprobante" (click)="abrirPopupPdf(item)" type="button">
                     <span class="material-symbols-outlined">visibility</span>
                   </button>
-                  <button class="btn-pdf" title="Descargar PDF">
+
+                  <button class="btn-pdf" title="Descargar PDF" (click)="descargarPdf(item)" type="button">
                     <span class="material-symbols-outlined">picture_as_pdf</span>
                   </button>
                 </div>
@@ -189,3 +190,47 @@
     </div>
   </div>
 </div>
+
+<!-- ===== Modal PDF (POPUP) ===== -->
+@if (pdfModalOpen()) {
+  <div class="pdf-modal-backdrop" (click)="cerrarPopupPdf()">
+    <div class="pdf-modal" (click)="$event.stopPropagation()">
+
+      <div class="pdf-modal-header">
+        <div>
+          <div class="pdf-title">Comprobante</div>
+          <div class="pdf-subtitle">{{ pdfReciboLabel() }}</div>
+        </div>
+
+        <div class="pdf-actions">
+          <button class="pdf-btn" type="button" (click)="cerrarPopupPdf()">
+            Cerrar
+          </button>
+
+          <button
+            class="pdf-btn pdf-btn-primary"
+            type="button"
+            [disabled]="pdfLoading() || !pdfUrl()"
+            (click)="imprimirDesdePopup()"
+          >
+            Imprimir
+          </button>
+        </div>
+      </div>
+
+      <div class="pdf-modal-body">
+        @if (pdfLoading()) {
+          <div class="pdf-loading">Cargando PDF...</div>
+        } @else {
+          <iframe
+            #pdfIframe
+            class="pdf-iframe"
+            [src]="pdfUrl()"
+            title="Comprobante PDF"
+          ></iframe>
+        }
+      </div>
+
+    </div>
+  </div>
+}

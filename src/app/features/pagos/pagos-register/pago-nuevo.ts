@@ -14,6 +14,8 @@ import type { SocioBusquedaResponse } from '../../../core/api/socios/socios.mode
 import type { DeudaResponse } from '../../../core/api/deudas/deudas.models';
 import type { PagoRequest } from '../../../core/api/pagos/pagos.models';
 
+import { downloadBlob, openPdfInNewTab } from '../../../core/utils/pdf.utils';
+
 interface DeudaUI {
   id: number;
   titulo: string;

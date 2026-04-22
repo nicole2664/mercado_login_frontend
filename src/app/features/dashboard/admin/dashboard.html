@@ -1,0 +1,175 @@
+<section class="dashboard-canvas animate-fade-in">
+  <header class="dashboard-header">
+    <div class="welcome-text">
+      <p class="breadcrumb-text">Visión General Estratégica</p>
+      <h2 class="title-main">Panel de Control </h2>
+    </div>
+    <div class="header-actions">
+      <button class="btn-outline">
+        <span class="material-symbols-outlined">file_download</span>
+        <span>Exportar Datos</span>
+      </button>
+      <button class="btn-primary-gradient">
+        <span class="material-symbols-outlined">add_box</span>
+        <span>Generar Deuda</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="metrics-grid">
+    <div class="metric-card hero-gradient md:col-span-2 shadow-blue-200/50">
+      <div class="card-inner">
+        <div class="card-header-flex">
+          <span class="card-label opacity-90">Ingresos Mensuales Totales</span>
+          <span class="material-symbols-outlined opacity-80">trending_up</span>
+        </div>
+        <div class="card-content">
+          <p class="value-large">S/ 284,592.00</p>
+          <div class="status-pill-glass">
+            <span class="text-[11px] font-bold">+12.4% vs mes anterior</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card bg-white border-b-4 border-emerald-500">
+      <div class="card-inner">
+        <div class="card-header-flex">
+          <span class="card-label text-slate-400">Tasa de Ocupación</span>
+          <span class="material-symbols-outlined text-emerald-500">pie_chart</span>
+        </div>
+        <div class="card-content">
+          <p class="value-medium text-slate-900">94.2%</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill bg-emerald-500" style="width: 94.2%"></div>
+          </div>
+          <p class="sub-label">418 de 444 puestos ocupados</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card bg-white border-b-4 border-red-500">
+      <div class="card-inner">
+        <div class="card-header-flex">
+          <span class="card-label text-slate-400">Deuda Pendiente Total</span>
+          <span class="material-symbols-outlined text-red-500">warning</span>
+        </div>
+        <div class="card-content">
+          <p class="value-medium text-slate-900">S/ 12,840.15</p>
+          <p class="text-xs font-black text-red-500 uppercase tracking-tighter">28 Facturas vencidas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-split-grid">
+    <div class="chart-container-main">
+      <div class="chart-header">
+        <div class="chart-info">
+          <h3 class="chart-title text-slate-900">Tendencia de Ingresos</h3>
+          <p class="chart-subtitle text-slate-400">Análisis comparativo</p>
+        </div>
+        <div class="chart-tabs">
+          <button (click)="updatePeriod(6)" [class.active]="viewPeriod() === 6" class="tab-btn">6 Meses</button>
+          <button (click)="updatePeriod(12)" [class.active]="viewPeriod() === 12" class="tab-btn">1 Año</button>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <canvas #revenueChart></canvas>
+      </div>
+    </div>
+
+    <div class="debtors-card">
+      <h3 class="chart-title mb-6">Top Deudores</h3>
+      <div class="debtors-list">
+        <div class="debtor-item group">
+          <div class="debtor-meta">
+            <div class="avatar-box">M1</div>
+            <div>
+              <p class="name">Mercat Central SL</p>
+              <p class="loc">Local #102-B</p>
+            </div>
+          </div>
+          <div class="debtor-data">
+            <p class="amount">S/ 3,420.00</p>
+            <span class="badge-red">60 Días</span>
+          </div>
+        </div>
+        <div class="debtor-item group">
+          <div class="debtor-meta">
+            <div class="avatar-box">JP</div>
+            <div>
+              <p class="name">Juan Pérez Frutas</p>
+              <p class="loc">Puesto #012</p>
+            </div>
+          </div>
+          <div class="debtor-data">
+            <p class="amount">S/ 1,150.45</p>
+            <span class="badge-red">45 Días</span>
+          </div>
+        </div>
+        <div class="debtor-item group">
+          <div class="debtor-meta">
+            <div class="avatar-box">LB</div>
+            <div>
+              <p class="name">La Boutique Pan</p>
+              <p class="loc">Local #005</p>
+            </div>
+          </div>
+          <div class="debtor-data">
+            <p class="amount">S/ 840.00</p>
+            <span class="badge-red">30 Días</span>
+          </div>
+        </div>
+        <div class="debtor-item group">
+          <div class="debtor-meta">
+            <div class="avatar-box">AC</div>
+            <div>
+              <p class="name">Artesanías Cusco</p>
+              <p class="loc">Puesto #088</p>
+            </div>
+          </div>
+          <div class="debtor-data">
+            <p class="amount">S/ 520.10</p>
+            <span class="badge-red">15 Días</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-footer-card">Ver Reporte Completo</button>
+    </div>
+  </div>
+
+  <div class="recent-table-card">
+    <div class="table-header">
+      <h3 class="chart-title">Actividad de Cobro Reciente</h3>
+      <div class="search-container">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Buscar transacción...">
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="dashboard-table">
+        <thead>
+        <tr>
+          <th>Referencia</th>
+          <th>Fecha</th>
+          <th>Concepto</th>
+          <th class="text-right">Monto</th>
+          <th class="text-center">Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-row">
+          <td class="cell-ref">#TRX-9921</td>
+          <td class="cell-date">14 May, 2026</td>
+          <td class="cell-concept">Alquiler Mayo - Local #44</td>
+          <td class="cell-amount">S/ 1,200.00</td>
+          <td class="cell-status">
+            <span class="status-badge-green">Completado</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,63 @@
+<main class="error-container animate-fade-in" [ngClass]="esAdmin() ? 'theme-admin' : 'theme-cajero'">
+
+  <div class="bg-blob-1"></div>
+  <div class="bg-blob-2"></div>
+
+  <div class="content-wrapper">
+    <div class="huge-404-wrapper">
+      <h1 class="huge-text">404</h1>
+      <div class="icon-center">
+        <div class="icon-circle shadow-2xl">
+          <span class="material-symbols-outlined icon-main">error</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center space-y-4 mb-12">
+      <h2 class="title-error">Lo sentimos, la página que buscas no existe</h2>
+      <p class="subtitle-error">
+        Es posible que el enlace esté roto o que la página haya sido movida a una nueva ubicación dentro de
+        <b class="brand-name">MarketPay</b>.
+      </p>
+    </div>
+
+    <div class="bento-grid">
+      <a [routerLink]="['/home']" class="bento-card group">
+        <div class="bento-icon shadow-sm">
+          <span class="material-symbols-outlined">home</span>
+        </div>
+        <h3 class="bento-title">Volver al {{ esAdmin() ? 'Panel' : 'Inicio' }}</h3>
+        <p class="bento-desc">Regresa a tu área principal de trabajo.</p>
+      </a>
+
+      <button (click)="contactarSoporte()" class="bento-card group">
+        <div class="bento-icon shadow-sm">
+          <span class="material-symbols-outlined">support_agent</span>
+        </div>
+        <h3 class="bento-title">Soporte técnico</h3>
+        <p class="bento-desc">Contacta con nuestro equipo por WhatsApp.</p>
+      </button>
+    </div>
+
+    <div class="help-links">
+      <div class="help-item"><span class="material-symbols-outlined">help</span> Base de conocimientos</div>
+      <div class="help-item"><span class="material-symbols-outlined">article</span> Documentación</div>
+      <div class="help-item"><span class="material-symbols-outlined">shield</span> Estado del sistema</div>
+    </div>
+  </div>
+
+  <div class="system-status-card glass">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="pulse-dot"></div>
+      <span class="status-label">System Status</span>
+    </div>
+    <div class="space-y-3">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: 100%"></div>
+      </div>
+      <p class="status-text">
+        MarketPay v4.0 opera normalmente. Este error es local a la ruta solicitada.
+      </p>
+    </div>
+  </div>
+</main>

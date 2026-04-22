@@ -1,0 +1,130 @@
+<section class="dashboard-canvas animate-fade-in">
+  <header class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 mb-5">
+        Panel de Control
+      </h1>
+
+      <p class="text-slate-500 font-medium mb-3">
+        Resumen de recaudación y movimientos del turno
+      </p>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="metric-card border-l-4 border-emerald-500">
+      <div class="card-inner">
+        <div class="flex justify-between items-start">
+          <p class="card-label">Recaudación Hoy</p>
+          <span class="material-symbols-outlined text-emerald-600">monetization_on</span>
+        </div>
+        <div class="mt-4">
+          <p class="value-medium">{{ recaudacionHoy() }}</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill bg-emerald-500" [style.width]="porcentajeRecaudacion()"></div>
+          </div>
+          <p class="sub-label text-emerald-600">+12% vs ayer</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card border-l-4 border-blue-500">
+      <div class="card-inner">
+        <div class="flex justify-between items-start">
+          <p class="card-label">Transacciones</p>
+          <span class="material-symbols-outlined text-blue-600">sync_alt</span>
+        </div>
+        <div class="mt-4">
+          <p class="value-medium">{{ transaccionesTurno() }}</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill bg-blue-500" [style.width]="porcentajeTransacciones()"></div>
+          </div>
+          <p class="sub-label">Meta del turno: 60</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card border-l-4 border-orange-500">
+      <div class="card-inner">
+        <div class="flex justify-between items-start">
+          <p class="card-label">Alertas de Deuda</p>
+          <span class="material-symbols-outlined text-orange-600">warning</span>
+        </div>
+        <div class="mt-4">
+          <p class="value-medium">{{ alertasPendientes() }}</p>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill bg-orange-500" [style.width]="porcentajeAlertas()"></div>
+          </div>
+          <p class="sub-label text-orange-600">Cobros críticos hoy</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="chart-container-main lg:col-span-2">
+      <div class="chart-header">
+        <div>
+          <p class="chart-subtitle">Flujo de Caja Semanal</p>
+          <h3 class="chart-title">Rendimiento de Ingresos</h3>
+        </div>
+        <button class="btn-time-filter">
+          <span>Últimos 7 días</span>
+        </button>
+      </div>
+      <div class="chart-wrapper">
+        <canvas #revenueChart></canvas>
+      </div>
+    </div>
+
+    <div class="debtors-card">
+      <h3 class="chart-title mb-6">Actividad Reciente</h3>
+      <div class="space-y-6">
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <span class="material-symbols-outlined">check_circle</span>
+          </div>
+          <div class="flex-1">
+            <p class="name">Pago Puesto #102</p>
+            <p class="loc">Hace 5 min • Juan Pérez</p>
+          </div>
+          <p class="amount text-emerald-600">+S/ 450</p>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
+            <span class="material-symbols-outlined">priority_high</span>
+          </div>
+          <div class="flex-1">
+            <p class="name">Deuda Vencida</p>
+            <p class="loc">Puesto #044 • María G.</p>
+          </div>
+          <span class="badge-red">CRÍTICO</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <span class="material-symbols-outlined">check_circle</span>
+          </div>
+          <div class="flex-1">
+            <p class="name">Pago Puesto #012</p>
+            <p class="loc">Hace 1h • Ana Quispe</p>
+          </div>
+          <p class="amount text-emerald-600">+S/ 120</p>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+            <span class="material-symbols-outlined">mail</span>
+          </div>
+          <div class="flex-1">
+            <p class="name">Aviso Enviado</p>
+            <p class="loc">Recordatorio masivo • Deudas</p>
+          </div>
+          <span class="material-symbols-outlined text-slate-400">history</span>
+        </div>
+      </div>
+      <button class="btn-footer-card">Ver Historial Completo</button>
+    </div>
+  </div>
+</section>

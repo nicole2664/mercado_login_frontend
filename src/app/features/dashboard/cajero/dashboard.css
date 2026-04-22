@@ -1,0 +1,133 @@
+@reference "../../../../styles.css";
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.dashboard-canvas {
+  @apply p-8 space-y-8 max-w-7xl mx-auto;
+}
+
+/* --- BOTONES (Bordes XL para mayor elegancia) --- */
+.btn-outline {
+  @apply flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all;
+}
+
+.btn-primary-gradient {
+  @apply flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold shadow-xl shadow-emerald-200 transition-all active:scale-95;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+/* --- TARJETAS DE MÉTRICAS (Métricas de Turno) --- */
+.metrics-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-8;
+}
+
+.metric-card {
+  /* Asegura que el borde lateral se vea bien */
+  @apply rounded-2xl p-6 bg-white shadow-sm transition-all hover:shadow-md flex flex-col justify-between min-h-[140px];
+}
+
+.card-label {
+  @apply text-[10px] font-black uppercase tracking-widest text-slate-400;
+}
+
+.value-medium {
+  @apply text-3xl font-black tracking-tighter text-slate-900 mt-2;
+}
+
+.sub-label {
+  @apply text-[10px] font-bold text-slate-400 uppercase mt-1;
+}
+
+/* --- BARRAS DE PROGRESO EN TARJETAS --- */
+.progress-bar-bg {
+  @apply h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mt-3 mb-2;
+}
+
+.progress-bar-fill {
+  @apply h-full rounded-full transition-all duration-1000 ease-out;
+}
+
+.metric-card {
+  @apply rounded-2xl p-6 bg-white shadow-sm transition-all hover:shadow-md flex flex-col justify-between min-h-[170px];
+}
+
+/* --- CONTENEDOR DE GRÁFICO (7 Días) --- */
+.chart-container-main {
+  @apply lg:col-span-2 bg-slate-100 rounded-2xl p-8 border border-slate-200 flex flex-col;
+  min-height: 450px;
+}
+
+.btn-time-filter {
+  @apply flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-[11px] font-black uppercase tracking-wider text-slate-600 hover:bg-slate-50 transition-all shadow-sm;
+}
+
+.chart-header {
+  @apply flex justify-between items-start mb-6;
+}
+
+.chart-title {
+  @apply text-lg font-black tracking-tight text-slate-900;
+}
+
+.chart-subtitle {
+  @apply text-[10px] font-bold uppercase tracking-widest text-slate-400;
+}
+
+.chart-wrapper {
+  @apply relative w-full flex-1 min-h-[300px] mt-4;
+}
+
+/* --- TARJETA DE ACTIVIDAD (Notificaciones) --- */
+.debtors-card {
+  @apply bg-white rounded-2xl p-8 border border-slate-100 shadow-sm flex flex-col;
+}
+
+.activity-item {
+  @apply flex items-center space-x-4 p-2 rounded-xl transition-colors hover:bg-slate-50;
+}
+
+.name {
+  @apply font-black text-slate-800 text-sm;
+}
+
+.loc {
+  @apply text-[10px] font-medium text-slate-400;
+}
+
+.amount {
+  @apply font-black text-sm tabular-nums;
+}
+
+.badge-red {
+  @apply px-2 py-0.5 bg-red-50 text-red-600 text-[9px] font-black rounded uppercase tracking-tighter;
+}
+
+.btn-footer-card {
+  @apply mt-auto pt-8 text-xs font-black text-blue-600 uppercase tracking-widest hover:underline text-center;
+}
+
+/* --- ANIMACIONES --- */
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 768px) {
+  .dashboard-canvas {
+    @apply p-4;
+  }
+
+  .value-medium {
+    @apply text-2xl;
+  }
+}

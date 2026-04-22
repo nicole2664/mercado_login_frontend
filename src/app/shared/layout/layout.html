@@ -39,13 +39,17 @@
   </div>
 
   <div class="sidebar-links">
-    <!-- Dashboard solo ADMIN -->
-    @if (authz.canViewDashboard()) {
-      <a class="menu-link" routerLink="/dashboard" routerLinkActive="active">
-        <span class="material-symbols-outlined">dashboard</span>
-        <span>Panel</span>
-      </a>
-    }
+    <!-- Dashboard: ADMIN y CAJERO (ruta distinta) -->
+    <a
+      class="menu-link"
+      [routerLink]="esAdmin() ? '/dashboard' : '/dashboard-caja'"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [ngClass]="{ 'active-emerald': !esAdmin() }"
+    >
+      <span class="material-symbols-outlined">dashboard</span>
+      <span>Panel</span>
+    </a>
 
     <a class="menu-link" routerLink="/socio-puesto" routerLinkActive="active">
       <span class="material-symbols-outlined">link</span>
@@ -79,7 +83,13 @@
     }
 
     <!-- Pagos: ambos roles -->
-    <a class="menu-link" routerLink="/pagos" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+    <a
+      class="menu-link"
+      routerLink="/pagos"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [ngClass]="{ 'active-emerald': !esAdmin() }"
+    >
       <span class="material-symbols-outlined">payments</span>
       <span>Pagos</span>
     </a>

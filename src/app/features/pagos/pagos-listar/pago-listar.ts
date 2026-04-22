@@ -1,4 +1,13 @@
-import { Component, signal, inject, computed, OnInit } from '@angular/core';
+import {
+  Component,
+  signal,
+  inject,
+  computed,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -8,6 +17,8 @@ import { PermissionsService } from '../../../core/auth/permissions.service';
 import type { PageResponse, PagoListadoDto } from '../../../core/api/pagos/pagos.models';
 import { PagosApi } from '../../../core/api/pagos/pagos.api';
 import { FormsModule } from '@angular/forms';
+import { ComprobanteApi } from '../../../core/api/pagos/comprobante.api';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-pagos-list',
@@ -16,8 +27,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './pago-listar.html',
   styleUrl: './pago-listar.css',
 })
-export class PagoListar implements OnInit {
+export class PagoListar implements OnInit, OnDestroy {
   private pagosApi = inject(PagosApi);
+  private comprobanteApi = inject(ComprobanteApi);
   authz = inject(PermissionsService);
 
   // Inputs (UI)
@@ -25,7 +37,7 @@ export class PagoListar implements OnInit {
   fromInput = signal<string>(''); // YYYY-MM-DD
   toInput = signal<string>(''); // YYYY-MM-DD
 
-  // Filtros aplicados (los que realmente se envían al backend)
+  // Filtros aplicados
   q = signal<string>('');
   from = signal<string>('');
   to = signal<string>('');
@@ -35,24 +47,38 @@ export class PagoListar implements OnInit {
 
   readonly pageSize = 10;
 
+  // ===== Modal PDF =====
+  pdfModalOpen = signal(false);
+  pdfLoading = signal(false);
+  private sanitizer = inject(DomSanitizer);
+
+  pdfUrl = signal<SafeResourceUrl | null>(null);
+
+  // guarda el objectUrl real para poder hacer revoke
+  private pdfObjectUrl: string | null = null;
+  pdfReciboLabel = signal<string>('');
+
+  @ViewChild('pdfIframe')
+  pdfIframeRef?: ElementRef<HTMLIFrameElement>;
+
   ngOnInit() {
     this.cargarPagos(0);
   }
 
-  // ======== Acciones de filtros ========
+  ngOnDestroy() {
+    this.cleanupPdfUrl();
+  }
 
+  // ======== filtros ========
   aplicarFiltros() {
-    // Validación simple de rango
     const from = this.fromInput();
     const to = this.toInput();
     if (from && to && from > to) return;
 
-    // “commit” de inputs a filtros aplicados
     this.q.set(this.qInput());
     this.from.set(this.fromInput());
     this.to.set(this.toInput());
 
-    // al aplicar filtros, siempre volver a página 0
     this.cargarPagos(0);
   }
 
@@ -74,8 +100,6 @@ export class PagoListar implements OnInit {
     this.aplicarFiltros();
   }
 
-  // ======== Carga ========
-
   cargarPagos(page: number) {
     this.loading.set(true);
 
@@ -96,13 +120,11 @@ export class PagoListar implements OnInit {
       });
   }
 
-  // ========= Helpers para el componente <app-pagination> =========
-
+  // ======== pagination ========
   items = computed(() => this.pageInfo()?.content ?? []);
-
   totalItems = computed(() => this.pageInfo()?.totalElements ?? 0);
   totalPages = computed(() => this.pageInfo()?.totalPages ?? 0);
-  currentPage = computed(() => (this.pageInfo()?.number ?? 0) + 1); // UI 1-based
+  currentPage = computed(() => (this.pageInfo()?.number ?? 0) + 1);
   itemsPerPage = computed(() => this.pageInfo()?.size ?? this.pageSize);
 
   fromItem = computed(() => {
@@ -119,12 +141,10 @@ export class PagoListar implements OnInit {
 
   pagesArray = computed(() => {
     const n = this.totalPages();
-    return Array.from({ length: n }, (_, i) => i + 1); // [1..n]
+    return Array.from({ length: n }, (_, i) => i + 1);
   });
 
-  goToPage = (page1Based: number) => {
-    this.cargarPagos(page1Based - 1);
-  };
+  goToPage = (page1Based: number) => this.cargarPagos(page1Based - 1);
 
   nextPage = () => {
     const p = this.pageInfo();
@@ -138,7 +158,93 @@ export class PagoListar implements OnInit {
     this.cargarPagos(p.number - 1);
   };
 
-  // ========= Stats (sobre la página actual) =========
+  // ======== modal helpers ========
+  private cleanupPdfUrl() {
+    if (this.pdfObjectUrl) {
+      URL.revokeObjectURL(this.pdfObjectUrl);
+      this.pdfObjectUrl = null;
+    }
+    this.pdfUrl.set(null);
+  }
+
+  abrirPopupPdf(item: PagoListadoDto) {
+    const idComprobante = item.idComprobante;
+
+    if (!Number.isFinite(idComprobante)) {
+      alert('ID de comprobante inválido: ' + idComprobante);
+      return;
+    }
+
+    this.pdfModalOpen.set(true);
+    this.pdfLoading.set(true);
+    this.pdfReciboLabel.set(item.idRecibo ?? '');
+
+    this.cleanupPdfUrl();
+
+    this.comprobanteApi.getComprobantePdf(idComprobante).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        this.pdfObjectUrl = objectUrl;
+
+        // IMPORTANT: esto permite usarlo en <iframe [src]>
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl));
+
+        this.pdfLoading.set(false);
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.pdfLoading.set(false);
+        alert(err?.message ?? 'No se pudo generar el comprobante PDF.');
+        this.cerrarPopupPdf();
+      },
+    });
+  }
+
+  cerrarPopupPdf() {
+    this.pdfModalOpen.set(false);
+    this.pdfLoading.set(false);
+    this.cleanupPdfUrl();
+  }
+
+  imprimirDesdePopup() {
+    const iframe = this.pdfIframeRef?.nativeElement;
+    if (!iframe) return;
+
+    try {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+    } catch (e) {
+      console.error(e);
+      alert('No se pudo iniciar la impresión. Intenta imprimir manualmente desde el visor.');
+    }
+  }
+
+  descargarPdf(item: PagoListadoDto) {
+    const idComprobante = item.idComprobante;
+    if (!Number.isFinite(idComprobante)) {
+      alert('ID de comprobante inválido: ' + idComprobante);
+      return;
+    }
+
+    this.comprobanteApi.getComprobantePdf(idComprobante).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `comprobante-${item.idRecibo || idComprobante}.pdf`;
+        a.click();
+
+        URL.revokeObjectURL(url);
+      },
+      error: (err: any) => {
+        console.error(err);
+        alert(err?.message ?? 'No se pudo descargar el comprobante PDF.');
+      },
+    });
+  }
+
+  // ======== stats (igual) ========
   private esMismaFecha(d1: Date, d2: Date): boolean {
     return (
       d1.getFullYear() === d2.getFullYear() &&

@@ -1,0 +1,194 @@
+@reference "../../../../styles.css";
+
+/* --- CONTENEDOR --- */
+.dashboard-canvas {
+  @apply p-8 space-y-8 max-w-7xl mx-auto;
+}
+
+/* --- HEADER --- */
+.dashboard-header {
+  @apply flex flex-col md:flex-row md:items-end justify-between gap-6;
+}
+
+.breadcrumb-text {
+  @apply text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1;
+}
+
+.title-main {
+  @apply text-4xl font-extrabold tracking-tight text-slate-900;
+}
+
+.header-actions {
+  @apply flex gap-3;
+}
+
+/* --- BOTONES --- */
+.btn-outline {
+  @apply flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all;
+}
+
+.btn-primary-gradient {
+  @apply flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold shadow-xl shadow-blue-200 transition-all active:scale-95;
+  background: linear-gradient(135deg, #00478d 0%, #005eb8 100%);
+}
+
+/* --- MÉTRICAS --- */
+.metrics-grid {
+  @apply grid grid-cols-1 md:grid-cols-4 gap-6;
+}
+
+.metric-card {
+  @apply rounded-2xl p-8 min-h-[200px] shadow-sm flex flex-col justify-between transition-all hover:shadow-lg hover:-translate-y-1;
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #00478d 0%, #005eb8 100%);
+  @apply text-white border-none;
+}
+
+.card-label {
+  @apply text-[11px] font-black uppercase tracking-widest;
+}
+
+.value-large {
+  @apply text-5xl font-black tracking-tighter mb-3;
+}
+
+.value-medium {
+  @apply text-4xl font-black tracking-tighter mb-2;
+}
+
+.status-pill-glass {
+  @apply inline-block bg-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm;
+}
+
+.progress-bar-bg {
+  @apply w-full h-2 bg-slate-100 rounded-full mt-4 overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full rounded-full transition-all duration-1000;
+}
+
+.sub-label {
+  @apply text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-3;
+}
+
+/* --- GRÁFICO Y CONTENIDO --- */
+.content-split-grid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-8;
+}
+
+.chart-container-main {
+  @apply lg:col-span-2 bg-slate-100 rounded-3xl p-10 border border-slate-200 flex flex-col;
+}
+
+.chart-header {
+  @apply flex justify-between items-center mb-10;
+}
+
+.chart-title {
+  @apply text-xl font-black tracking-tight;
+}
+
+.chart-subtitle {
+  @apply text-[11px] font-bold uppercase tracking-widest;
+}
+
+.chart-tabs {
+  @apply flex bg-white p-1.5 rounded-xl shadow-sm border border-slate-200;
+}
+
+.tab-btn {
+  @apply px-5 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 rounded-xl transition-all;
+}
+
+.tab-btn.active {
+  @apply bg-blue-600 text-white shadow-md shadow-blue-200;
+}
+
+.chart-wrapper {
+  @apply relative w-full h-[300px] flex-1;
+}
+
+/* --- TOP DEUDORES --- */
+.debtors-card {
+  @apply bg-white rounded-3xl p-8 border border-slate-100 shadow-sm flex flex-col;
+}
+
+.debtor-item {
+  @apply flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 transition-all cursor-pointer;
+}
+
+.avatar-box {
+  @apply h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-slate-400 text-sm;
+}
+
+.debtor-meta {
+  @apply flex items-center gap-4;
+}
+
+.name { @apply font-black text-slate-800 text-sm; }
+.loc { @apply text-[10px] font-bold text-slate-400 uppercase tracking-widest; }
+
+.amount { @apply font-black text-slate-900 text-sm text-right tabular-nums; }
+.badge-red {
+  @apply px-2.5 py-1 rounded-lg text-[9px] font-black bg-red-50 text-red-500 uppercase tracking-tighter mt-1 inline-block;
+}
+
+.btn-footer-card {
+  @apply mt-auto pt-6 text-sm font-black text-blue-600 uppercase tracking-widest hover:underline transition-all;
+}
+
+/* --- TABLA --- */
+.recent-table-card {
+  @apply bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden;
+}
+
+.table-header {
+  @apply px-10 py-8 flex justify-between items-center border-b border-slate-50;
+}
+
+.search-container {
+  @apply relative flex items-center;
+}
+
+.search-container span {
+  @apply absolute left-4 text-slate-500 text-lg;
+}
+
+.search-container input {
+  @apply pl-12 pr-6 py-3 bg-slate-200 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-100 w-72 transition-all text-slate-700;
+}
+
+.dashboard-table {
+  @apply w-full;
+}
+
+.dashboard-table th {
+  @apply px-10 py-5 bg-slate-200 text-[10px] font-black text-slate-700 uppercase tracking-[0.2em] border-b border-slate-300;
+}
+
+.table-row {
+  @apply hover:bg-blue-50/30 transition-colors;
+}
+
+.table-row td {
+  @apply px-10 py-6 border-b border-slate-50;
+}
+
+.cell-ref { @apply text-xs font-black text-blue-600 tabular-nums; }
+.cell-date { @apply text-xs font-bold text-slate-400; }
+.cell-concept { @apply text-xs font-bold text-slate-800; }
+.cell-amount { @apply text-sm font-black text-slate-900 text-right tabular-nums; }
+
+.status-badge-green {
+  @apply px-4 py-1.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 uppercase tracking-widest inline-block;
+}
+
+/* --- ANIMACIONES --- */
+.animate-fade-in { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

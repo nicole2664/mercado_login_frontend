@@ -41,10 +41,8 @@ export class LoginComponent {
           timer: 1200,
           timerProgressBar: true,
         }).then(() => {
-          const roles = res.roles ?? [];
-          if (roles.includes('ADMIN')) this.router.navigate(['/dashboard']);
-          else if (roles.includes('CAJERO')) this.router.navigate(['/pagos']);
-          else this.router.navigate(['/login']);
+          // Un solo punto de decisión: HomeRedirectComponent
+          this.router.navigate(['/home']);
         });
       },
       error: (e) => {
