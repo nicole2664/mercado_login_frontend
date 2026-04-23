@@ -1,0 +1,76 @@
+<!-- src/app/features/reportes/caja-diaria/caja-diaria.html -->
+<section class="page">
+  <div class="header">
+    <div>
+      <h1>Reporte de Flujo de Caja Diario</h1>
+      <p>Monitoreo de ingresos por día (todo el mercado).</p>
+    </div>
+
+    <div class="actions">
+      <input
+        type="date"
+        [value]="fecha()"
+        (input)="fecha.set(($any($event.target).value))"
+        (change)="onFechaChange()"
+      />
+
+      <button class="btn" (click)="exportCsv()">Exportar CSV</button>
+      <button class="btn primary" (click)="exportXlsx()">Exportar Excel</button>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <div class="loading">Cargando...</div>
+  } @else {
+    <div class="cards">
+      <div class="card">
+        <div class="label">Total Recaudado</div>
+        <div class="value">S/ {{ cards()?.totalRecaudado ?? 0 }}</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Ingresos en Efectivo</div>
+        <div class="value">S/ {{ cards()?.ingresosEfectivo ?? 0 }}</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Ingresos Digitales</div>
+        <div class="value">S/ {{ cards()?.ingresosDigitales ?? 0 }}</div>
+      </div>
+    </div>
+
+    <div class="table">
+      <h2>Detalle de Transacciones</h2>
+
+      <table>
+        <thead>
+        <tr>
+          <th>ID Comprobante</th>
+          <th>Puesto</th>
+          <th>Método</th>
+          <th>Monto</th>
+          <th>Hora</th>
+          <th>Conceptos</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (it of items(); track $index) {
+            <tr>
+              <td>{{ it.idRecibo }}</td>
+              <td>{{ it.puesto }}</td>
+              <td>{{ it.metodoPago }}</td>
+              <td>S/ {{ it.monto }}</td>
+              <td>{{ it.hora }}</td>
+              <td>{{ it.conceptos.join(' | ') }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (items().length === 0) {
+        <div class="empty">No hay transacciones para este día.</div>
+      }
+    </div>
+  }
+</section>

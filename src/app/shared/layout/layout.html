@@ -94,6 +94,11 @@
       <span>Pagos</span>
     </a>
 
+    <!-- REPORTES -->
+    <a class="menu-link" routerLink="/flujo-caja" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+      <span class="material-symbols-outlined">payments</span>
+      <span>Flujo de Caja</span>
+    </a>
     <!-- Registrar pago: SOLO CAJERO (según tu regla) -->
     <!-- @if (authz.canRegisterPayment()) {
       <a class="menu-link" routerLink="/pagos/nuevo" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
