@@ -9,8 +9,6 @@ import { CajaDiariaComponent } from './features/reportes/caja-diaria/caja-diaria
 import { DashboardCajaComponent } from './features/dashboard/cajero/dashboard';
 import { NotFound } from './features/not-found/not-found';
 import { guestGuard } from './core/guards/guest.guard';
-import { CajaDiariaComponent } from './features/reportes/caja-diaria/caja-diaria';
-// import { DashboardComponent } from './features/admin/dashboard/dashboard';
 import { PagoListar } from './features/pagos/pagos-listar/pago-listar';
 import { Conceptos } from './features/conceptos/conceptos';
 import { SociosComponent } from './features/socios/socios';
@@ -26,7 +24,6 @@ import { RegistrarDeuda } from './features/deudas/deudas-register/registrar-deud
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
 
-  // Shell autenticado
   {
     path: '',
     component: LayoutComponent,
@@ -76,17 +73,14 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'CAJERO'] },
         children: [
-          // listado
           { path: '', component: DeudaListar },
 
-          // solo cajero
           {
             path: 'nuevo',
             component: RegistrarDeuda,
             canActivate: [roleGuard],
             data: { roles: ['ADMIN'] },
           },
-          //reportes
           {
             path: 'flujo-caja',
             component: CajaDiariaComponent,
@@ -95,7 +89,6 @@ export const routes: Routes = [
           },
         ],
       },
-      //reportes
       {
         path: 'flujo-caja',
         component: CajaDiariaComponent,
@@ -107,10 +100,7 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'CAJERO'] },
         children: [
-          // listado
           { path: '', component: PagoListar },
-
-          // solo cajero
           {
             path: 'nuevo',
             component: PagoNuevo,
@@ -120,7 +110,6 @@ export const routes: Routes = [
         ],
       },
 
-      // default: manda a home (para que redirija por rol)
       { path: '**', component: NotFound },
     ],
   },

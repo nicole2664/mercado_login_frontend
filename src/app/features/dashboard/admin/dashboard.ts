@@ -32,6 +32,7 @@ Chart.register(...registerables);
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
+
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('revenueChart') revenueChart!: ElementRef<HTMLCanvasElement>;
 
