@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 
 import { ReporteCajaApi } from '../../../core/api/reportes/reporte-caja.api';
 import type { CajaDiariaResponse } from '../../../core/api/reportes/reporte-caja.models';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-caja-diaria',
@@ -15,6 +16,7 @@ import type { CajaDiariaResponse } from '../../../core/api/reportes/reporte-caja
 })
 export class CajaDiariaComponent implements OnInit {
   private api = inject(ReporteCajaApi);
+  private auth = inject(AuthService);
 
   // default hoy en formato YYYY-MM-DD
   fecha = signal(new Date().toISOString().slice(0, 10));
@@ -67,6 +69,15 @@ export class CajaDiariaComponent implements OnInit {
         ),
       error: () => Swal.fire('Error', 'No se pudo descargar el Excel.', 'error'),
     });
+  }
+
+  // Helpers de UI: color por rol (ADMIN=azul, CAJERO=verde)
+  accentSolidClass(): string {
+    return this.auth.hasRole('ADMIN') ? 'accent-admin' : 'accent-cajero';
+  }
+
+  accentOutlineClass(): string {
+    return this.auth.hasRole('ADMIN') ? 'accent-admin-outline' : 'accent-cajero-outline';
   }
 
   private descargarBlob(blob: Blob, filename: string) {

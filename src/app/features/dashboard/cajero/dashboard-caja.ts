@@ -17,8 +17,8 @@ Chart.register(...registerables);
   selector: 'app-dashboard-cajero',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
+  templateUrl: './dashboard-caja.html',
+  styleUrl: './dashboard-caja.css',
 })
 export class DashboardCajaComponent implements OnInit, AfterViewInit {
   @ViewChild('revenueChart') revenueChart!: ElementRef<HTMLCanvasElement>;

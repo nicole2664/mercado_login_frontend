@@ -5,7 +5,6 @@ import {
   computed,
   inject,
   signal,
-  WritableSignal,
   AfterViewInit,
   ElementRef,
   ViewChild,
@@ -18,10 +17,11 @@ import {
   DashboardOcupacion,
   TopDeudor,
 } from '../../../core/api/dashboard/dashboard.api';
-
+import { interval, Subject } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { Chart, registerables } from 'chart.js';
 import { shortMonthLabel } from '../../../core/utils/date-labels.utils';
-import { environment } from '../../../../environments/environment.prod';
+import { environment } from '../../../../environments/environment';
 
 Chart.register(...registerables);
 
@@ -32,23 +32,20 @@ Chart.register(...registerables);
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('revenueChart') revenueChart!: ElementRef<HTMLCanvasElement>;
 
   private dashboardApi = inject(DashboardApi);
 
   private chart: Chart | undefined;
-  private refreshIntervalId?: any;
+  private destroy$ = new Subject<void>();
   private viewReady = false;
+  readonly isTabActive = signal<boolean>(true); // (POR PROBAR)
 
-  readonly ingresos$: WritableSignal<DashboardIngresos | undefined> = signal<
-    DashboardIngresos | undefined
-  >(undefined);
-
-  readonly ocupacion$: WritableSignal<DashboardOcupacion | undefined> = signal<
-    DashboardOcupacion | undefined
-  >(undefined);
+  readonly ingresos$ = signal<DashboardIngresos | undefined>(undefined);
+  readonly ocupacion$ = signal<DashboardOcupacion | undefined>(undefined);
+  readonly topDeudores$ = signal<TopDeudor[]>([]);
+  readonly deudaVencida$ = signal<DashboardDeudaVencida | undefined>(undefined);
 
   readonly ocupacionPct = computed(() => {
     const o = this.ocupacion$();
@@ -57,27 +54,72 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly totalMesActual = computed(() => this.ingresos$()?.mesActual ?? 0);
   readonly variacionMesPct = computed(() => this.ingresos$()?.variacionPct ?? 0);
-  readonly topDeudores$ = signal<TopDeudor[]>([]);
-
-  readonly deudaVencida$ = signal<DashboardDeudaVencida | undefined>(undefined);
-
-  // Serie para gráfica
   readonly serieMensual = computed(() => this.ingresos$()?.serieMensual ?? []);
 
-  // Helper para mostrar solo mes corto y año (ej: "May 24")
   shortMonth(str: string) {
     return shortMonthLabel(str);
   }
 
+  ngOnInit() {
+    //-- VISIBILITY (POR PROBAR)
+    const handleVisibility = () => this.isTabActive.set(document.visibilityState === 'visible');
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    //-- RXJS POLLING
+    interval(10000)
+      .pipe(startWith(0), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadAll();
+      });
+
+    // Limpia listener al destruir (mejor práctica):  (POR PROBAR)
+    this.destroy$.subscribe(() => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+    });
+  }
+
+  ngAfterViewInit() {
+    this.viewReady = true;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.chart) this.chart.destroy();
+  }
+
+  private loadAll() {
+    // Refresca TODOS los datos (¡incluso los que antes cargabas solo una vez!)
+    this.dashboardApi.getOcupacion().subscribe({
+      next: (data) => this.ocupacion$.set(data),
+      error: (err) =>
+        this.logError('Error cargando ocupación:', err),
+    });
+    this.dashboardApi.getIngresos().subscribe({
+      next: (data) => {
+        this.ingresos$.set(data);
+        if (this.viewReady) setTimeout(() => this.renderChart(), 0);
+      },
+      error: (err) => this.logError('Error cargando ingresos:', err),
+    });
+    this.dashboardApi.getDeudaVencida().subscribe({
+      next: (data) => this.deudaVencida$.set(data),
+      error: (err) => this.logError('Error deuda vencida', err),
+    });
+    this.dashboardApi.getTopDeudores().subscribe({
+      next: (list) => this.topDeudores$.set(list),
+      error: (err) => this.logError('Top deudores', err),
+    });
+  }
+
   private renderChart() {
-    if (!this.viewReady) return;
-    if (!this.revenueChart) return;
+    if (!this.viewReady || !this.revenueChart) return;
     const ctx = this.revenueChart.nativeElement.getContext('2d');
     if (!ctx) return;
     if (this.chart) this.chart.destroy();
 
     const data = this.serieMensual();
-    if (!data || data.length === 0) return;
+    if (!data?.length) return;
 
     const labels = data.map((m) => this.shortMonth(m.mes));
     const totals = data.map((m) => m.total);
@@ -107,85 +149,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.viewReady = true;
-    // La gráfica solo se pinta cuando los datos llegan (ver abajo)
-    // y siempre después de AfterViewInit.
-  }
-
-  ngOnInit() {
-    this.loadAll();
-    this.loadDeudaVencida();
-
-    this.refreshIntervalId = setInterval(() => {
-      this.loadAll();
-      this.loadDeudaVencida();
-    }, 10000);
-  }
-
-  ngOnDestroy() {
-    if (this.refreshIntervalId) clearInterval(this.refreshIntervalId);
-    if (this.chart) this.chart.destroy();
-  }
-
-  private loadAll() {
-    // Ambas en paralelo
-    this.loadOcupacion();
-    this.loadIngresos();
-    this.loadTopDeudores();
-  }
-
-  private loadOcupacion() {
-    this.dashboardApi.getOcupacion().subscribe({
-      next: (data) => this.ocupacion$.set(data),
-      error: (err) => {
-        if (environment.production) {
-          return;
-        }
-        console.error('Error cargando ocupación:', err);
-      },
-    });
-  }
-
-  private loadIngresos() {
-    this.dashboardApi.getIngresos().subscribe({
-      next: (data) => {
-        this.ingresos$.set(data);
-        // Solo actualiza la gráfica después del primer render del canvas
-        if (this.viewReady) {
-          setTimeout(() => this.renderChart(), 0);
-        }
-      },
-      error: (err) => {
-        if (environment.production) {
-          return;
-        }
-        console.error('Error cargando ingresos:', err);
-      },
-    });
-  }
-
-  private loadDeudaVencida() {
-    this.dashboardApi.getDeudaVencida().subscribe({
-      next: (data) => this.deudaVencida$.set(data),
-      error: (err) => {
-        if (environment.production) {
-          return;
-        }
-        console.error('Error deuda vencida', err);
-      },
-    });
-  }
-
-  private loadTopDeudores() {
-    this.dashboardApi.getTopDeudores().subscribe({
-      next: (list) => this.topDeudores$.set(list),
-      error: (err) => {
-        if (environment.production) {
-          return;
-        }
-        console.error('Top deudores', err);
-      },
-    });
+  private logError(msg: string, err: any) {
+    if (!environment.production) {
+      console.error(msg, err);
+    }
+    // Aquí podrías enviar logs a un servicio de monitoreo si lo deseas en prod
   }
 }

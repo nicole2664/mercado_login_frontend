@@ -1,6 +1,7 @@
 // src/app/core/api/http/http-error.interceptor.ts
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 type ApiError = {
   error: string;
@@ -18,7 +19,9 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
       // Solo alerta si el error NO es 401/403 (ya manejados por el AuthInterceptor)
       if (!(err.status === 401 || err.status === 403)) {
-        alert(message); // Reemplaza por snackbar/toast si lo prefieres
+        if (!environment.production) {
+          alert(message);
+        }
       }
       return throwError(() => ({
         status: err.status,
