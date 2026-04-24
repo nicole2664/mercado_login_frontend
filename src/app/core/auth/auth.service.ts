@@ -17,7 +17,10 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
-  private isBrowser(): boolean {
+  private isBrowser(): boolean | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
     return isPlatformBrowser(this.platformId);
   }
 

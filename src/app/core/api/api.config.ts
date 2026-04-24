@@ -5,6 +5,7 @@ export const API_CONFIG = {
     auth: {
       login: '/auth/login',
     },
+    dashboard: '/dashboard',
     pagos: '/pagos',
     puestos: '/puestos',
     socios: '/socios',
@@ -14,5 +15,4 @@ export const API_CONFIG = {
   },
 } as const;
 
-// helper opcional para armar URLs
 export const apiUrl = (path: string) => `${API_CONFIG.baseUrl}${path}`;

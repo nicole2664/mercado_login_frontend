@@ -24,14 +24,18 @@
           <span class="material-symbols-outlined opacity-80">trending_up</span>
         </div>
         <div class="card-content">
-          <p class="value-large">S/ 284,592.00</p>
+          <p class="value-large">S/ {{ totalMesActual() | number:'1.2-2' }}</p>
           <div class="status-pill-glass">
-            <span class="text-[11px] font-bold">+12.4% vs mes anterior</span>
+        <span class="text-[11px] font-bold"
+              [ngClass]="{'text-green-600': variacionMesPct() >= 0, 'text-red-600': variacionMesPct() < 0}">
+          {{ variacionMesPct() >= 0 ? '+' : '' }}{{ variacionMesPct() | number:'1.1-1' }}% vs mes anterior
+        </span>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- kpi ocupación, en tu metrics-grid -->
     <div class="metric-card bg-white border-b-4 border-emerald-500">
       <div class="card-inner">
         <div class="card-header-flex">
@@ -39,11 +43,17 @@
           <span class="material-symbols-outlined text-emerald-500">pie_chart</span>
         </div>
         <div class="card-content">
-          <p class="value-medium text-slate-900">94.2%</p>
+          <p class="value-medium text-slate-900">{{ ocupacionPct() }}%</p>
           <div class="progress-bar-bg">
-            <div class="progress-bar-fill bg-emerald-500" style="width: 94.2%"></div>
+            <div
+              class="progress-bar-fill bg-emerald-500"
+              [style.width.%]="ocupacionPct()"
+              style="transition: width 0.5s;"
+            ></div>
           </div>
-          <p class="sub-label">418 de 444 puestos ocupados</p>
+          <p class="sub-label">
+            {{ ocupacion$()?.totalAsignaciones ?? '—' }} de {{ ocupacion$()?.totalPuestos ?? '—' }} puestos ocupados
+          </p>
         </div>
       </div>
     </div>
@@ -55,8 +65,12 @@
           <span class="material-symbols-outlined text-red-500">warning</span>
         </div>
         <div class="card-content">
-          <p class="value-medium text-slate-900">S/ 12,840.15</p>
-          <p class="text-xs font-black text-red-500 uppercase tracking-tighter">28 Facturas vencidas</p>
+          <p class="value-medium text-slate-900">
+            S/ {{ deudaVencida$()?.montoTotal ?? '0.00' | number:'1.2-2' }}
+          </p>
+          <p class="text-xs font-black text-red-500 uppercase tracking-tighter">
+            {{ deudaVencida$()?.cantidad ?? 0 }} Facturas vencidas
+          </p>
         </div>
       </div>
     </div>
@@ -70,106 +84,50 @@
           <p class="chart-subtitle text-slate-400">Análisis comparativo</p>
         </div>
         <div class="chart-tabs">
-          <button (click)="updatePeriod(6)" [class.active]="viewPeriod() === 6" class="tab-btn">6 Meses</button>
-          <button (click)="updatePeriod(12)" [class.active]="viewPeriod() === 12" class="tab-btn">1 Año</button>
+          <!--          <button (click)="updatePeriod(6)" [class.active]="viewPeriod() === 6" class="tab-btn">6 Meses</button>-->
+          <!--          <button (click)="updatePeriod(12)" [class.active]="viewPeriod() === 12" class="tab-btn">1 Año</button>-->
         </div>
       </div>
-      <div class="chart-wrapper">
+      <div class="chart-wrapper" style="height:240px; min-height:200px;">
         <canvas #revenueChart></canvas>
       </div>
     </div>
 
     <div class="debtors-card">
       <h3 class="chart-title mb-6">Top Deudores</h3>
-      <div class="debtors-list">
-        <div class="debtor-item group">
-          <div class="debtor-meta">
-            <div class="avatar-box">M1</div>
-            <div>
-              <p class="name">Mercat Central SL</p>
-              <p class="loc">Local #102-B</p>
+      @if (topDeudores$().length > 0) {
+        <div class="debtors-list">
+          @for (d of topDeudores$(); track d.idSocio) {
+            <div class="debtor-item group">
+              <div class="debtor-meta">
+                <div class="avatar-box">
+                  {{ d.nombre.split(' ').map(x => x[0]).join('').slice(0,2) }}
+                </div>
+                <div>
+                  <p class="name">{{ d.nombre }}</p>
+                  <div class="puesto-badges">
+                    @for (p of d.puestos.split(','); track p) {
+                      <span class="puesto-pill">{{ p }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="debtor-data">
+                <p class="amount">S/ {{ d.totalPendiente | number:'1.2-2' }}</p>
+                <span [ngClass]="d.diasAntigua >= 30 ? 'badge-red' : 'badge-blue'">
+              {{ d.diasAntigua }} Días
+            </span>
+              </div>
             </div>
-          </div>
-          <div class="debtor-data">
-            <p class="amount">S/ 3,420.00</p>
-            <span class="badge-red">60 Días</span>
-          </div>
+          }
         </div>
-        <div class="debtor-item group">
-          <div class="debtor-meta">
-            <div class="avatar-box">JP</div>
-            <div>
-              <p class="name">Juan Pérez Frutas</p>
-              <p class="loc">Puesto #012</p>
-            </div>
-          </div>
-          <div class="debtor-data">
-            <p class="amount">S/ 1,150.45</p>
-            <span class="badge-red">45 Días</span>
-          </div>
+        <button class="btn-footer-card mt-2">Ver Reporte Completo</button>
+      } @else {
+        <div class="text-green-700 p-4 text-center">
+          <span class="font-bold">¡No hay deudores críticos! Mercado al día 🎉</span>
+          <div class="text-xs mt-1">Sigue así, ¡una excelente noticia para tu gestión!</div>
         </div>
-        <div class="debtor-item group">
-          <div class="debtor-meta">
-            <div class="avatar-box">LB</div>
-            <div>
-              <p class="name">La Boutique Pan</p>
-              <p class="loc">Local #005</p>
-            </div>
-          </div>
-          <div class="debtor-data">
-            <p class="amount">S/ 840.00</p>
-            <span class="badge-red">30 Días</span>
-          </div>
-        </div>
-        <div class="debtor-item group">
-          <div class="debtor-meta">
-            <div class="avatar-box">AC</div>
-            <div>
-              <p class="name">Artesanías Cusco</p>
-              <p class="loc">Puesto #088</p>
-            </div>
-          </div>
-          <div class="debtor-data">
-            <p class="amount">S/ 520.10</p>
-            <span class="badge-red">15 Días</span>
-          </div>
-        </div>
-      </div>
-      <button class="btn-footer-card">Ver Reporte Completo</button>
-    </div>
-  </div>
-
-  <div class="recent-table-card">
-    <div class="table-header">
-      <h3 class="chart-title">Actividad de Cobro Reciente</h3>
-      <div class="search-container">
-        <span class="material-symbols-outlined">search</span>
-        <input type="text" placeholder="Buscar transacción...">
-      </div>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="dashboard-table">
-        <thead>
-        <tr>
-          <th>Referencia</th>
-          <th>Fecha</th>
-          <th>Concepto</th>
-          <th class="text-right">Monto</th>
-          <th class="text-center">Estado</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-row">
-          <td class="cell-ref">#TRX-9921</td>
-          <td class="cell-date">14 May, 2026</td>
-          <td class="cell-concept">Alquiler Mayo - Local #44</td>
-          <td class="cell-amount">S/ 1,200.00</td>
-          <td class="cell-status">
-            <span class="status-badge-green">Completado</span>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      }
     </div>
   </div>
 </section>

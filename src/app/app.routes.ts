@@ -5,6 +5,7 @@ import { HomeRedirectComponent } from './features/home-redirect/home-redirect';
 import { LayoutComponent } from './shared/layout/layout';
 
 import { DashboardComponent } from './features/dashboard/admin/dashboard';
+import { CajaDiariaComponent } from './features/reportes/caja-diaria/caja-diaria';
 import { DashboardCajaComponent } from './features/dashboard/cajero/dashboard';
 import { NotFound } from './features/not-found/not-found';
 import { guestGuard } from './core/guards/guest.guard';
@@ -86,7 +87,13 @@ export const routes: Routes = [
           },
         ],
       },
-
+      //reportes
+      {
+        path: 'flujo-caja',
+        component: CajaDiariaComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CAJERO'] },
+      },
       {
         path: 'pagos',
         canActivate: [roleGuard],

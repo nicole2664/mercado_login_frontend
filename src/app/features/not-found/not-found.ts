@@ -1,6 +1,7 @@
 import { Component, signal, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { PermissionsService } from '../../core/auth/permissions.service';
 
 @Component({
   selector: 'app-not-found',
@@ -10,37 +11,20 @@ import { RouterLink, Router } from '@angular/router';
   styleUrl: './not-found.css',
 })
 export class NotFound implements OnInit {
-  private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private authz = inject(PermissionsService);
 
-  esAdmin = signal(true); // Por defecto azul
+  esAdmin = signal(true);
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      const userData = localStorage.getItem('user'); //
+    // Si estás usando SSR/hydration, este check evita efectos raros.
+    if (!isPlatformBrowser(this.platformId)) return;
 
-      if (userData) {
-        try {
-          const user = JSON.parse(userData);
-          // Cambiamos la lógica: verificamos si explícitamente es CAJERO
-          const isCajero = (user.roles ?? []).includes('CAJERO');
-          this.esAdmin.set(!isCajero); // Si es cajero -> false (verde), si no -> true (azul)
-          return;
-        } catch (e) {
-          console.error('Error al parsear usuario');
-          this.esAdmin.set(true);
-        }
-      }
-
-      const url = this.router.url;
-      this.esAdmin.set(!url.includes('/pagos') && !url.includes('/nuevo'));
-    }
+    this.esAdmin.set(this.authz.isAdmin());
   }
 
   contactarSoporte() {
     const mensaje = encodeURIComponent('Hola, necesito soporte con el sistema MarketPay');
-    if (typeof window !== 'undefined') {
-      window.open(`https://wa.me/51902752563?text=${mensaje}`, '_blank');
-    }
+    window.open(`https://wa.me/51902752563?text=${mensaje}`, '_blank');
   }
 }

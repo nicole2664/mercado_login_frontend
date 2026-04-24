@@ -1,3 +1,4 @@
+// src/app/core/auth/permissions.service.ts
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 

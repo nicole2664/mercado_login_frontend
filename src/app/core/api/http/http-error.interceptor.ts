@@ -13,11 +13,13 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err: HttpErrorResponse) => {
       // Si backend manda ApiError:
       const apiError = err.error as Partial<ApiError> | null;
-
       const message =
         apiError?.detalles?.[0] || apiError?.error || err.message || 'Ocurrió un error inesperado';
 
-      // Puedes estandarizar un objeto:
+      // Solo alerta si el error NO es 401/403 (ya manejados por el AuthInterceptor)
+      if (!(err.status === 401 || err.status === 403)) {
+        alert(message); // Reemplaza por snackbar/toast si lo prefieres
+      }
       return throwError(() => ({
         status: err.status,
         message,

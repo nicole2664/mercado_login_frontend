@@ -3,14 +3,18 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { authInterceptor } from './core/auth/auth.interceptor';
 import { httpErrorInterceptor } from './core/api/http/http-error.interceptor';
+import { authInterceptor } from './core/api/http/auth.interceptor';
+import { tokenInterceptor } from './core/api/http/token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, httpErrorInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([tokenInterceptor, authInterceptor, httpErrorInterceptor]),
+    ),
     provideRouter(routes, withComponentInputBinding()),
   ],
 };
