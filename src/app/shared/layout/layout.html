@@ -6,27 +6,27 @@
         {{ esAdmin() ? 'Gestión' : 'Caja' }}
       </span>
     </span>
-
     <div class="header-nav-links">
       @if (esAdmin()) {
-        <a class="nav-link-top active" href="#">Panel de Control</a>
-        <a class="nav-link-top" href="#">Mercados</a>
+      <a class="nav-link-top active" href="#">Panel de Control</a>
+      <a class="nav-link-top" href="#">Mercados</a>
       } @else {
-        <a class="nav-link-top active" href="#">Operaciones</a>
-        <a class="nav-link-top" href="#">Mi Turno</a>
+      <a class="nav-link-top active" href="#">Operaciones</a>
+      <a class="nav-link-top" href="#">Mi Turno</a>
       }
     </div>
   </div>
 
   <div class="flex items-center space-x-4">
     @if (esAdmin()) {
-      <div class="search-wrapper">
-        <span class="material-symbols-outlined search-icon">search</span>
-        <input class="search-input focus:ring-blue-600" placeholder="Buscar..." type="text"/>
-      </div>
+    <div class="search-wrapper">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input class="search-input focus:ring-blue-600" placeholder="Buscar..." type="text"/>
+    </div>
     }
     <button class="material-symbols-outlined icon-btn">notifications</button>
-    <div class="user-avatar" [ngClass]="esAdmin() ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'">
+    <div class="user-avatar"
+         [ngClass]="esAdmin() ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'">
       {{ (username() || 'U')[0] | uppercase }}
     </div>
   </div>
@@ -39,90 +39,115 @@
   </div>
 
   <div class="sidebar-links">
-    <!-- Dashboard: ADMIN y CAJERO (ruta distinta) -->
-    <a
-      class="menu-link"
-      [routerLink]="esAdmin() ? '/dashboard' : '/dashboard-caja'"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      [ngClass]="{ 'active-emerald': !esAdmin() }"
-    >
+
+    <!-- Dashboard -->
+    <a class="menu-link"
+       [routerLink]="esAdmin() ? '/dashboard' : '/dashboard-caja'"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       [ngClass]="{ 'active-emerald': !esAdmin() }">
       <span class="material-symbols-outlined">dashboard</span>
       <span>Panel</span>
     </a>
 
+    <!-- Asignaciones solo ADMIN -->
+    @if (esAdmin()) {
     <a class="menu-link" routerLink="/socio-puesto" routerLinkActive="active">
       <span class="material-symbols-outlined">link</span>
       <span>Asignaciones</span>
     </a>
+    }
 
-    <!-- Socios: ambos roles -->
-    <a class="menu-link" routerLink="/socios" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+    <!-- Socios -->
+    <a class="menu-link" routerLink="/socios" routerLinkActive="active"
+       [ngClass]="{'active-emerald': !esAdmin()}">
       <span class="material-symbols-outlined">group</span>
       <span>Socios</span>
     </a>
 
-    <!-- Puestos: ambos roles -->
-    <a class="menu-link" routerLink="/puestos" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
+    <!-- Puestos -->
+    <a class="menu-link" routerLink="/puestos" routerLinkActive="active"
+       [ngClass]="{'active-emerald': !esAdmin()}">
       <span class="material-symbols-outlined">storefront</span>
       <span>Puestos</span>
     </a>
 
-    <!-- Deudas: ADMIN y CAJERO (si así lo defines en routes) -->
-    <a class="menu-link" routerLink="/deudas" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
-      <span class="material-symbols-outlined">{{ esAdmin() ? 'history' : 'account_balance_wallet' }}</span>
+    <!-- Deudas -->
+    <a class="menu-link" routerLink="/deudas" routerLinkActive="active"
+       [ngClass]="{'active-emerald': !esAdmin()}">
+      <span class="material-symbols-outlined">
+        {{ esAdmin() ? 'history' : 'account_balance_wallet' }}
+      </span>
       <span>Deudas</span>
     </a>
 
     <!-- Conceptos solo ADMIN -->
     @if (esAdmin()) {
-      <a class="menu-link" routerLink="/conceptos" routerLinkActive="active">
-        <span class="material-symbols-outlined">category</span>
-        <span>Conceptos</span>
-      </a>
+    <a class="menu-link" routerLink="/conceptos" routerLinkActive="active">
+      <span class="material-symbols-outlined">category</span>
+      <span>Conceptos</span>
+    </a>
     }
 
-    <!-- Pagos: ambos roles -->
-    <a
-      class="menu-link"
-      routerLink="/pagos"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      [ngClass]="{ 'active-emerald': !esAdmin() }"
-    >
+    <!-- Pagos -->
+    <a class="menu-link" routerLink="/pagos" routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       [ngClass]="{ 'active-emerald': !esAdmin() }">
       <span class="material-symbols-outlined">payments</span>
       <span>Pagos</span>
     </a>
 
-    <!-- Registrar pago: SOLO CAJERO (según tu regla) -->
-    <!-- @if (authz.canRegisterPayment()) {
-      <a class="menu-link" routerLink="/pagos/nuevo" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
-        <span class="material-symbols-outlined">add</span>
-        <span>Nueva Transacción</span>
-      </a>
-    } -->
+    <!-- MENÚ REPORTES DESPLEGABLE -->
+    <div class="menu-group">
+      <button class="menu-link menu-group-btn"
+              (click)="reportesAbierto = !reportesAbierto">
+        <span class="material-symbols-outlined">assessment</span>
+        <span>Reportes</span>
+        <span class="material-symbols-outlined arrow-icon"
+              [class.rotated]="reportesAbierto">
+          expand_more
+        </span>
+      </button>
+
+      @if (reportesAbierto) {
+      <div class="submenu">
+        <!-- Flujo de Caja: ADMIN y CAJERO -->
+        <a class="submenu-link" routerLink="/reportes/flujo-caja"
+           routerLinkActive="active-sub"
+           [ngClass]="{ 'active-emerald': !esAdmin() }">
+          <span class="material-symbols-outlined">point_of_sale</span>
+          <span>Flujo de Caja</span>
+        </a>
+
+        <!-- Deudas por Socio: solo ADMIN -->
+        @if (esAdmin()) {
+        <a class="submenu-link" routerLink="/reportes/deudas-socio"
+           routerLinkActive="active-sub">
+          <span class="material-symbols-outlined">person_alert</span>
+          <span>Deudas por Socio</span>
+        </a>
+        }
+      </div>
+      }
+    </div>
 
   </div>
 
   <div class="sidebar-footer">
     @if (authz.canRegisterPayment()) {
-      <button
-        class="btn-new-trans"
-        [style.background]="'linear-gradient(135deg, #059669 0%, #10b981 100%)'"
-        routerLink="/pagos/nuevo"
-      >
-        <span class="material-symbols-outlined text-sm">add</span>
-        <span>Nueva Transacción</span>
-      </button>
+    <button class="btn-new-trans"
+            [style.background]="'linear-gradient(135deg, #059669 0%, #10b981 100%)'"
+            routerLink="/pagos/nuevo">
+      <span class="material-symbols-outlined text-sm">add</span>
+      <span>Nueva Transacción</span>
+    </button>
     } @else {
-      <button
-        class="btn-new-trans"
-        [style.background]="'linear-gradient(135deg, #24389c 0%, #3f51b5 100%)'"
-        routerLink="/deudas/nueva"
-      >
-        <span class="material-symbols-outlined text-sm">add</span>
-        <span>Nueva Deuda</span>
-      </button>
+    <button class="btn-new-trans"
+            [style.background]="'linear-gradient(135deg, #24389c 0%, #3f51b5 100%)'"
+            routerLink="/deudas/nueva">
+      <span class="material-symbols-outlined text-sm">add</span>
+      <span>Nueva Deuda</span>
+    </button>
     }
 
     <a class="footer-link hover-blue" href="#">

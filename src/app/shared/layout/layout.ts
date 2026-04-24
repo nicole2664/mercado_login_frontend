@@ -18,10 +18,9 @@ export class LayoutComponent {
   private auth = inject(AuthService);
   authz = inject(PermissionsService);
 
-  // username basado en sesión
-  username = signal(this.auth.getUsername() ?? (this.authz.isAdmin() ? 'Admin' : 'Cajero'));
+  reportesAbierto = false;
 
-  // tema basado en rol (NO en URL)
+  username = signal(this.auth.getUsername() ?? (this.authz.isAdmin() ? 'Admin' : 'Cajero'));
   esAdmin = computed(() => this.authz.isAdmin());
   colorTema = computed(() => (this.esAdmin() ? 'blue' : 'emerald'));
 

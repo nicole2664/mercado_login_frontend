@@ -1,0 +1,214 @@
+<section class="page">
+  <div class="header">
+    <div>
+      <p class="breadcrumb">REPORTES / FINANCIERO</p>
+      <h1>Estado de Deuda por Socio</h1>
+    </div>
+    <button class="btn" (click)="imprimir()">🖨️ Imprimir</button>
+  </div>
+
+  <!-- TARJETAS -->
+  <div class="cards">
+    <div class="card card-blue">
+      <div class="label">Deuda Total del Mercado</div>
+      <div class="value">S/ {{ data()?.deudaTotalMercado ?? 0 | number:'1.2-2' }}</div>
+    </div>
+    <div class="card">
+      <div class="label">Número de Socios con Deuda</div>
+      <div class="value-row">
+        <span class="value">{{ data()?.totalSociosConDeuda ?? 0 }}</span>
+        <span class="value-sub">/ {{ data()?.totalSocios ?? 0 }}</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-fill"
+             [style.width.%]="data() && data()!.totalSocios > 0
+            ? (data()!.totalSociosConDeuda / data()!.totalSocios * 100) : 0">
+        </div>
+      </div>
+      <p class="progress-label">
+        {{ data() && data()!.totalSocios > 0
+        ? ((data()!.totalSociosConDeuda / data()!.totalSocios * 100) | number:'1.1-1')
+        : 0 }}% de los socios registrados
+      </p>
+    </div>
+  </div>
+
+  <!-- BUSCADOR -->
+  <div class="search-bar">
+    <input type="text" [value]="q()"
+           (input)="q.set($any($event.target).value)"
+           placeholder="Ej. Juan Perez o 4567..."
+           class="search-input">
+    <button class="btn primary" (click)="cargar()">FILTRAR REPORTE</button>
+  </div>
+
+  <!-- TABLA -->
+  @if (cargando()) {
+  <div class="loading">Cargando reporte...</div>
+  } @else {
+  <div class="table-wrap">
+    <div class="table-header">
+      <h2>Detalle de Saldos Acumulados</h2>
+      <span class="count">
+          Mostrando {{ sociosPaginados().length }} de {{ socios().length }} resultados
+        </span>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>Socio</th>
+        <th>Puestos Asignados</th>
+        <th class="text-center">Deudas Pendientes</th>
+        <th class="text-right">Monto Total Deuda</th>
+        <th class="text-center">Acción</th>
+      </tr>
+      </thead>
+      <tbody>
+      @for (socio of sociosPaginados(); track socio.idSocio) {
+      <tr>
+        <td>
+          <div class="socio-cell">
+            <div class="avatar">{{ iniciales(socio.nombre) }}</div>
+            <div>
+              <div class="socio-nombre">{{ socio.nombre }}</div>
+              <div class="socio-dni">DNI: {{ socio.dni }}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="chips">
+            @for (c of socio.codigosPuestos; track c) {
+            <span class="chip">{{ c }}</span>
+            }
+          </div>
+        </td>
+        <td class="text-center">
+                <span class="badge"
+                      [ngClass]="socio.cantidadDeudas > 3 ? 'badge-red' : 'badge-amber'">
+                  ● {{ socio.cantidadDeudas | number:'2.0-0' }} Pendientes
+                </span>
+        </td>
+        <td class="text-right font-bold">
+          S/ {{ socio.montoTotal | number:'1.2-2' }}
+        </td>
+        <td class="text-center">
+          <button class="btn-link" (click)="verDetalle(socio)">
+            VER DETALLE
+          </button>
+        </td>
+      </tr>
+      }
+      @empty {
+      <tr>
+        <td colspan="5" class="empty">
+          No hay socios con deudas pendientes.
+        </td>
+      </tr>
+      }
+      </tbody>
+    </table>
+
+    <!-- PAGINACIÓN -->
+    <div class="pagination">
+      <button class="btn-pag"
+              (click)="paginaActual.set(paginaActual() - 1)"
+              [disabled]="paginaActual() === 0">‹</button>
+      @for (p of paginas(); track p) {
+      <button class="btn-pag"
+              [class.active]="paginaActual() === p - 1"
+              (click)="paginaActual.set(p - 1)">{{ p }}</button>
+      }
+      <button class="btn-pag"
+              (click)="paginaActual.set(paginaActual() + 1)"
+              [disabled]="paginaActual() >= totalPages() - 1">›</button>
+      <span class="pag-info">
+          Página {{ paginaActual() + 1 }} de {{ totalPages() }}
+        </span>
+    </div>
+  </div>
+  }
+</section>
+
+<!-- MODAL DETALLE -->
+@if (modalAbierto()) {
+<div class="modal-overlay" (click)="cerrarModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h3>Detalle de deuda</h3>
+      <button class="btn-close" (click)="cerrarModal()">✕</button>
+    </div>
+
+    @if (cargandoDetalle()) {
+    <div class="loading">Cargando detalle...</div>
+    } @else if (detalle()) {
+
+    <!-- Info socio -->
+    <div class="socio-info">
+      <div class="socio-avatar-lg">
+        <span class="avatar-icon">👤</span>
+      </div>
+      <div class="socio-grid">
+        <div>
+          <p class="info-label">NOMBRE</p>
+          <p class="info-value">{{ detalle()!.nombre }}</p>
+        </div>
+        <div>
+          <p class="info-label">DNI/ID</p>
+          <p class="info-value">{{ detalle()!.dni }}</p>
+        </div>
+        <div>
+          <p class="info-label">CORREO ELECTRÓNICO</p>
+          <p class="info-value">{{ detalle()!.email || '—' }}</p>
+        </div>
+        <div>
+          <p class="info-label">PUESTOS ASOCIADOS</p>
+          <p class="info-value text-blue">
+            {{ detalle()!.cantidadPuestos }} puestos
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalle por puesto -->
+    <div class="puestos-lista">
+      @for (puesto of detalle()!.puestos; track puesto.codigo) {
+      <div class="puesto-block">
+        <h4 class="puesto-titulo">🏪 Puesto {{ puesto.codigo }}</h4>
+        <table class="detalle-table">
+          <tbody>
+          @for (d of puesto.deudas; track d.concepto) {
+          <tr>
+            <td>{{ d.concepto }}</td>
+            <td class="text-right">
+              S/ {{ d.monto | number:'1.2-2' }}
+            </td>
+          </tr>
+          }
+          <tr class="subtotal-row">
+            <td>SUBTOTAL</td>
+            <td class="text-right font-bold">
+              S/ {{ puesto.subtotal | number:'1.2-2' }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+
+    <!-- Footer modal -->
+    <div class="modal-footer">
+      <div>
+        <p class="info-label">MONTO TOTAL PENDIENTE</p>
+        <p class="total-monto">
+          S/ {{ detalle()!.montoTotalPendiente | number:'1.2-2' }}
+        </p>
+      </div>
+      <button class="btn" (click)="cerrarModal()">Cancelar</button>
+    </div>
+    }
+  </div>
+</div>
+}

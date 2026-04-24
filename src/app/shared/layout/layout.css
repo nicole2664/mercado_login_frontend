@@ -48,7 +48,7 @@
 /* --- sidebar --- */
 .sidebar-nav {
   @apply hidden md:flex h-screen w-64 fixed left-0 top-0 border-r border-slate-200
-  bg-slate-50 flex-col py-4 px-4 z-40 mt-16 pb-20;
+  bg-slate-50 flex-col py-4 px-4 z-40 mt-16 pb-20 overflow-y-auto;
 }
 
 .sidebar-profile {
@@ -81,7 +81,43 @@
   font-variation-settings: 'FILL' 1;
 }
 
-/* --- footer sidebar  --- */
+/* --- MENÚ DESPLEGABLE REPORTES --- */
+.menu-group {
+  @apply w-full;
+}
+
+.menu-group-btn {
+  @apply w-full flex items-center justify-between cursor-pointer border-none bg-transparent;
+}
+
+.arrow-icon {
+  @apply ml-auto transition-transform duration-200 text-base;
+}
+
+.arrow-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  @apply ml-3 mt-1 space-y-1 border-l-2 border-slate-200 pl-3;
+}
+
+.submenu-link {
+  @apply flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500
+  hover:text-blue-600 hover:bg-slate-100 font-semibold text-sm
+  transition-all cursor-pointer no-underline;
+  text-decoration: none;
+}
+
+.submenu-link.active-sub {
+  @apply text-blue-700 bg-blue-50 font-bold border-l-4 border-blue-600;
+}
+
+.active-emerald.submenu-link.active-sub {
+  @apply text-emerald-700 bg-emerald-50 font-bold border-l-4 border-emerald-500;
+}
+
+/* --- footer sidebar --- */
 .sidebar-footer {
   @apply pt-4 space-y-1 border-t border-slate-200 mt-auto pb-4;
 }
@@ -111,10 +147,10 @@
   display: inline-block;
 }
 
-/* --- --- */
 .menu-link:hover {
   @apply transition-all duration-200;
 }
+
 .active-emerald.active {
   @apply border-l-4 border-emerald-500 text-emerald-700 bg-emerald-50/50 font-bold;
 }
@@ -127,13 +163,9 @@
   @apply text-emerald-600 bg-emerald-50/50;
 }
 
-.active-emerald.active {
-  @apply border-l-4 border-emerald-500 text-emerald-700 bg-emerald-50/50 font-bold;
-}
-
 .active-emerald.active span {
   @apply text-emerald-600;
 }
-/* En layout.css */
+
 .btn-grad-blue { background: linear-gradient(135deg, #24389c 0%, #3f51b5 100%); }
 .btn-grad-emerald { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
