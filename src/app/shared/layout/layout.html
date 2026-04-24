@@ -40,14 +40,13 @@
 
   <div class="sidebar-links">
     <!-- Dashboard: ADMIN y CAJERO (ruta distinta) -->
-<!--    <a-->
-<!--      class="menu-link"-->
-<!--      [routerLink]="esAdmin() ? '/dashboard' : '/dashboard-caja'"-->
-<!--      routerLinkActive="active"-->
-<!--      [routerLinkActiveOptions]="{ exact: true }"-->
-<!--      [ngClass]="{ 'active-emerald': !esAdmin() }"-->
-<!--    >-->
-    <a class="menu-link" routerLink="/dashboard" routerLinkActive="active">
+    <a
+      class="menu-link"
+      [routerLink]="esAdmin() ? '/dashboard' : '/dashboard-caja'"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [ngClass]="{ 'active-emerald': !esAdmin() }"
+    >
       <span class="material-symbols-outlined">dashboard</span>
       <span>Panel</span>
     </a>
@@ -93,12 +92,6 @@
     >
       <span class="material-symbols-outlined">payments</span>
       <span>Pagos</span>
-    </a>
-
-    <!-- REPORTES -->
-    <a class="menu-link" routerLink="/flujo-caja" routerLinkActive="active" [ngClass]="{'active-emerald': !esAdmin()}">
-      <span class="material-symbols-outlined">payments</span>
-      <span>Flujo de Caja</span>
     </a>
 
     <!-- Registrar pago: SOLO CAJERO (según tu regla) -->

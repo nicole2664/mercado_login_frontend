@@ -9,6 +9,7 @@ import { CajaDiariaComponent } from './features/reportes/caja-diaria/caja-diaria
 import { DashboardCajaComponent } from './features/dashboard/cajero/dashboard';
 import { NotFound } from './features/not-found/not-found';
 import { guestGuard } from './core/guards/guest.guard';
+import { CajaDiariaComponent } from './features/reportes/caja-diaria/caja-diaria';
 // import { DashboardComponent } from './features/admin/dashboard/dashboard';
 import { PagoListar } from './features/pagos/pagos-listar/pago-listar';
 import { Conceptos } from './features/conceptos/conceptos';
@@ -84,6 +85,13 @@ export const routes: Routes = [
             component: RegistrarDeuda,
             canActivate: [roleGuard],
             data: { roles: ['ADMIN'] },
+          },
+          //reportes
+          {
+            path: 'flujo-caja',
+            component: CajaDiariaComponent,
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN', 'CAJERO'] },
           },
         ],
       },
