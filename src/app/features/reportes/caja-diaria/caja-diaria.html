@@ -1,66 +1,84 @@
-<!-- src/app/features/reportes/caja-diaria/caja-diaria.html -->
-<section class="page">
-  <div class="header">
-    <div>
+<section class="cashflow-page">
+  <div class="cashflow-breadcrumb">REPORTES / FINANZAS</div>
+
+  <div class="cashflow-header">
+    <div class="cashflow-title">
       <h1>Reporte de Flujo de Caja Diario</h1>
       <p>Monitoreo de ingresos por día (todo el mercado).</p>
     </div>
 
-    <div class="actions">
-      <input
-        type="date"
-        [value]="fecha()"
-        (input)="fecha.set(($any($event.target).value))"
-        (change)="onFechaChange()"
-      />
+    <div class="cashflow-actions">
+      <label class="date-field">
+        <span class="material-symbols-outlined">calendar_today</span>
+        <input
+          type="date"
+          [value]="fecha()"
+          (input)="fecha.set(($any($event.target).value))"
+          (change)="onFechaChange()"
+        />
+      </label>
 
-      <button class="btn" (click)="exportCsv()">Exportar CSV</button>
-      <button class="btn primary" (click)="exportXlsx()">Exportar Excel</button>
+      <button class="btn btn-outline" [ngClass]="accentOutlineClass()" (click)="exportCsv()">
+        Exportar CSV
+      </button>
+
+      <button class="btn btn-solid" [ngClass]="accentSolidClass()" (click)="exportXlsx()">
+        Exportar Excel
+      </button>
     </div>
+
   </div>
 
   @if (cargando()) {
     <div class="loading">Cargando...</div>
   } @else {
-    <div class="cards">
-      <div class="card">
-        <div class="label">Total Recaudado</div>
-        <div class="value">S/ {{ cards()?.totalRecaudado ?? 0 }}</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Recaudado</div>
+        <div class="kpi-value">S/ {{ cards()?.totalRecaudado ?? 0 }}</div>
       </div>
 
-      <div class="card">
-        <div class="label">Ingresos en Efectivo</div>
-        <div class="value">S/ {{ cards()?.ingresosEfectivo ?? 0 }}</div>
+      <div class="kpi-card">
+        <div class="kpi-label">Ingresos en Efectivo</div>
+        <div class="kpi-value">S/ {{ cards()?.ingresosEfectivo ?? 0 }}</div>
       </div>
 
-      <div class="card">
-        <div class="label">Ingresos Digitales</div>
-        <div class="value">S/ {{ cards()?.ingresosDigitales ?? 0 }}</div>
+      <div class="kpi-card">
+        <div class="kpi-label">Ingresos Digitales</div>
+        <div class="kpi-value">S/ {{ cards()?.ingresosDigitales ?? 0 }}</div>
       </div>
     </div>
 
-    <div class="table">
-      <h2>Detalle de Transacciones</h2>
+    <div class="table-card">
+      <div class="table-card-head">
+        <h2>Detalle de Transacciones</h2>
 
-      <table>
+        <!-- UI only -->
+        <button class="btn btn-solid" [ngClass]="accentSolidClass()">
+          <span class="material-symbols-outlined">filter_list</span>
+          Filtrar
+        </button>
+      </div>
+
+      <table class="tx-table">
         <thead>
         <tr>
-          <th>ID Comprobante</th>
-          <th>Puesto</th>
-          <th>Método</th>
-          <th>Monto</th>
-          <th>Hora</th>
-          <th>Conceptos</th>
+          <th>ID COMPROBANTE</th>
+          <th>PUESTO</th>
+          <th>MÉTODO DE PAGO</th>
+          <th class="num">MONTO</th>
+          <th>HORA</th>
+          <th>CONCEPTOS</th>
         </tr>
         </thead>
 
         <tbody>
           @for (it of items(); track $index) {
             <tr>
-              <td>{{ it.idRecibo }}</td>
+              <td class="linkish">#{{ it.idRecibo }}</td>
               <td>{{ it.puesto }}</td>
-              <td>{{ it.metodoPago }}</td>
-              <td>S/ {{ it.monto }}</td>
+              <td><span class="pill">{{ it.metodoPago }}</span></td>
+              <td class="num">S/ {{ it.monto }}</td>
               <td>{{ it.hora }}</td>
               <td>{{ it.conceptos.join(' | ') }}</td>
             </tr>

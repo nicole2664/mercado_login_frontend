@@ -9,7 +9,7 @@ import { DashboardCajaComponent } from './features/dashboard/cajero/dashboard';
 import { NotFound } from './features/not-found/not-found';
 import { guestGuard } from './core/guards/guest.guard';
 import { CajaDiariaComponent } from './features/reportes/caja-diaria/caja-diaria';
-// import { DashboardComponent } from './features/admin/dashboard/dashboard';
+
 import { PagoListar } from './features/pagos/pagos-listar/pago-listar';
 import { Conceptos } from './features/conceptos/conceptos';
 import { SociosComponent } from './features/socios/socios';
@@ -25,15 +25,25 @@ import { RegistrarDeuda } from './features/deudas/deudas-register/registrar-deud
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
 
-  // Shell autenticado
   {
     path: '',
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      // Home inteligente
+      // Si entran a "/", manda a /home para que redirija por rol
+      { path: '', pathMatch: 'full', redirectTo: 'home' },
+
       { path: 'home', component: HomeRedirectComponent },
 
+      // Reportes
+      {
+        path: 'flujo-caja',
+        component: CajaDiariaComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CAJERO'] },
+      },
+
+      // Dashboards
       {
         path: 'dashboard',
         component: DashboardComponent,
@@ -46,6 +56,8 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['CAJERO'] },
       },
+
+      // Mantenimientos
       {
         path: 'conceptos',
         component: Conceptos,
@@ -70,40 +82,34 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'CAJERO'] },
       },
+
+      // Deudas
       {
         path: 'deudas',
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'CAJERO'] },
         children: [
-          // listado
           { path: '', component: DeudaListar },
 
-          // solo cajero
           {
             path: 'nuevo',
             component: RegistrarDeuda,
             canActivate: [roleGuard],
-            data: { roles: ['ADMIN'] },
-          },
-          //reportes
-          {
-            path: 'flujo-caja',
-            component: CajaDiariaComponent,
-            canActivate: [roleGuard],
-            data: { roles: ['ADMIN', 'CAJERO'] },
+            // AJUSTA esto según tu regla real:
+            // - Si es “solo cajero”: ['CAJERO']
+            // - Si es “solo admin”: ['ADMIN']
+            data: { roles: ['CAJERO'] },
           },
         ],
       },
 
+      // Pagos
       {
         path: 'pagos',
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'CAJERO'] },
         children: [
-          // listado
           { path: '', component: PagoListar },
-
-          // solo cajero
           {
             path: 'nuevo',
             component: PagoNuevo,
@@ -113,10 +119,11 @@ export const routes: Routes = [
         ],
       },
 
-      // default: manda a home (para que redirija por rol)
+      // Not found dentro del layout
       { path: '**', component: NotFound },
     ],
   },
 
+  // Fallback global: manda al login
   { path: '**', redirectTo: 'login' },
 ];
