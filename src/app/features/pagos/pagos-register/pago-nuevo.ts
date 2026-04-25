@@ -151,6 +151,7 @@ export class PagoNuevo {
 
     this.socioSeleccionado.set(socioUiBase);
 
+
     // traer puestos del socio
     this.socioPuestoApi.puestosActivosPorSocio(idSocio).subscribe({
       next: (relaciones) => {
@@ -164,6 +165,8 @@ export class PagoNuevo {
         if (!socioActual) return;
 
         this.socioSeleccionado.set({ ...socioActual, puestos });
+
+        console.log(socioActual);
 
         if (puestos.length > 0) {
           const p0 = puestos[0];

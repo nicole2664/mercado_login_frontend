@@ -158,7 +158,7 @@ export class DeudaListar implements OnInit {
 
   // ====== UI helpers ======
   displaySocioNombre(d: DeudaListadoResponse): string {
-    return d.socioNombre ?? '— Sin socio —';
+    return d.socioNombre ?? 'Asociación';
   }
   displaySocioEmail(d: DeudaListadoResponse): string {
     return d.socioEmail ?? '';
