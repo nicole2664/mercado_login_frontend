@@ -52,7 +52,7 @@
             ></div>
           </div>
           <p class="sub-label">
-            {{ ocupacion$()?.totalAsignaciones ?? '—' }} de {{ ocupacion$()?.totalPuestos ?? '—' }} puestos ocupados
+            {{ ocupacion$().totalAsignaciones }} de {{ ocupacion$().totalPuestos }} puestos ocupados
           </p>
         </div>
       </div>
@@ -66,10 +66,10 @@
         </div>
         <div class="card-content">
           <p class="value-medium text-slate-900">
-            S/ {{ deudaVencida$()?.montoTotal ?? '0.00' | number:'1.2-2' }}
+            S/ {{ deudaVencida$().montoTotal | number:'1.2-2' }}
           </p>
           <p class="text-xs font-black text-red-500 uppercase tracking-tighter">
-            {{ deudaVencida$()?.cantidad ?? 0 }} Facturas vencidas
+            {{ deudaVencida$().cantidad}} Facturas vencidas
           </p>
         </div>
       </div>
